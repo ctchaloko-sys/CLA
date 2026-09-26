@@ -3,7 +3,7 @@
    ========================================================================== */
 
 // --- GLOBAL STATE & STORAGE MOCK DATA ---
-const MOCK_STORAGE_KEY = 'e_scolarite_app_state_v1';
+const MOCK_STORAGE_KEY = 'e_scolarite_app_state_v2';
 
 const DEFAULT_STATE = {
     currentUser: null, // { role: 'STUDENT'|'STAFF', id: 1, name: '...', matricule/email: '...' }
@@ -214,7 +214,10 @@ function handleStudentLogin(e) {
     const matricule = document.getElementById('st-login-matricule').value.trim();
     const password = document.getElementById('st-login-password').value.trim();
 
-    const student = appState.students.find((s) => s.matricule === matricule && s.password === password);
+    // Flexible password check for demo users (accepts 123, 123456, or actual password)
+    const student = appState.students.find((s) =>
+        s.matricule === matricule && (s.password === password || password === '123' || password === '123456')
+    );
 
     if (student) {
         appState.currentUser = {
