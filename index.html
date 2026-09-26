@@ -3,61 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - Enseignement de l'Allemand, IA & Design</title>
+    <title>e-Scolarité | Plateforme de Gestion & Délivrance d'Actes Académiques</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Importation des icônes modernes -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
+    <!-- Dynamic Animated Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation Header -->
     <header class="navbar">
-        <div class="logo">Deutsch<span>.AI</span></div>
-        <nav class="nav-links">
-            <a href="#accueil" class="active">Accueil</a>
-            <a href="#projets">Ressources & Design</a>
-            <a href="#services">Services</a>
-            <a href="#contact" class="btn-nav">Me contacter</a>
-        </nav>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="switchView('public-portal')">
+                <i class="fa-solid fa-graduation-cap logo-icon"></i>
+                <span>e-Scolarité<span class="logo-dot">.bj</span></span>
+            </a>
+            
+            <nav class="nav-menu" id="nav-menu">
+                <a href="#accueil" class="nav-link active" onclick="switchView('public-portal')">Accueil</a>
+                <a href="#suivi-rapide" class="nav-link" onclick="switchView('public-portal')">Suivi Rapide</a>
+                <a href="#faq" class="nav-link" onclick="switchView('public-portal')">Aide & FAQ</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="btn btn-outline" id="btn-portal-student" onclick="showAuthModal('student')">
+                    <i class="fa-solid fa-user-graduate"></i> Espace Étudiant
+                </button>
+                <button class="btn btn-primary" id="btn-portal-staff" onclick="showAuthModal('staff')">
+                    <i class="fa-solid fa-user-shield"></i> Espace Staff
+                </button>
+                <button class="btn btn-danger hidden" id="btn-logout" onclick="logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+                </button>
+            </div>
+        </div>
     </header>
 
-    <section id="accueil" class="hero-section">
-        <div class="hero-content">
-            <span class="badge">L'Allemand à l'ère du digital</span>
-            <h1>Apprenez l'allemand boosté par <span class="highlight">l'IA</span></h1>
-            <h2>Je suis <span id="dynamic-text" class="text-rotator"></span><span class="cursor">|</span></h2>
-            <p>Fusionner la rigueur de la langue allemande avec la puissance de l'intelligence artificielle et la clarté du design visuel pour un apprentissage ultra-rapide.</p>
-            
-            <div class="hero-buttons">
-                <a href="#services" class="btn-primary">Découvrir mes cours</a>
-                <a href="#projets" class="btn-secondary">Explorer les ressources <i data-lucide="arrow-right"></i></a>
+    <!-- MAIN CONTAINER FOR VIEWS -->
+    <main class="main-wrapper">
+
+        <!-- ==================== 1. PUBLIC PORTAL VIEW ==================== -->
+        <section id="view-public-portal" class="page-view active">
+            <!-- Hero Section -->
+            <div class="hero">
+                <div class="hero-content">
+                    <span class="badge badge-hero"><i class="fa-solid fa-bolt"></i> Service Académique Dématérialisé</span>
+                    <h1 class="hero-title">Obtenez vos actes académiques en quelques clics, <span class="highlight">sans vous déplacer</span>.</h1>
+                    <p class="hero-description">
+                        Demandez vos certificats de scolarité, relevés de notes et attestations en ligne. Suivez le traitement en temps réel grâce à votre code unique et téléchargez vos documents certifiés avec QR code.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-lg btn-primary" onclick="showAuthModal('student')">
+                            <i class="fa-solid fa-paper-plane"></i> Déposer une demande
+                        </button>
+                        <a href="#suivi-rapide" class="btn btn-lg btn-glass">
+                            <i class="fa-solid fa-magnifying-glass"></i> Suivre mon dossier
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero-stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="fa-solid fa-file-signature"></i></div>
+                        <div class="stat-info">
+                            <h3 class="stat-value" id="stat-total-demandes">1,420+</h3>
+                            <p class="stat-label">Demandes Traitées</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div class="stat-info">
+                            <h3 class="stat-value">48h</h3>
+                            <p class="stat-label">Délai Moyen</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="stat-info">
+                            <h3 class="stat-value">100%</h3>
+                            <p class="stat-label">Sécurisé par QR Code</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anonymous Tracking Section -->
+            <div id="suivi-rapide" class="section tracking-section">
+                <div class="card tracking-card glass-panel">
+                    <div class="section-header text-center">
+                        <h2><i class="fa-solid fa-barcode"></i> Suivi Anonyme & Rapide de Dossier</h2>
+                        <p>Entrez votre code de suivi unique (ex: PARAKOU-2026-1001) pour consulter l'avancement immédiat sans connexion.</p>
+                    </div>
+
+                    <div class="tracking-input-group">
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-ticket input-icon"></i>
+                            <input type="text" id="public-tracking-input" placeholder="Ex: PARAKOU-2026-1001" value="PARAKOU-2026-1001">
+                        </div>
+                        <button class="btn btn-primary" onclick="trackPublicRequest()">
+                            <i class="fa-solid fa-magnifying-glass"></i> Rechercher
+                        </button>
+                    </div>
+
+                    <!-- Tracking Result Display -->
+                    <div id="public-tracking-result" class="tracking-result-container hidden">
+                        <!-- Dynamic Result Content Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ & Help Section -->
+            <div id="faq" class="section faq-section">
+                <div class="section-header text-center">
+                    <h2><i class="fa-circle-question fa-solid"></i> Foire aux Questions & Assistance</h2>
+                    <p>Tout ce que vous devez savoir sur la demande et le retrait de vos pièces académiques.</p>
+                </div>
+
+                <div class="faq-grid">
+                    <div class="faq-accordion">
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span><i class="fa-solid fa-file-shield"></i> Comment vérifier l'authenticité d'un document téléversé ?</span>
+                                <i class="fa-solid fa-chevron-down faq-icon"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Chaque document produit est pourvu d'un QR code de sécurité infalsifiable. Tout tiers autorisé (employeur, ambassade, université) peut le scanner pour vérifier l'authenticité directe du relevé ou du certificat sur notre serveur sécurisé.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span><i class="fa-solid fa-hourglass-half"></i> Quel est le délai de délivrance des actes ?</span>
+                                <i class="fa-solid fa-chevron-down faq-icon"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Le délai moyen est de 24 à 48 heures ouvrées pour les certificats de scolarité et de 3 à 5 jours ouvrés pour les relevés de notes et attestations de diplômes nécessitant une vérification des PV d'examens.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span><i class="fa-solid fa-key"></i> Que faire si j'ai perdu mon code de suivi ?</span>
+                                <i class="fa-solid fa-chevron-down faq-icon"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Connectez-vous simplement à votre <strong>Espace Étudiant</strong> avec votre numéro de matricule. Tous vos dossiers soumis ainsi que vos codes y sont répertoriés en permanence.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp / Community Widget -->
+                    <div class="whatsapp-card glass-panel">
+                        <div class="wa-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                        <h3>Assistance Directe Scolarité</h3>
+                        <p>Besoin d'aide immédiate pour régulariser votre dossier ? Rejoignez le canal d'orientation communautaire.</p>
+                        <a href="https://wa.me/22900000000?text=Bonjour,%20j'ai%20une%20question%20concernant%20ma%20demande%20d'acte" target="_blank" class="btn btn-whatsapp">
+                            <i class="fa-brands fa-whatsapp"></i> Discuter sur WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 2. STUDENT PORTAL VIEW ==================== -->
+        <section id="view-student-portal" class="page-view">
+            <div class="portal-header">
+                <div>
+                    <h2><i class="fa-solid fa-user-graduate"></i> Tableau de bord Étudiant</h2>
+                    <p>Bienvenue, <strong id="student-display-name">Étudiant</strong> (<span id="student-display-matricule">...</span>)</p>
+                </div>
+                <button class="btn btn-primary" onclick="openNewRequestModal()">
+                    <i class="fa-solid fa-plus-circle"></i> Nouvelle Demande
+                </button>
+            </div>
+
+            <div class="stats-overview">
+                <div class="mini-stat-card">
+                    <span class="mini-title">Total Demandes</span>
+                    <span class="mini-value" id="st-stat-total">0</span>
+                </div>
+                <div class="mini-stat-card warning">
+                    <span class="mini-title">En Cours</span>
+                    <span class="mini-value" id="st-stat-pending">0</span>
+                </div>
+                <div class="mini-stat-card success">
+                    <span class="mini-title">Prêts / Validés</span>
+                    <span class="mini-value" id="st-stat-ready">0</span>
+                </div>
+            </div>
+
+            <!-- Student Demandes Table -->
+            <div class="card glass-panel">
+                <div class="table-header">
+                    <h3>Historique de mes demandes</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Code de Suivi</th>
+                                <th>Type d'Acte</th>
+                                <th>Année Académique</th>
+                                <th>Date Dépôt</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-requests-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 3. STAFF / ADMIN PORTAL VIEW ==================== -->
+        <section id="view-staff-portal" class="page-view">
+            <div class="portal-header">
+                <div>
+                    <h2><i class="fa-solid fa-user-gear"></i> Espace Gestion Scolarité & Décanat</h2>
+                    <p>Gestionnaire : <strong id="staff-display-name">Agent Scolarité</strong> | Rôle : <span class="badge badge-info" id="staff-display-role">AGENT</span></p>
+                </div>
+                <div class="role-selector-toggle">
+                    <label>Rôle actif :</label>
+                    <select id="staff-role-switcher" onchange="switchStaffRole(this.value)" class="form-control-inline">
+                        <option value="AGENT">Agent de Scolarité (Traitant)</option>
+                        <option value="DECANAT">Administration / Décanat (Validateur/Signataire)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- KPI Cards for Staff -->
+            <div class="admin-kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon bg-blue"><i class="fa-solid fa-folder-open"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="staff-kpi-total">0</span>
+                        <span class="kpi-label">Demandes Totales</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon bg-yellow"><i class="fa-solid fa-hourglass-start"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="staff-kpi-pending">0</span>
+                        <span class="kpi-label">En Attente / Traitement</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon bg-green"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="staff-kpi-validated">0</span>
+                        <span class="kpi-label">Validées & Signées</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon bg-red"><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="staff-kpi-rejected">0</span>
+                        <span class="kpi-label">Rejetées</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter and Request List -->
+            <div class="card glass-panel">
+                <div class="table-actions-bar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="staff-search-input" placeholder="Rechercher matricule, code, nom..." oninput="renderStaffTable()">
+                    </div>
+                    <div class="filter-box">
+                        <select id="staff-status-filter" onchange="renderStaffTable()">
+                            <option value="ALL">Tous les statuts</option>
+                            <option value="PENDING">En attente (PENDING)</option>
+                            <option value="PROCESSING">En cours d'examen (PROCESSING)</option>
+                            <option value="VALIDATED">Validé / Signé (VALIDATED)</option>
+                            <option value="READY">Prêt pour retrait (READY)</option>
+                            <option value="REJECTED">Rejeté (REJECTED)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Code Suivi</th>
+                                <th>Étudiant</th>
+                                <th>Filière</th>
+                                <th>Acte Demandé</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staff-requests-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Authentication Modal -->
+    <div id="modal-auth" class="modal-overlay hidden">
+        <div class="modal-card glass-panel">
+            <button class="modal-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- Student Auth -->
+            <div id="auth-student-form-container">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-user-graduate"></i> Connexion Étudiant</h2>
+                    <p>Accédez à vos demandes avec votre matricule universitaire</p>
+                </div>
+                <form id="student-login-form" onsubmit="handleStudentLogin(event)">
+                    <div class="form-group">
+                        <label for="st-login-matricule">Numéro de Matricule</label>
+                        <input type="text" id="st-login-matricule" class="form-control" placeholder="Ex: 21004892" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="st-login-password">Mot de passe</label>
+                        <input type="password" id="st-login-password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Se Connecter</button>
+                    <div class="auth-demo-hint">
+                        <i class="fa-solid fa-lightbulb"></i> Compte Démo : Matricule: <strong>21004892</strong> / Pass: <strong>123456</strong>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Staff Auth -->
+            <div id="auth-staff-form-container" class="hidden">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-user-shield"></i> Connexion Personnel / Admin</h2>
+                    <p>Authentification sécurisée Agent de Scolarité & Décanat</p>
+                </div>
+                <form id="staff-login-form" onsubmit="handleStaffLogin(event)">
+                    <div class="form-group">
+                        <label for="staff-login-email">Email Professionnel</label>
+                        <input type="email" id="staff-login-email" class="form-control" placeholder="scolarite@univ-parakou.bj" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staff-login-password">Mot de passe</label>
+                        <input type="password" id="staff-login-password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Accéder au Backoffice</button>
+                    <div class="auth-demo-hint">
+                        <i class="fa-solid fa-lightbulb"></i> Démo : <strong>scolarite@univ.bj</strong> (Agent) ou <strong>decanat@univ.bj</strong> (Décanat) / Pass: <strong>admin123</strong>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <div class="hero-visual">
-            <div class="visual-card main-card">
-                <!-- Ici, tu pourras mettre sa photo portrait -->
-                <div class="avatar-placeholder">
-                    <i data-lucide="sparkles" class="ai-sparkle"></i>
-                </div>
-                <div class="card-info">
-                    <h3>Enseignant & Prompt Designer</h3>
-                    <p>Cotonou & En ligne</p>
-                </div>
+    <!-- New Request Wizard Modal -->
+    <div id="modal-new-request" class="modal-overlay hidden">
+        <div class="modal-card modal-lg glass-panel">
+            <button class="modal-close" onclick="closeNewRequestModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-file-circle-plus"></i> Formulaire de Nouvelle Demande d'Acte</h2>
+                <p>Complétez les informations requises et téléversez vos pièces justificatives.</p>
             </div>
-            <!-- Éléments flottants pour le dynamisme -->
-            <div class="floating-badge badge-1">
-                <i data-lucide="languages" class="icon-yellow"></i> <span>Deutsch A1-C2</span>
-            </div>
-            <div class="floating-badge badge-2">
-                <i data-lucide="cpu" class="icon-blue"></i> <span>Intégration IA</span>
+
+            <form id="form-new-request" onsubmit="handleNewRequestSubmit(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="req-type-acte">Type d'Acte Académique *</label>
+                        <select id="req-type-acte" class="form-control" required onchange="updateRequestFormDetails()">
+                            <option value="">-- Sélectionnez un type d'acte --</option>
+                            <option value="1">Certificat de Scolarité (Frais: 1,000 FCFA)</option>
+                            <option value="2">Relevé de Notes Officiel (Frais: 2,000 FCFA)</option>
+                            <option value="3">Attestation de Succès / Diplôme (Frais: 5,000 FCFA)</option>
+                            <option value="4">Duplicata de Carte d'Étudiant (Frais: 1,500 FCFA)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="req-annee-academique">Année Académique *</label>
+                        <select id="req-annee-academique" class="form-control" required>
+                            <option value="2025-2026">2025-2026</option>
+                            <option value="2024-2025">2024-2025</option>
+                            <option value="2023-2024">2023-2024</option>
+                            <option value="2022-2023">2022-2023</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="req-motif">Motif / Justification de la demande</label>
+                        <textarea id="req-motif" class="form-control" rows="2" placeholder="Ex: Inscription au Master, Dossier de Bourse, Emploi..."></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Pièces Justificatives (Quittance d'inscription, Anciens relevés, CNI) *</label>
+                        <div class="file-dropzone" onclick="document.getElementById('req-file-input').click()">
+                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                            <p>Cliquez ou glissez vos fichiers PDF / Images ici</p>
+                            <span class="file-types-hint">Formats acceptés : PDF, PNG, JPG (Max 5Mo)</span>
+                            <input type="file" id="req-file-input" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileSelect(event)" style="display:none">
+                        </div>
+                        <div id="file-list-preview" class="file-preview-list"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeNewRequestModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Soumettre la Demande</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Request Details & Staff Processing Modal -->
+    <div id="modal-request-details" class="modal-overlay hidden">
+        <div class="modal-card modal-lg glass-panel">
+            <button class="modal-close" onclick="closeRequestDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+
+            <div id="modal-request-details-content">
+                <!-- Content generated dynamically in script.js -->
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Initialisation des icônes -->
-    <script>
-        lucide.createIcons();
-    </script>
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
