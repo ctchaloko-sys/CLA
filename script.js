@@ -17,7 +17,7 @@ const DEFAULT_STATE = {
     settings: {
         whatsappNumber: '+22646553556',
         whatsappStatus: 'En ligne - Réponse en 5 min',
-        contactEmail: 'contact@turfelite.fr',
+        contactEmail: 'emmabrn888@gmail.com',
         siteName: 'TurfElite',
         announcementBanner: '🏆 QUINTÉ+ VINCENNES : Notre Tuyau VIP est disponible ! Consultez la synthèse du jour.',
         allowPushNotifications: true
@@ -134,7 +134,7 @@ const DEFAULT_STATE = {
             title: 'L\'Analyse complète du Quinté+ à Vincennes',
             category: 'Analyse',
             date: '2026-03-29',
-            image: 'https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?auto=format&fit=crop&w=800&q=80',
+            image: 'harness-racing.jpg',
             summary: 'Retrouvez le décryptage étape par étape des 16 partants du Prix de la journée.',
             content: 'Nos experts ont passé au cribles les performances récentes et la vitesse moyenne sur la grande piste...'
         },
@@ -143,7 +143,7 @@ const DEFAULT_STATE = {
             title: 'Interview exclusive du Jockey Vainqueur',
             category: 'Interview',
             date: '2026-03-27',
-            image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=800&q=80',
+            image: 'galop-racing.jpg',
             summary: 'Confidences sur la stratégie de course et l\'entraînement préparatoire du cheval star.',
             content: '« Le cheval répond parfaitement à mes sollicitations en fin de parcours... »'
         }
@@ -154,7 +154,7 @@ const DEFAULT_STATE = {
             title: 'Replay : Arrivée spectaculaire à Vincennes',
             category: 'Grands Prix',
             type: 'VIDEO',
-            thumbnail: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=800&q=80',
+            thumbnail: 'harness-racing.jpg',
             embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
         },
         {
@@ -162,7 +162,7 @@ const DEFAULT_STATE = {
             title: 'Les plus beaux hippodromes de France',
             category: 'Hippodromes',
             type: 'PHOTO',
-            thumbnail: 'https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?auto=format&fit=crop&w=800&q=80',
+            thumbnail: 'galop-racing.jpg',
             embedUrl: null
         }
     ],
@@ -598,46 +598,69 @@ function renderPredictionsPage() {
     const container = document.getElementById('predictions-list-container');
     if (!container) return;
 
-    // Display subscription form banner + single sample analysis (Prix Ganay - Qatar) + VIP subscription call-to-action
-    const sampleRace = appState.races.find((r) => r.id === 3) || appState.races[0];
+    const unlocked = isVipUnlocked();
 
-    container.innerHTML = `
-        <div class="glass-panel text-center" style="margin-bottom: 2rem; padding: 2rem; border-color: var(--gold-bright);">
-            <h3 class="gold-gradient-text" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">
-                <i class="fa-solid fa-crown"></i> ABONNEMENT PRONOSTICS VIP & ANALYSES EXCLUSIVES
-            </h3>
-            <p class="text-muted" style="font-size: 0.92rem; margin-bottom: 1.25rem;">
-                Souscrivez dès maintenant pour recevoir l'intégralité des combinaisons Quinté+, Quarté, Tiercé et tuyaux 100% fiables directement sur WhatsApp.
-            </p>
-            <button class="btn btn-emerald btn-lg" onclick="showVipRequestModal()">
-                <i class="fa-brands fa-whatsapp"></i> Soucrire via Formulaire WhatsApp
-            </button>
-        </div>
-
-        <div style="margin-bottom: 2rem;">
-            <h4 style="font-size: 1.1rem; margin-bottom: 1rem;" class="emerald-gradient-text">
-                <i class="fa-solid fa-eye"></i> EXEMPLE D'ANALYSE ET TICKET DE DÉMONSTRATION (1 SEULE ANALYSE DISPONIBLE EN ACCÈS LIBRE)
-            </h4>
-            ${createCouponTicketHTML(sampleRace)}
-        </div>
-
-        <div class="glass-panel text-center" style="padding: 2rem; background: linear-gradient(135deg, rgba(2, 44, 34, 0.95), rgba(15, 23, 42, 0.95)); border: 2px solid var(--gold-bright);">
-            <h3 class="gold-gradient-text" style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.75rem;">
-                <i class="fa-solid fa-lock"></i> ABONNEMENT VIP POUR DES PRONOSTICS 100% FIABLE
-            </h3>
-            <p class="text-muted" style="font-size: 0.92rem; margin-bottom: 1.5rem;">
-                Pour accéder à l'ensemble des courses du jour, recevoir les tuyaux de dernière minute et consulter toutes les combinaisons gagnantes, rejoignez le Club VIP TurfElite.
-            </p>
-            <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-                <button class="btn btn-gold btn-lg" onclick="showVipRequestModal()">
-                    <i class="fa-solid fa-star"></i> S'Abonner au VIP (25 000 - 250 000 FCFA)
-                </button>
-                <button class="btn btn-outline-gold btn-lg" onclick="showVipCodeModal()">
-                    <i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP
-                </button>
+    if (unlocked) {
+        // FULL VIP ACCESS GRANTED - SHOW ALL 100% FIABLE PREDICTIONS
+        container.innerHTML = `
+            <div class="glass-panel text-center" style="margin-bottom: 2rem; padding: 1.5rem; border-color: var(--emerald-bright); background: linear-gradient(135deg, rgba(2, 44, 34, 0.95), rgba(15, 23, 42, 0.95));">
+                <span class="badge badge-emerald" style="margin-bottom:0.5rem;"><i class="fa-solid fa-shield-check"></i> ESPACE PRONOSTICS VIP DÉVERROUILLÉ</span>
+                <h3 class="gold-gradient-text" style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">
+                    PRONOSTICS 100% FIABLE DU JOUR & ANALYSES D'EXPERTS
+                </h3>
+                <p class="text-muted" style="font-size: 0.92rem;">
+                    Bienvenue dans votre espace privilégié. Voici l'intégralité des combinaisons optimisées par nos analystes hippiques.
+                </p>
             </div>
-        </div>
-    `;
+            ${appState.races.map((race) => createCouponTicketHTML(race)).join('')}
+        `;
+    } else {
+        // PRE-SUBSCRIPTION / GUEST VIEW - SHOW 1 FREE SAMPLE & SUBSCRIPTION FORM CTA
+        const sampleRace = appState.races.find((r) => r.id === 3) || appState.races[0];
+
+        container.innerHTML = `
+            <div class="glass-panel text-center" style="margin-bottom: 2rem; padding: 2rem; border-color: var(--gold-bright);">
+                <h3 class="gold-gradient-text" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">
+                    <i class="fa-solid fa-crown"></i> ABONNEMENT PRONOSTICS VIP & ANALYSES EXCLUSIVES
+                </h3>
+                <p class="text-muted" style="font-size: 0.92rem; margin-bottom: 1.25rem;">
+                    Souscrivez dès maintenant pour recevoir l'intégralité des combinaisons Quinté+, Quarté, Tiercé et tuyaux 100% fiables directement sur WhatsApp.
+                </p>
+                <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn btn-emerald btn-lg" onclick="showVipRequestModal()">
+                        <i class="fa-brands fa-whatsapp"></i> Souscrire via Formulaire WhatsApp
+                    </button>
+                    <button class="btn btn-outline-gold btn-lg" onclick="showVipCodeModal()">
+                        <i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h4 style="font-size: 1.1rem; margin-bottom: 1rem;" class="emerald-gradient-text">
+                    <i class="fa-solid fa-eye"></i> EXEMPLE D'ANALYSE ET TICKET DE DÉMONSTRATION (1 SEULE ANALYSE DISPONIBLE EN ACCÈS LIBRE)
+                </h4>
+                ${createCouponTicketHTML(sampleRace)}
+            </div>
+
+            <div class="glass-panel text-center" style="padding: 2rem; background: linear-gradient(135deg, rgba(2, 44, 34, 0.95), rgba(15, 23, 42, 0.95)); border: 2px solid var(--gold-bright);">
+                <h3 class="gold-gradient-text" style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.75rem;">
+                    <i class="fa-solid fa-lock"></i> ABONNEMENT VIP POUR DES PRONOSTICS 100% FIABLE
+                </h3>
+                <p class="text-muted" style="font-size: 0.92rem; margin-bottom: 1.5rem;">
+                    Pour accéder à l'ensemble des courses du jour, recevoir les tuyaux de dernière minute et consulter toutes les combinaisons gagnantes, rejoignez le Club VIP TurfElite.
+                </p>
+                <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn btn-gold btn-lg" onclick="showVipRequestModal()">
+                        <i class="fa-solid fa-star"></i> S'Abonner au VIP (25 000 - 250 000 FCFA)
+                    </button>
+                    <button class="btn btn-outline-gold btn-lg" onclick="showVipCodeModal()">
+                        <i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP
+                    </button>
+                </div>
+            </div>
+        `;
+    }
 }
 
 // --- OFFICIAL RESULTS PAGE WITH ABSOLUTE OFFICIAL ARRIVAL RULE ---
@@ -1173,7 +1196,7 @@ function handleContactEmailSubmit(e) {
     const subject = document.getElementById('contact-subject').value.trim();
     const message = document.getElementById('contact-message').value.trim();
 
-    const targetEmail = appState.settings.contactEmail || 'contact@turfelite.fr';
+    const targetEmail = appState.settings.contactEmail || 'emmabrn888@gmail.com';
 
     // Construct mailto URI
     const mailtoUrl = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
