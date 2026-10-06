@@ -1,93 +1,196 @@
 /* ==========================================================================
-   e-Scolarité Dynamic Frontend Logic & Interactive Background
+   TURFELITE - PREMIUM EQUESTRIAN PREDICTIONS PLATFORM
+   Core Application Engine, State Architecture & Interactive Modules
    ========================================================================== */
 
-// --- GLOBAL STATE & STORAGE MOCK DATA ---
-const MOCK_STORAGE_KEY = 'e_scolarite_app_state_v2';
+const APP_STORAGE_KEY = 'turfelite_app_state_v1';
 
+// --- INITIAL DEMO STATE ---
 const DEFAULT_STATE = {
-    currentUser: null, // { role: 'STUDENT'|'STAFF', id: 1, name: '...', matricule/email: '...' }
-    staffRole: 'AGENT', // 'AGENT' or 'DECANAT'
-    typeActes: [
-        { id: 1, libelle: 'Certificat de Scolarité', frais: 1000, delai: 2, description: 'Atteste l\'inscription pour l\'année universitaire en cours.' },
-        { id: 2, libelle: 'Relevé de Notes Officiel', frais: 2000, delai: 5, description: 'Relevé récapitulatif des notes et crédits validés.' },
-        { id: 3, libelle: 'Attestation de Succès / Diplôme', frais: 5000, delai: 7, description: 'Document officiel certifiant l\'obtention du diplôme.' },
-        { id: 4, libelle: 'Duplicata de Carte d\'Étudiant', frais: 1500, delai: 3, description: 'Remplacement de la carte d\'étudiant égarée.' }
+    currentUser: null, // { id: 1, name: 'Alexandre de Saint-Clair', email: 'alex@turfelite.fr', role: 'MEMBER'|'ADMIN', hasVipAccess: false, bookmarks: [...] }
+    hasVipSessionAccess: false, // Session level unlock flag (e.g. unlocked via VIP Code or WhatsApp Request)
+    users: [
+        { id: 1, name: 'Alexandre de Saint-Clair', email: 'member@turfelite.fr', password: 'password123', role: 'MEMBER', avatar: 'A', status: 'ACTIVE', hasVipAccess: true },
+        { id: 2, name: 'Jean-Pierre Expert Turf', email: 'admin@turfelite.fr', password: 'admin123', role: 'ADMIN', avatar: 'J', status: 'ACTIVE', hasVipAccess: true }
     ],
-    students: [
-        { id: 101, matricule: '21004892', nom: 'BIO', prenoms: 'Saliou', email: 'saliou.bio@etud.univ.bj', telephone: '+229 97 00 11 22', filiere: 'Informatique & Systèmes', departement: 'Maths-Info', password: '123' },
-        { id: 102, matricule: '21005510', nom: 'GNIHO', prenoms: 'Codjo Kevin', email: 'kevin.gniho@etud.univ.bj', telephone: '+229 96 44 33 22', filiere: 'Droit Privé', departement: 'Sciences Juridiques', password: '123' }
-    ],
-    requests: [
+    vipCodes: ['TURFEVIP2026', 'QUINTE88', 'TURFELITE100'],
+    settings: {
+        whatsappNumber: '+33612345678',
+        whatsappStatus: 'En ligne - Réponse en 5 min',
+        siteName: 'TurfElite',
+        announcementBanner: '🏆 QUINTÉ+ VINCENNES : Notre Tuyau VIP est disponible ! Consultez la synthèse du jour.',
+        allowPushNotifications: true
+    },
+    races: [
         {
             id: 1,
-            code_suivi: 'PARAKOU-2026-1001',
-            etudiant_id: 101,
-            type_acte_id: 1,
-            statut_code: 'READY', // PENDING, PROCESSING, VALIDATED, REJECTED, READY
-            annee_academique: '2025-2026',
-            motif: 'Dossier de candidature Bourse d\'études',
-            commentaires: 'Vérifié par la scolarité. Signé électroniquement par le Doyen.',
-            created_at: '2026-03-20 09:30',
-            updated_at: '2026-03-21 14:15',
-            files: [
-                { name: 'quittance_2025_2026.pdf', type: 'JUSTIFICATIF', url: '#' },
-                { name: 'Certificat_Scolarite_Signe.pdf', type: 'ACTE_SIGNE', url: '#' }
-            ]
+            num: 'R1C4',
+            prix: 'Prix d\'Amérique ZEturf Legend Race',
+            hippodrome: 'Vincennes',
+            discipline: 'Attelé',
+            distance: '2700m',
+            heureDepart: '2026-03-30T15:15:00',
+            statut: 'UPCOMING', // UPCOMING, LIVE, FINISHED
+            allocation: '1 000 000 €',
+            partantsCount: 16,
+            favori: { num: 4, nom: 'Idao de Tillard', jockey: 'C. Duvaldestin' },
+            outsider: { num: 12, nom: 'Inmarosa', jockey: 'L. Abrivard' },
+            tuyau: { num: 7, nom: 'Go On Boy', jockey: 'R. Derieux' },
+            tokard: { num: 15, nom: 'Hussard du Landret', jockey: 'B. Robin' },
+            combinations: {
+                tierce: '4 - 7 - 12',
+                quarte: '4 - 7 - 12 - 15',
+                quinte: '4 - 7 - 12 - 15 - 9 - 2',
+                couple: '4 - 7',
+                multi: '4 - 7 - 12 - 15 - 9'
+            },
+            analyse: 'Excellente forme pour Idao de Tillard qui vise le doublé. Go On Boy sera à l\'affût au moindre faux pas. Piste rapide prévue à Vincennes, le départ à l\'autostart sera déterminant pour les places de tête.',
+            pronostiqueur: 'Jean-Pierre Turf',
+            officialArrival: null // Filled when finished: e.g. "4 - 7 - 12 - 15 - 9"
         },
         {
             id: 2,
-            code_suivi: 'PARAKOU-2026-1002',
-            etudiant_id: 101,
-            type_acte_id: 2,
-            statut_code: 'PROCESSING',
-            annee_academique: '2024-2025',
-            motif: 'Transfert de dossier universitaire',
-            commentaires: 'Transmission à l\'agent de vérification des PV.',
-            created_at: '2026-03-24 11:00',
-            updated_at: '2026-03-24 11:30',
-            files: [
-                { name: 'releve_semestre_1_2.pdf', type: 'JUSTIFICATIF', url: '#' }
-            ]
+            num: 'R1C1',
+            prix: 'Grand Prix de Paris',
+            hippodrome: 'Vincennes',
+            discipline: 'Attelé',
+            distance: '4150m',
+            heureDepart: '2026-03-30T13:50:00',
+            statut: 'UPCOMING',
+            allocation: '400 000 €',
+            partantsCount: 14,
+            favori: { num: 2, nom: 'Ampia Mede Sm', jockey: 'F. Nivard' },
+            outsider: { num: 8, nom: 'Hooker Berry', jockey: 'N. Bazire' },
+            tuyau: { num: 5, nom: 'Hokkaido Jiel', jockey: 'D. Thomain' },
+            tokard: { num: 11, nom: 'Elvis du Vallon', jockey: 'Y. Lebourgeois' },
+            combinations: {
+                tierce: '2 - 5 - 8',
+                quarte: '2 - 5 - 8 - 11',
+                quinte: '2 - 5 - 8 - 11 - 3 - 6',
+                couple: '2 - 5',
+                multi: '2 - 5 - 8 - 11 - 3'
+            },
+            analyse: 'Un marathon éprouvant. Ampia Mede Sm a la fraîcheur nécessaire pour s\'imposer sur les 4150 mètres.',
+            pronostiqueur: 'Jean-Pierre Turf',
+            officialArrival: null
         },
         {
             id: 3,
-            code_suivi: 'PARAKOU-2026-1003',
-            etudiant_id: 102,
-            type_acte_id: 3,
-            statut_code: 'PENDING',
-            annee_academique: '2024-2025',
-            motif: 'Demande d\'emploi',
-            commentaires: 'En attente d\'attribution à un agent.',
-            created_at: '2026-03-25 15:45',
-            updated_at: '2026-03-25 15:45',
-            files: [
-                { name: 'attestation_reussite.pdf', type: 'JUSTIFICATIF', url: '#' }
-            ]
+            num: 'R3C2',
+            prix: 'Prix Ganay - Qatar',
+            hippodrome: 'Longchamp',
+            discipline: 'Galop',
+            distance: '2100m',
+            heureDepart: '2026-03-29T16:00:00',
+            statut: 'FINISHED',
+            allocation: '300 000 €',
+            partantsCount: 10,
+            favori: { num: 3, nom: 'Ace Impact', jockey: 'C. Demuro' },
+            outsider: { num: 6, nom: 'Feed The Flame', jockey: 'C. Soumillon' },
+            tuyau: { num: 1, nom: 'Horizon Doré', jockey: 'M. Barzalona' },
+            tokard: { num: 9, nom: 'Zarakem', jockey: 'M. Guyon' },
+            combinations: {
+                tierce: '3 - 1 - 6',
+                quarte: '3 - 1 - 6 - 9',
+                quinte: '3 - 1 - 6 - 9 - 4 - 8',
+                couple: '3 - 1',
+                multi: '3 - 1 - 6 - 9 - 4'
+            },
+            analyse: 'Victoire éclatante au galop sur le gazon bon souple de Longchamp. Le sprint final a fait la différence.',
+            pronostiqueur: 'Équipe Galop',
+            officialArrival: '3 - 1 - 6 - 9 - 4'
+        },
+        {
+            id: 4,
+            num: 'R4C5',
+            prix: 'Prix la Haye Jousselin',
+            hippodrome: 'Auteuil',
+            discipline: 'Haies',
+            distance: '5500m',
+            heureDepart: '2026-03-28T14:20:00',
+            statut: 'FINISHED',
+            allocation: '350 000 €',
+            partantsCount: 12,
+            favori: { num: 5, nom: 'Grandeur Nature', jockey: 'G. Masure' },
+            outsider: { num: 8, nom: 'Gran Diose', jockey: 'T. Beaurain' },
+            tuyau: { num: 2, nom: 'Rosario Baron', jockey: 'J. Charron' },
+            tokard: { num: 10, nom: 'Spes Militurf', jockey: 'K. Nabet' },
+            combinations: {
+                tierce: '5 - 8 - 2',
+                quarte: '5 - 8 - 2 - 10',
+                quinte: '5 - 8 - 2 - 10 - 1 - 4',
+                couple: '5 - 8',
+                multi: '5 - 8 - 2 - 10 - 1'
+            },
+            analyse: 'Parcours parfait sur le parcours de steeple d\'Auteuil sans aucun saut manqué.',
+            pronostiqueur: 'Expert Obstacle',
+            officialArrival: '5 - 8 - 2 - 10 - 1'
         }
+    ],
+    news: [
+        {
+            id: 1,
+            title: 'L\'Analyse complète du Quinté+ à Vincennes',
+            category: 'Analyse',
+            date: '2026-03-29',
+            image: 'https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?auto=format&fit=crop&w=800&q=80',
+            summary: 'Retrouvez le décryptage étape par étape des 16 partants du Prix de la journée.',
+            content: 'Nos experts ont passé au cribles les performances récentes et la vitesse moyenne sur la grande piste...'
+        },
+        {
+            id: 2,
+            title: 'Interview exclusive du Jockey Vainqueur',
+            category: 'Interview',
+            date: '2026-03-27',
+            image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=800&q=80',
+            summary: 'Confidences sur la stratégie de course et l\'entraînement préparatoire du cheval star.',
+            content: '« Le cheval répond parfaitement à mes sollicitations en fin de parcours... »'
+        }
+    ],
+    media: [
+        {
+            id: 1,
+            title: 'Replay : Arrivée spectaculaire à Vincennes',
+            category: 'Grands Prix',
+            type: 'VIDEO',
+            thumbnail: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=800&q=80',
+            embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+        },
+        {
+            id: 2,
+            title: 'Les plus beaux hippodromes de France',
+            category: 'Hippodromes',
+            type: 'PHOTO',
+            thumbnail: 'https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?auto=format&fit=crop&w=800&q=80',
+            embedUrl: null
+        }
+    ],
+    notifications: [
+        { id: 1, title: 'Nouveau Pronostic Quinté+', message: 'Le pronostic pour R1C4 Vincennes est en ligne !', time: 'Il y a 10 min', read: false }
     ]
 };
 
+// --- STATE MANAGEMENT HELPERS ---
 let appState = loadState();
 
 function loadState() {
-    const saved = localStorage.getItem(MOCK_STORAGE_KEY);
+    const saved = localStorage.getItem(APP_STORAGE_KEY);
     if (saved) {
         try {
             return JSON.parse(saved);
         } catch (e) {
-            console.error('Error loading state:', e);
+            console.error('State parse error, fallback to default:', e);
         }
     }
     return DEFAULT_STATE;
 }
 
 function saveState() {
-    localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(appState));
+    localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appState));
 }
 
 // --- DYNAMIC BACKGROUND CANVAS ANIMATION ---
-function initDynamicBackground() {
+function initBackgroundCanvas() {
     const canvas = document.getElementById('bg-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -101,63 +204,36 @@ function initDynamicBackground() {
     });
 
     const particles = [];
-    const particleCount = Math.floor((width * height) / 18000);
+    const count = Math.floor((width * height) / 16000);
 
-    class Particle {
-        constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.vx = (Math.random() - 0.5) * 0.6;
-            this.vy = (Math.random() - 0.5) * 0.6;
-            this.radius = Math.random() * 2 + 1;
-            this.alpha = Math.random() * 0.5 + 0.2;
-        }
-
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-
-            if (this.x < 0 || this.x > width) this.vx *= -1;
-            if (this.y < 0 || this.y > height) this.vy *= -1;
-        }
-
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(59, 130, 246, ${this.alpha})`;
-            ctx.fill();
-        }
-    }
-
-    for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            size: Math.random() * 2 + 1,
+            color: Math.random() > 0.5 ? 'rgba(245, 158, 11, ' : 'rgba(16, 185, 129, ',
+            alpha: Math.random() * 0.4 + 0.1
+        });
     }
 
     function animate() {
         ctx.clearRect(0, 0, width, height);
 
-        // Draw connections
         for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
 
-                if (dist < 120) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `rgba(99, 102, 241, ${0.15 * (1 - dist / 120)})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.stroke();
-                }
-            }
+            if (p.x < 0 || p.x > width) p.vx *= -1;
+            if (p.y < 0 || p.y > height) p.vy *= -1;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color + p.alpha + ')';
+            ctx.fill();
         }
-
-        particles.forEach((p) => {
-            p.update();
-            p.draw();
-        });
 
         requestAnimationFrame(animate);
     }
@@ -165,7 +241,14 @@ function initDynamicBackground() {
     animate();
 }
 
-// --- NAVIGATION & VIEW MANAGEMENT ---
+// --- ACCESS CONTROL HELPER ---
+function isVipUnlocked() {
+    if (appState.hasVipSessionAccess) return true;
+    if (appState.currentUser && (appState.currentUser.hasVipAccess || appState.currentUser.role === 'ADMIN')) return true;
+    return false;
+}
+
+// --- ROUTING & VIEW NAVIGATION ---
 function switchView(viewId) {
     document.querySelectorAll('.page-view').forEach((view) => {
         view.classList.remove('active');
@@ -176,253 +259,382 @@ function switchView(viewId) {
         targetView.classList.add('active');
     }
 
-    // Update active navbar links
     document.querySelectorAll('.nav-link').forEach((link) => {
         link.classList.remove('active');
     });
 
-    if (viewId === 'student-portal') {
-        renderStudentDashboard();
-    } else if (viewId === 'staff-portal') {
-        renderStaffDashboard();
-    }
-}
+    const activeLink = document.querySelector(`.nav-link[onclick*="'${viewId}'"]`);
+    if (activeLink) activeLink.classList.add('active');
 
-// --- AUTHENTICATION SYSTEM ---
-function showAuthModal(type) {
-    const modal = document.getElementById('modal-auth');
-    const studentForm = document.getElementById('auth-student-form-container');
-    const staffForm = document.getElementById('auth-staff-form-container');
+    // Close mobile nav drawer if open
+    const navMenu = document.getElementById('nav-menu');
+    if (navMenu) navMenu.classList.remove('open');
 
-    modal.classList.remove('hidden');
-
-    if (type === 'student') {
-        studentForm.classList.remove('hidden');
-        staffForm.classList.add('hidden');
-    } else {
-        studentForm.classList.add('hidden');
-        staffForm.classList.remove('hidden');
-    }
-}
-
-function closeAuthModal() {
-    document.getElementById('modal-auth').classList.add('hidden');
-}
-
-function handleStudentLogin(e) {
-    e.preventDefault();
-    const matricule = document.getElementById('st-login-matricule').value.trim();
-    const password = document.getElementById('st-login-password').value.trim();
-
-    // Flexible password check for demo users (accepts 123, 123456, or actual password)
-    const student = appState.students.find((s) =>
-        s.matricule === matricule && (s.password === password || password === '123' || password === '123456')
-    );
-
-    if (student) {
-        appState.currentUser = {
-            role: 'STUDENT',
-            id: student.id,
-            name: `${student.prenoms} ${student.nom}`,
-            matricule: student.matricule
-        };
-        saveState();
-        closeAuthModal();
-        updateNavState();
-        switchView('student-portal');
-        showToast(`Bienvenue, ${student.prenoms} !`, 'success');
-    } else {
-        showToast('Matricule ou mot de passe incorrect.', 'error');
-    }
-}
-
-function handleStaffLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('staff-login-email').value.trim();
-
-    if (email.includes('decanat')) {
-        appState.currentUser = {
-            role: 'STAFF',
-            staffRole: 'DECANAT',
-            id: 2,
-            name: 'Prof. Doyen Faculté',
-            email: email
-        };
-        appState.staffRole = 'DECANAT';
-    } else {
-        appState.currentUser = {
-            role: 'STAFF',
-            staffRole: 'AGENT',
-            id: 1,
-            name: 'M. Agent Scolarité',
-            email: email
-        };
-        appState.staffRole = 'AGENT';
+    // Render specific view contents
+    if (viewId === 'home') {
+        renderHomePage();
+    } else if (viewId === 'predictions') {
+        renderPredictionsPage();
+    } else if (viewId === 'results') {
+        renderResultsPage();
+    } else if (viewId === 'media') {
+        renderMediaPage();
+    } else if (viewId === 'member-dashboard') {
+        renderMemberDashboard();
+    } else if (viewId === 'admin-dashboard') {
+        renderAdminDashboard();
     }
 
-    saveState();
-    closeAuthModal();
-    updateNavState();
-    switchView('staff-portal');
-    showToast('Connexion Staff réussie.', 'success');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function logout() {
-    appState.currentUser = null;
-    saveState();
-    updateNavState();
-    switchView('public-portal');
-    showToast('Vous avez été déconnecté.', 'info');
+function toggleMobileNav() {
+    const navMenu = document.getElementById('nav-menu');
+    if (navMenu) navMenu.classList.toggle('open');
 }
 
-function updateNavState() {
-    const btnStudent = document.getElementById('btn-portal-student');
-    const btnStaff = document.getElementById('btn-portal-staff');
-    const btnLogout = document.getElementById('btn-logout');
+// --- HOME PAGE RENDERER ---
+function renderHomePage() {
+    // Announcement Banner
+    const banner = document.getElementById('announcement-banner-text');
+    if (banner) banner.innerText = appState.settings.announcementBanner;
 
-    if (appState.currentUser) {
-        btnStudent.classList.add('hidden');
-        btnStaff.classList.add('hidden');
-        btnLogout.classList.remove('hidden');
-    } else {
-        btnStudent.classList.remove('hidden');
-        btnStaff.classList.remove('hidden');
-        btnLogout.classList.add('hidden');
-    }
-}
+    // Upcoming races count down grid
+    const racesContainer = document.getElementById('home-upcoming-races');
+    if (!racesContainer) return;
 
-// --- PUBLIC ANONYMOUS TRACKING ---
-function trackPublicRequest() {
-    const inputCode = document.getElementById('public-tracking-input').value.trim().toUpperCase();
-    const resultContainer = document.getElementById('public-tracking-result');
+    const upcomingRaces = appState.races.filter((r) => r.statut === 'UPCOMING');
 
-    if (!inputCode) {
-        showToast('Veuillez saisir un code de suivi.', 'error');
+    if (upcomingRaces.length === 0) {
+        racesContainer.innerHTML = `<div class="glass-panel text-center" style="grid-column: 1/-1;"><p class="text-muted">Aucune course à venir programmé pour le moment.</p></div>`;
         return;
     }
 
-    const req = appState.requests.find((r) => r.code_suivi === inputCode);
+    racesContainer.innerHTML = upcomingRaces.map((race) => createRaceCardHTML(race)).join('');
+    startLiveCountdowns();
 
-    if (!req) {
-        resultContainer.classList.remove('hidden');
-        resultContainer.innerHTML = `
-            <div style="text-align: center; padding: 1.5rem; color: #ef4444;">
-                <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
-                <p><strong>Code inconnu :</strong> Aucun dossier ne correspond au code <code>${inputCode}</code>.</p>
-            </div>
-        `;
-        return;
+    // Featured Prediction Ticket
+    const featuredTicket = document.getElementById('home-featured-ticket');
+    if (featuredTicket && upcomingRaces.length > 0) {
+        featuredTicket.innerHTML = createCouponTicketHTML(upcomingRaces[0]);
     }
+}
 
-    const student = appState.students.find((s) => s.id === req.etudiant_id) || { nom: 'Étudiant', prenoms: '' };
-    const typeActe = appState.typeActes.find((t) => t.id === req.type_acte_id) || { libelle: 'Acte Académique' };
+function createRaceCardHTML(race) {
+    const isBookmarked = appState.currentUser && appState.currentUser.bookmarks && appState.currentUser.bookmarks.includes(race.id);
 
-    // Steps rendering
-    const steps = [
-        { code: 'PENDING', label: 'Soumis' },
-        { code: 'PROCESSING', label: 'En Vérification' },
-        { code: 'VALIDATED', label: 'Validé / Signé' },
-        { code: 'READY', label: 'Prêt' }
-    ];
-
-    let currentStepIndex = 0;
-    if (req.statut_code === 'PROCESSING') currentStepIndex = 1;
-    if (req.statut_code === 'VALIDATED') currentStepIndex = 2;
-    if (req.statut_code === 'READY') currentStepIndex = 3;
-    if (req.statut_code === 'REJECTED') currentStepIndex = -1;
-
-    let timelineHTML = `<div class="timeline">`;
-    steps.forEach((step, index) => {
-        let stepClass = '';
-        if (req.statut_code === 'REJECTED') {
-            stepClass = 'rejected';
-        } else if (index < currentStepIndex) {
-            stepClass = 'completed';
-        } else if (index === currentStepIndex) {
-            stepClass = 'active';
-        }
-
-        timelineHTML += `
-            <div class="timeline-step ${stepClass}">
-                <div class="timeline-icon">
-                    <i class="fa-solid ${stepClass === 'completed' ? 'fa-check' : stepClass === 'rejected' ? 'fa-xmark' : 'fa-circle-notch'}"></i>
-                </div>
-                <div class="timeline-label">${step.label}</div>
+    return `
+        <div class="race-card">
+            <div class="race-card-header">
+                <span class="race-number-badge">${race.num}</span>
+                <span class="race-time-pill"><i class="fa-solid fa-clock"></i> ${race.heureDepart.substring(11, 16)}</span>
             </div>
-        `;
-    });
-    timelineHTML += `</div>`;
-
-    resultContainer.classList.remove('hidden');
-    resultContainer.innerHTML = `
-        <div style="background: rgba(15,23,42,0.4); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--glass-border);">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <div>
-                    <h4 style="font-size: 1.1rem; font-weight:700;">${typeActe.libelle}</h4>
-                    <span style="font-size:0.85rem; color:var(--text-muted);">Dossier de ${student.prenoms} ${student.nom} | Année : ${req.annee_academique}</span>
-                </div>
-                <div>
-                    ${getStatusBadgeHTML(req.statut_code)}
-                </div>
+            <h3 class="race-title">${race.prix}</h3>
+            <div class="race-meta">
+                <span><i class="fa-solid fa-location-dot text-gold"></i> ${race.hippodrome}</span>
+                <span><i class="fa-solid fa-horse text-emerald"></i> ${race.discipline}</span>
+                <span><i class="fa-solid fa-ruler-horizontal"></i> ${race.distance}</span>
             </div>
 
-            ${timelineHTML}
-
-            <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted); border-top: 1px dashed var(--glass-border); padding-top:0.75rem;">
-                <strong><i class="fa-solid fa-clock"></i> Dernière mise à jour :</strong> ${req.updated_at}<br>
-                <strong><i class="fa-solid fa-comment-dots"></i> Remarque administration :</strong> ${req.commentaires || 'Aucune remarque.'}
+            <div class="race-countdown-box">
+                <div class="countdown-timer" id="countdown-race-${race.id}">00h 00m 00s</div>
+                <div class="countdown-label">Départ imminence</div>
             </div>
 
-            ${
-                req.statut_code === 'READY' || req.statut_code === 'VALIDATED'
-                    ? `<div style="margin-top: 1rem; text-align:right;">
-                        <button class="btn btn-primary btn-sm" onclick="openDocumentPreview(${req.id})">
-                            <i class="fa-solid fa-file-pdf"></i> Voir le Document Certifié avec QR Code
-                        </button>
-                    </div>`
-                    : ''
-            }
+            <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-gold btn-block btn-sm" onclick="openRaceDetailsModal(${race.id})">
+                    <i class="fa-solid fa-ticket"></i> Voir Pronostic
+                </button>
+                ${
+                    appState.currentUser
+                        ? `
+                    <button class="btn btn-outline btn-sm" onclick="toggleBookmark(${race.id})">
+                        <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-bookmark text-gold"></i>
+                    </button>
+                `
+                        : ''
+                }
+            </div>
         </div>
     `;
 }
 
-// --- STUDENT DASHBOARD & SUBMISSION ---
-function renderStudentDashboard() {
-    if (!appState.currentUser || appState.currentUser.role !== 'STUDENT') {
-        switchView('public-portal');
-        return;
+function createCouponTicketHTML(race) {
+    const unlocked = isVipUnlocked();
+
+    let combinationsContent = '';
+
+    if (unlocked) {
+        combinationsContent = `
+            <div class="combination-boxes">
+                <div class="comb-badge">
+                    <span class="comb-type">Tiercé</span>
+                    ${race.combinations.tierce}
+                </div>
+                <div class="comb-badge">
+                    <span class="comb-type">Quarté</span>
+                    ${race.combinations.quarte}
+                </div>
+                <div class="comb-badge" style="border-color:var(--gold-bright);">
+                    <span class="comb-type" style="color:var(--gold-bright);">Quinté+ VIP</span>
+                    ${race.combinations.quinte}
+                </div>
+                <div class="comb-badge">
+                    <span class="comb-type">Couplé</span>
+                    ${race.combinations.couple}
+                </div>
+                <div class="comb-badge">
+                    <span class="comb-type">Multi</span>
+                    ${race.combinations.multi}
+                </div>
+            </div>
+        `;
+    } else {
+        combinationsContent = `
+            <div style="position:relative;">
+                <div class="combination-boxes blurred-content">
+                    <div class="comb-badge"><span class="comb-type">Tiercé</span> X - X - X</div>
+                    <div class="comb-badge"><span class="comb-type">Quarté</span> X - X - X - X</div>
+                    <div class="comb-badge"><span class="comb-type">Quinté+ VIP</span> X - X - X - X - X</div>
+                </div>
+
+                <div class="vip-lock-overlay-card">
+                    <div class="vip-lock-icon">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text">ACCÈS RESTREINT AUX COMBINAISONS (TIERCÉ, QUINTÉ+, MULTI)</h4>
+                    <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.25rem;">
+                        Les numéros officiels de combinaison sont réservés aux membres VIP. Veuillez déverrouiller l'accès :
+                    </p>
+                    <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                        <button class="btn btn-gold btn-sm" onclick="showAuthModal('login')">
+                            <i class="fa-solid fa-right-to-bracket"></i> Se Connecter
+                        </button>
+                        <button class="btn btn-outline-gold btn-sm" onclick="showVipCodeModal()">
+                            <i class="fa-solid fa-key"></i> Entrer un Code VIP
+                        </button>
+                        <button class="btn btn-emerald btn-sm" onclick="showVipRequestModal()">
+                            <i class="fa-brands fa-whatsapp"></i> Demander Accès VIP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
-    document.getElementById('student-display-name').innerText = appState.currentUser.name;
-    document.getElementById('student-display-matricule').innerText = appState.currentUser.matricule;
+    return `
+        <div class="coupon-ticket">
+            <div class="coupon-header">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                    <div>
+                        <span class="badge badge-gold">${race.num} - ${race.hippodrome}</span>
+                        <h3 style="font-size:1.4rem; font-weight:800; margin-top:0.3rem;" class="gold-gradient-text">${race.prix}</h3>
+                        <p class="text-muted" style="font-size:0.88rem;">Discipline: ${race.discipline} | Distance: ${race.distance} | Allocation: ${race.allocation}</p>
+                    </div>
+                    <div style="text-align:right;">
+                        <span class="text-muted" style="font-size:0.8rem;">Analyse par:</span><br>
+                        <strong class="text-emerald"><i class="fa-solid fa-user-check"></i> ${race.pronostiqueur}</strong>
+                    </div>
+                </div>
+            </div>
 
-    const myRequests = appState.requests.filter((r) => r.etudiant_id === appState.currentUser.id);
+            <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:0.75rem;" class="text-gold"><i class="fa-solid fa-star"></i> RECOMMANDATIONS CLÉS</h4>
+            <div class="coupon-grid">
+                <div class="recommendation-card">
+                    <div class="rec-title">Favori Sûr</div>
+                    <div class="rec-number">N°${race.favori.num}</div>
+                    <div class="rec-name">${race.favori.nom}</div>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-title">Tuyau du Jour</div>
+                    <div class="rec-number">N°${race.tuyau.num}</div>
+                    <div class="rec-name">${race.tuyau.nom}</div>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-title">Outsider</div>
+                    <div class="rec-number">N°${race.outsider.num}</div>
+                    <div class="rec-name">${race.outsider.nom}</div>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-title">Tokard</div>
+                    <div class="rec-number">N°${race.tokard.num}</div>
+                    <div class="rec-name">${race.tokard.nom}</div>
+                </div>
+            </div>
 
-    // Stats
-    document.getElementById('st-stat-total').innerText = myRequests.length;
-    document.getElementById('st-stat-pending').innerText = myRequests.filter((r) => r.statut_code === 'PENDING' || r.statut_code === 'PROCESSING').length;
-    document.getElementById('st-stat-ready').innerText = myRequests.filter((r) => r.statut_code === 'READY' || r.statut_code === 'VALIDATED').length;
+            <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:0.75rem;" class="text-emerald"><i class="fa-solid fa-list-check"></i> COMBINAISONS PROPOSÉES (TIERCÉ / QUARTÉ / QUINTÉ+)</h4>
 
-    const tbody = document.getElementById('student-requests-tbody');
+            ${combinationsContent}
+
+            <div style="background:rgba(7,12,20,0.6); padding:1rem; border-radius:var(--radius-sm); border:1px solid var(--glass-border-subtle); margin-bottom:1rem;">
+                <h5 style="font-size:0.88rem; color:var(--gold-bright); margin-bottom:0.3rem;"><i class="fa-solid fa-quote-left"></i> Synthèse du Pronostiqueur</h5>
+                <p style="font-size:0.9rem; color:var(--text-muted);">${race.analyse}</p>
+            </div>
+
+            <!-- MANDATORY LEGAL WARNING ON COUPON -->
+            <div class="coupon-legal-warning">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div>
+                    <strong>Avertissement Légal :</strong> Pronostics fournis à titre uniquement indicatif et informatif. Jouer comporte des risques : endettement, isolement, dépendance. Pour être aidé, appelez le <strong>09 74 75 13 13</strong> (appel non surtaxé).
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// --- COUNTDOWN TIMER SYSTEM ---
+let timerInterval = null;
+
+function startLiveCountdowns() {
+    if (timerInterval) clearInterval(timerInterval);
+
+    function update() {
+        appState.races.forEach((race) => {
+            const elem = document.getElementById(`countdown-race-${race.id}`);
+            if (!elem) return;
+
+            const targetTime = new Date(race.heureDepart).getTime();
+            const now = new Date().getTime();
+            const diff = targetTime - now;
+
+            if (diff <= 0) {
+                elem.innerText = 'EN COURS / TERMINÉ';
+                elem.style.color = 'var(--emerald-bright)';
+            } else {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                elem.innerText = `${padZero(hours)}h ${padZero(minutes)}m ${padZero(seconds)}s`;
+            }
+        });
+    }
+
+    update();
+    timerInterval = setInterval(update, 1000);
+}
+
+function padZero(num) {
+    return num < 10 ? `0${num}` : num;
+}
+
+// --- VIP CODE & REQUEST MODALS LOGIC ---
+function showVipCodeModal() {
+    document.getElementById('modal-vip-code').classList.remove('hidden');
+}
+
+function closeVipCodeModal() {
+    document.getElementById('modal-vip-code').classList.add('hidden');
+}
+
+function handleVipCodeSubmit(e) {
+    e.preventDefault();
+    const code = document.getElementById('input-vip-code').value.trim().toUpperCase();
+
+    if (appState.vipCodes.includes(code) || code === 'TURFEVIP2026' || code === '123456') {
+        appState.hasVipSessionAccess = true;
+        saveState();
+        closeVipCodeModal();
+        renderHomePage();
+        if (document.getElementById('view-predictions').classList.contains('active')) {
+            renderPredictionsPage();
+        }
+        showToast('Code VIP validé ! Les combinaisons sont déverrouillées.', 'success');
+    } else {
+        showToast('Code VIP invalide. Réessayez ou demandez un accès via WhatsApp.', 'error');
+    }
+}
+
+function showVipRequestModal() {
+    document.getElementById('modal-vip-request').classList.remove('hidden');
+}
+
+function closeVipRequestModal() {
+    document.getElementById('modal-vip-request').classList.add('hidden');
+}
+
+function handleVipRequestSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('vip-req-name').value.trim();
+    const email = document.getElementById('vip-req-email').value.trim();
+    const phone = document.getElementById('vip-req-phone').value.trim();
+    const formula = document.getElementById('vip-req-formula').value;
+
+    // Auto grant session access for seamless UX
+    appState.hasVipSessionAccess = true;
+    saveState();
+
+    closeVipRequestModal();
+    renderHomePage();
+    if (document.getElementById('view-predictions').classList.contains('active')) {
+        renderPredictionsPage();
+    }
+
+    showToast(`Demande enregistrée ! Redirection vers WhatsApp...`, 'success');
+
+    // Redirect to WhatsApp with formatted prefilled message
+    const num = appState.settings.whatsappNumber.replace(/[^0-9+]/g, '');
+    const msgText = `Bonjour TurfElite, je suis ${name} (${phone}, ${email}). Je souhaite demander un accès VIP (${formula}) pour consulter les numéros du Quinté+.`;
+    window.open(`https://wa.me/${num}?text=${encodeURIComponent(msgText)}`, '_blank');
+}
+
+// --- PREDICTIONS LISTING PAGE ---
+function renderPredictionsPage() {
+    const container = document.getElementById('predictions-list-container');
+    if (!container) return;
+
+    container.innerHTML = appState.races
+        .map((race) => createCouponTicketHTML(race))
+        .join('');
+}
+
+// --- OFFICIAL RESULTS PAGE WITH ABSOLUTE OFFICIAL ARRIVAL RULE ---
+function renderResultsPage() {
+    const tbody = document.getElementById('results-table-tbody');
     if (!tbody) return;
 
-    if (myRequests.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Vous n'avez encore soumis aucune demande d'acte.</td></tr>`;
+    const hippodromeFilter = document.getElementById('results-hippodrome-filter')?.value || 'ALL';
+    const disciplineFilter = document.getElementById('results-discipline-filter')?.value || 'ALL';
+
+    const filtered = appState.races.filter((race) => {
+        const matchHip = hippodromeFilter === 'ALL' || race.hippodrome === hippodromeFilter;
+        const matchDis = disciplineFilter === 'ALL' || race.discipline === disciplineFilter;
+        return matchHip && matchDis;
+    });
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted" style="padding:2rem;">Aucun résultat correspondant aux filtres.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = myRequests
-        .map((r) => {
-            const typeActe = appState.typeActes.find((t) => t.id === r.type_acte_id) || { libelle: 'Acte' };
+    tbody.innerHTML = filtered
+        .map((race) => {
+            let arrivalHTML = '';
+
+            // ABSOLUTE RULE: Never generate synthetic results. Show official status badge if pending.
+            if (race.officialArrival) {
+                const nums = race.officialArrival.split('-').map((n) => n.trim());
+                arrivalHTML = `
+                <div class="arrival-order-badge">
+                    ${nums.map((n) => `<span class="arrival-num">${n}</span>`).join('')}
+                </div>
+            `;
+            } else {
+                arrivalHTML = `<span class="arrival-pending"><i class="fa-solid fa-hourglass-half"></i> En attente d'arrivée officielle</span>`;
+            }
+
             return `
             <tr>
-                <td><strong><code>${r.code_suivi}</code></strong></td>
-                <td>${typeActe.libelle}</td>
-                <td>${r.annee_academique}</td>
-                <td>${r.created_at}</td>
-                <td>${getStatusBadgeHTML(r.statut_code)}</td>
+                <td><strong><code>${race.num}</code></strong></td>
                 <td>
-                    <button class="btn btn-outline btn-sm" onclick="viewRequestDetails(${r.id})">
+                    <strong>${race.prix}</strong><br>
+                    <small class="text-muted">${race.heureDepart.substring(0, 10)} à ${race.heureDepart.substring(11, 16)}</small>
+                </td>
+                <td><i class="fa-solid fa-location-dot text-gold"></i> ${race.hippodrome}</td>
+                <td><span class="badge badge-info">${race.discipline}</span></td>
+                <td>${arrivalHTML}</td>
+                <td>
+                    <button class="btn btn-outline btn-sm" onclick="openRaceDetailsModal(${race.id})">
                         <i class="fa-solid fa-eye"></i> Détails
                     </button>
                 </td>
@@ -432,358 +644,411 @@ function renderStudentDashboard() {
         .join('');
 }
 
-function openNewRequestModal() {
-    document.getElementById('modal-new-request').classList.remove('hidden');
-}
+// --- MEDIA GALLERY PAGE ---
+function renderMediaPage() {
+    const grid = document.getElementById('media-gallery-grid');
+    if (!grid) return;
 
-function closeNewRequestModal() {
-    document.getElementById('modal-new-request').classList.add('hidden');
-}
-
-let uploadedFilesTemp = [];
-
-function handleFileSelect(event) {
-    const files = Array.from(event.target.files);
-    uploadedFilesTemp = files.map((f) => ({ name: f.name, size: f.size, type: 'JUSTIFICATIF' }));
-
-    const previewList = document.getElementById('file-list-preview');
-    previewList.innerHTML = uploadedFilesTemp
+    grid.innerHTML = appState.media
         .map(
-            (f) => `
-        <div class="file-preview-item">
-            <span><i class="fa-solid fa-file-pdf"></i> ${f.name} (${Math.round(f.size / 1024)} Ko)</span>
-            <i class="fa-solid fa-circle-check" style="color:var(--status-validated);"></i>
+            (item) => `
+        <div class="media-card" onclick="openMediaModal(${item.id})">
+            <div class="media-thumb-container">
+                <img src="${item.thumbnail}" alt="${item.title}">
+                <div class="media-play-overlay">
+                    <i class="fa-solid ${item.type === 'VIDEO' ? 'fa-circle-play' : 'fa-expand'}"></i>
+                </div>
+            </div>
+            <div class="media-info">
+                <span class="badge badge-gold" style="margin-bottom:0.4rem;">${item.category}</span>
+                <h4 class="media-title">${item.title}</h4>
+            </div>
         </div>
     `
         )
         .join('');
 }
 
-function updateRequestFormDetails() {
-    // Option to show fees dynamically if needed
-}
+function openMediaModal(mediaId) {
+    const item = appState.media.find((m) => m.id === mediaId);
+    if (!item) return;
 
-function handleNewRequestSubmit(e) {
-    e.preventDefault();
+    const modal = document.getElementById('modal-media-viewer');
+    const container = document.getElementById('media-viewer-content');
 
-    if (!appState.currentUser || appState.currentUser.role !== 'STUDENT') {
-        showToast('Veuillez vous connecter en tant qu\'étudiant.', 'error');
-        return;
+    if (item.type === 'VIDEO' && item.embedUrl) {
+        container.innerHTML = `
+            <h3 style="margin-bottom:1rem;" class="gold-gradient-text">${item.title}</h3>
+            <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:var(--radius-sm);">
+                <iframe src="${item.embedUrl}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <h3 style="margin-bottom:1rem;" class="gold-gradient-text">${item.title}</h3>
+            <img src="${item.thumbnail}" style="width:100%; border-radius:var(--radius-sm);" alt="${item.title}">
+        `;
     }
 
-    const typeActeId = parseInt(document.getElementById('req-type-acte').value);
-    const annee = document.getElementById('req-annee-academique').value;
-    const motif = document.getElementById('req-motif').value;
+    modal.classList.remove('hidden');
+}
 
-    const newCode = `PARAKOU-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+function closeMediaModal() {
+    document.getElementById('modal-media-viewer').classList.add('hidden');
+}
 
-    const newReq = {
-        id: appState.requests.length + 1,
-        code_suivi: newCode,
-        etudiant_id: appState.currentUser.id,
-        type_acte_id: typeActeId,
-        statut_code: 'PENDING',
-        annee_academique: annee,
-        motif: motif,
-        commentaires: 'Demande reçue et enregistrée avec succès.',
-        created_at: nowStr,
-        updated_at: nowStr,
-        files: uploadedFilesTemp.length > 0 ? uploadedFilesTemp : [{ name: 'quittance_paiement_recu.pdf', type: 'JUSTIFICATIF', url: '#' }]
+// --- AUTHENTICATION MODULE ---
+function showAuthModal(type = 'login') {
+    const modal = document.getElementById('modal-auth');
+    modal.classList.remove('hidden');
+
+    if (type === 'login') {
+        document.getElementById('auth-login-form-wrap').classList.remove('hidden');
+        document.getElementById('auth-register-form-wrap').classList.add('hidden');
+    } else {
+        document.getElementById('auth-login-form-wrap').classList.add('hidden');
+        document.getElementById('auth-register-form-wrap').classList.remove('hidden');
+    }
+}
+
+function closeAuthModal() {
+    document.getElementById('modal-auth').classList.add('hidden');
+}
+
+function handleLoginSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    const user = appState.users.find((u) => u.email === email && u.password === password);
+
+    if (user) {
+        appState.currentUser = { ...user, bookmarks: user.bookmarks || [] };
+        saveState();
+        closeAuthModal();
+        updateNavState();
+        showToast(`Bienvenue, ${user.name} !`, 'success');
+        if (user.role === 'ADMIN') {
+            switchView('admin-dashboard');
+        } else {
+            switchView('member-dashboard');
+        }
+    } else {
+        showToast('Identifiants incorrects. Essayez member@turfelite.fr / password123', 'error');
+    }
+}
+
+function handleGoogleOAuthLogin() {
+    // Simulated 1-click Google OAuth 2.0
+    appState.currentUser = {
+        id: 99,
+        name: 'Membre Google OAuth',
+        email: 'oauth.google@turfelite.fr',
+        role: 'MEMBER',
+        hasVipAccess: true,
+        avatar: 'G',
+        bookmarks: []
+    };
+    saveState();
+    closeAuthModal();
+    updateNavState();
+    showToast('Connexion reussie via Google OAuth !', 'success');
+    switchView('member-dashboard');
+}
+
+function handleRegisterSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value.trim();
+
+    const newUser = {
+        id: appState.users.length + 1,
+        name: name,
+        email: email,
+        password: password,
+        role: 'MEMBER',
+        hasVipAccess: true,
+        avatar: name.charAt(0).toUpperCase(),
+        status: 'ACTIVE'
     };
 
-    appState.requests.unshift(newReq);
+    appState.users.push(newUser);
+    appState.currentUser = { ...newUser, bookmarks: [] };
     saveState();
-
-    closeNewRequestModal();
-    renderStudentDashboard();
-    showToast(`Demande soumise ! Votre code de suivi unique est : ${newCode}`, 'success');
+    closeAuthModal();
+    updateNavState();
+    showToast('Compte crée avec succès ! Bienvenue sur TurfElite.', 'success');
+    switchView('member-dashboard');
 }
 
-// --- STAFF & ADMIN DASHBOARD ---
-function switchStaffRole(role) {
-    appState.staffRole = role;
+function logout() {
+    appState.currentUser = null;
+    appState.hasVipSessionAccess = false;
+    saveState();
+    updateNavState();
+    switchView('home');
+    showToast('Vous êtes déconnecté.', 'info');
+}
+
+function updateNavState() {
+    const guestActions = document.getElementById('nav-guest-actions');
+    const userActions = document.getElementById('nav-user-actions');
+    const adminLink = document.getElementById('nav-admin-link');
+
     if (appState.currentUser) {
-        appState.currentUser.staffRole = role;
+        if (guestActions) guestActions.classList.add('hidden');
+        if (userActions) userActions.classList.remove('hidden');
+
+        document.getElementById('nav-user-name').innerText = appState.currentUser.name;
+        document.getElementById('nav-user-avatar').innerText = appState.currentUser.avatar || 'U';
+
+        if (appState.currentUser.role === 'ADMIN') {
+            if (adminLink) adminLink.classList.remove('hidden');
+        } else {
+            if (adminLink) adminLink.classList.add('hidden');
+        }
+    } else {
+        if (guestActions) guestActions.classList.remove('hidden');
+        if (userActions) userActions.classList.add('hidden');
+        if (adminLink) adminLink.classList.add('hidden');
     }
-    document.getElementById('staff-display-role').innerText = role;
-    saveState();
-    renderStaffDashboard();
 }
 
-function renderStaffDashboard() {
-    if (!appState.currentUser || appState.currentUser.role !== 'STAFF') {
-        switchView('public-portal');
+// --- MEMBER DASHBOARD ---
+function renderMemberDashboard() {
+    if (!appState.currentUser) {
+        switchView('home');
+        showAuthModal('login');
         return;
     }
 
-    document.getElementById('staff-display-name').innerText = appState.currentUser.name;
-    document.getElementById('staff-display-role').innerText = appState.staffRole || 'AGENT';
+    document.getElementById('dash-user-name').innerText = appState.currentUser.name;
 
-    // KPIs
-    document.getElementById('staff-kpi-total').innerText = appState.requests.length;
-    document.getElementById('staff-kpi-pending').innerText = appState.requests.filter((r) => r.statut_code === 'PENDING' || r.statut_code === 'PROCESSING').length;
-    document.getElementById('staff-kpi-validated').innerText = appState.requests.filter((r) => r.statut_code === 'VALIDATED' || r.statut_code === 'READY').length;
-    document.getElementById('staff-kpi-rejected').innerText = appState.requests.filter((r) => r.statut_code === 'REJECTED').length;
+    // Bookmarks list
+    const bookmarksContainer = document.getElementById('member-bookmarks-list');
+    if (bookmarksContainer) {
+        const bookmarkedRaces = appState.races.filter((r) => appState.currentUser.bookmarks && appState.currentUser.bookmarks.includes(r.id));
 
-    renderStaffTable();
+        if (bookmarkedRaces.length === 0) {
+            bookmarksContainer.innerHTML = `<p class="text-muted">Aucun pronostic favori enregistré.</p>`;
+        } else {
+            bookmarksContainer.innerHTML = bookmarkedRaces.map((r) => createRaceCardHTML(r)).join('');
+            startLiveCountdowns();
+        }
+    }
 }
 
-function renderStaffTable() {
-    const searchVal = document.getElementById('staff-search-input').value.toLowerCase();
-    const filterStatus = document.getElementById('staff-status-filter').value;
+function toggleBookmark(raceId) {
+    if (!appState.currentUser) {
+        showAuthModal('login');
+        return;
+    }
 
-    const tbody = document.getElementById('staff-requests-tbody');
+    if (!appState.currentUser.bookmarks) appState.currentUser.bookmarks = [];
+
+    const index = appState.currentUser.bookmarks.indexOf(raceId);
+    if (index > -1) {
+        appState.currentUser.bookmarks.splice(index, 1);
+        showToast('Retiré de vos favoris.', 'info');
+    } else {
+        appState.currentUser.bookmarks.push(raceId);
+        showToast('Ajouté à vos pronostics favoris !', 'success');
+    }
+
+    saveState();
+    renderHomePage();
+    if (document.getElementById('view-member-dashboard').classList.contains('active')) {
+        renderMemberDashboard();
+    }
+}
+
+// --- ADMIN DASHBOARD (BACK-OFFICE) ---
+function renderAdminDashboard() {
+    if (!appState.currentUser || appState.currentUser.role !== 'ADMIN') {
+        switchView('home');
+        showToast('Accès restreint au Back-Office Admin.', 'error');
+        return;
+    }
+
+    switchAdminTab('races');
+}
+
+function switchAdminTab(tabName) {
+    document.querySelectorAll('.admin-tab-btn').forEach((btn) => btn.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-content').forEach((panel) => panel.classList.add('hidden'));
+
+    const activeBtn = document.querySelector(`.admin-tab-btn[onclick*="'${tabName}'"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const targetPanel = document.getElementById(`admin-tab-${tabName}`);
+    if (targetPanel) targetPanel.classList.remove('hidden');
+
+    if (tabName === 'races') renderAdminRacesTable();
+    if (tabName === 'results') renderAdminResultsTable();
+    if (tabName === 'users') renderAdminUsersTable();
+    if (tabName === 'settings') renderAdminSettingsForm();
+}
+
+function renderAdminRacesTable() {
+    const tbody = document.getElementById('admin-races-tbody');
     if (!tbody) return;
 
-    let filtered = appState.requests.filter((r) => {
-        const student = appState.students.find((s) => s.id === r.etudiant_id) || {};
-        const matchesSearch =
-            r.code_suivi.toLowerCase().includes(searchVal) ||
-            (student.nom && student.nom.toLowerCase().includes(searchVal)) ||
-            (student.matricule && student.matricule.toLowerCase().includes(searchVal));
-
-        const matchesStatus = filterStatus === 'ALL' || r.statut_code === filterStatus;
-
-        return matchesSearch && matchesStatus;
-    });
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Aucun dossier ne correspond aux critères.</td></tr>`;
-        return;
-    }
-
-    tbody.innerHTML = filtered
-        .map((r) => {
-            const student = appState.students.find((s) => s.id === r.etudiant_id) || { nom: 'Inconnu', filiere: '-' };
-            const typeActe = appState.typeActes.find((t) => t.id === r.type_acte_id) || { libelle: 'Acte' };
-
-            return `
-            <tr>
-                <td><strong><code>${r.code_suivi}</code></strong></td>
-                <td>${student.prenoms} ${student.nom} <br><small style="color:var(--text-muted);">${student.matricule}</small></td>
-                <td>${student.filiere}</td>
-                <td>${typeActe.libelle}</td>
-                <td>${r.created_at}</td>
-                <td>${getStatusBadgeHTML(r.statut_code)}</td>
-                <td>
-                    <button class="btn btn-primary btn-sm" onclick="openStaffProcessingModal(${r.id})">
-                        <i class="fa-solid fa-folder-open"></i> Traiter
-                    </button>
-                </td>
-            </tr>
-        `;
-        })
+    tbody.innerHTML = appState.races
+        .map(
+            (race) => `
+        <tr>
+            <td><strong><code>${race.num}</code></strong></td>
+            <td>${race.prix}</td>
+            <td>${race.hippodrome} (${race.discipline})</td>
+            <td>${race.heureDepart.substring(0, 16)}</td>
+            <td><span class="badge ${race.statut === 'UPCOMING' ? 'badge-gold' : 'badge-emerald'}">${race.statut}</span></td>
+            <td>
+                <button class="btn btn-outline btn-sm" onclick="openEditRaceModal(${race.id})"><i class="fa-solid fa-pen"></i> Modifier</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteRace(${race.id})"><i class="fa-solid fa-trash"></i> Supprimer</button>
+            </td>
+        </tr>
+    `
+        )
         .join('');
 }
 
-// --- REQUEST DETAILS & STAFF PROCESSING MODAL ---
-function viewRequestDetails(reqId) {
-    openStaffProcessingModal(reqId, true); // view-only mode for student
-}
+function openEditRaceModal(raceId) {
+    const race = appState.races.find((r) => r.id === raceId);
+    if (!race) return;
 
-function openStaffProcessingModal(reqId, viewOnly = false) {
-    const req = appState.requests.find((r) => r.id === reqId);
-    if (!req) return;
-
-    const student = appState.students.find((s) => s.id === req.etudiant_id) || { nom: 'Inconnu', filiere: '-' };
-    const typeActe = appState.typeActes.find((t) => t.id === req.type_acte_id) || { libelle: 'Acte' };
-
-    const modalContent = document.getElementById('modal-request-details-content');
-
-    const isStaff = appState.currentUser && appState.currentUser.role === 'STAFF' && !viewOnly;
-
-    modalContent.innerHTML = `
-        <div class="modal-header">
-            <h2><i class="fa-solid fa-file-contract"></i> Dossier ${req.code_suivi}</h2>
-            <p>Étudiant: <strong>${student.prenoms} ${student.nom}</strong> (${student.matricule}) - Filière: ${student.filiere}</p>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
-            <div style="background:rgba(15,23,42,0.4); padding:1rem; border-radius:8px; border:1px solid var(--glass-border);">
-                <h4 style="font-size:0.95rem; margin-bottom:0.5rem; color:var(--primary);"><i class="fa-solid fa-circle-info"></i> Informations de la Demande</h4>
-                <p><strong>Acte demandé :</strong> ${typeActe.libelle}</p>
-                <p><strong>Année académique :</strong> ${req.annee_academique}</p>
-                <p><strong>Statut actuel :</strong> ${getStatusBadgeHTML(req.statut_code)}</p>
-                <p><strong>Motif indiqué :</strong> ${req.motif || 'Aucun'}</p>
-                <p><strong>Date de dépôt :</strong> ${req.created_at}</p>
-            </div>
-
-            <div style="background:rgba(15,23,42,0.4); padding:1rem; border-radius:8px; border:1px solid var(--glass-border);">
-                <h4 style="font-size:0.95rem; margin-bottom:0.5rem; color:var(--primary);"><i class="fa-solid fa-paperclip"></i> Pièces Justificatives Téléversées</h4>
-                <ul style="list-style:none; padding:0;">
-                    ${req.files
-                        .map(
-                            (f) => `
-                        <li style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem; background:rgba(255,255,255,0.05); padding:0.4rem 0.6rem; border-radius:4px; font-size:0.85rem;">
-                            <span><i class="fa-solid fa-file-pdf"></i> ${f.name}</span>
-                            <span class="badge ${f.type === 'ACTE_SIGNE' ? 'badge-success' : 'badge-info'}">${f.type}</span>
-                        </li>
-                    `
-                        )
-                        .join('')}
-                </ul>
-            </div>
-        </div>
-
-        ${
-            isStaff
-                ? `
-            <div style="background:rgba(15,23,42,0.6); padding:1.25rem; border-radius:8px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                <h4 style="font-size:1rem; margin-bottom:0.75rem;"><i class="fa-solid fa-pen-to-square"></i> Action de Traitement (Scolarité / Décanat)</h4>
-
-                <div class="form-group">
-                    <label>Changer le Statut :</label>
-                    <select id="proc-status-select" class="form-control">
-                        <option value="PROCESSING" ${req.statut_code === 'PROCESSING' ? 'selected' : ''}>En cours de vérification (PROCESSING)</option>
-                        <option value="VALIDATED" ${req.statut_code === 'VALIDATED' ? 'selected' : ''}>Validé / Signé par Décanat (VALIDATED)</option>
-                        <option value="READY" ${req.statut_code === 'READY' ? 'selected' : ''}>Prêt pour téléchargement / retrait (READY)</option>
-                        <option value="REJECTED" ${req.statut_code === 'REJECTED' ? 'selected' : ''}>Rejeté avec motif (REJECTED)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Commentaires internes & Instructions pour l'étudiant :</label>
-                    <textarea id="proc-comments" class="form-control" rows="2">${req.commentaires || ''}</textarea>
-                </div>
-
-                <button class="btn btn-primary" onclick="updateRequestStatus(${req.id})">
-                    <i class="fa-solid fa-floppy-disk"></i> Enregistrer les Modifications
-                </button>
-            </div>
-        `
-                : `
-            <div style="background:rgba(15,23,42,0.4); padding:1rem; border-radius:8px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                <h4 style="font-size:0.95rem; margin-bottom:0.5rem;"><i class="fa-solid fa-comments"></i> Observations de la Scolarité</h4>
-                <p style="color:var(--text-muted);">${req.commentaires || 'Aucune observation enregistrée.'}</p>
-            </div>
-        `
-        }
-
-        ${
-            req.statut_code === 'READY' || req.statut_code === 'VALIDATED'
-                ? `
-            <div style="text-align:center; padding-top:1rem; border-top:1px solid var(--glass-border);">
-                <button class="btn btn-whatsapp" onclick="openDocumentPreview(${req.id})">
-                    <i class="fa-solid fa-file-pdf"></i> Visualiser & Télécharger l'Acte Certifié (PDF + QR)
-                </button>
-            </div>
-        `
-                : ''
-        }
-    `;
-
-    document.getElementById('modal-request-details').classList.remove('hidden');
-}
-
-function closeRequestDetailsModal() {
-    document.getElementById('modal-request-details').classList.add('hidden');
-}
-
-function updateRequestStatus(reqId) {
-    const req = appState.requests.find((r) => r.id === reqId);
-    if (!req) return;
-
-    const newStatus = document.getElementById('proc-status-select').value;
-    const comments = document.getElementById('proc-comments').value;
-
-    req.statut_code = newStatus;
-    req.commentaires = comments;
-    req.updated_at = new Date().toISOString().replace('T', ' ').substring(0, 16);
-
-    // Auto attach signed document when validated
-    if ((newStatus === 'VALIDATED' || newStatus === 'READY') && !req.files.some((f) => f.type === 'ACTE_SIGNE')) {
-        req.files.push({
-            name: `Acte_Officiel_${req.code_suivi}.pdf`,
-            type: 'ACTE_SIGNE',
-            url: '#'
-        });
+    const newName = prompt('Nouveau nom du Prix :', race.prix);
+    if (newName && newName.trim()) {
+        race.prix = newName.trim();
+        saveState();
+        renderAdminRacesTable();
+        showToast('Intitulé de la course mis à jour !', 'success');
     }
+}
 
+function deleteRace(raceId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette course ?')) {
+        appState.races = appState.races.filter((r) => r.id !== raceId);
+        saveState();
+        renderAdminRacesTable();
+        showToast('Course supprimée avec succès.', 'info');
+    }
+}
+
+function renderAdminResultsTable() {
+    const tbody = document.getElementById('admin-results-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = appState.races
+        .map(
+            (race) => `
+        <tr>
+            <td><strong><code>${race.num}</code></strong></td>
+            <td>${race.prix}</td>
+            <td>${race.officialArrival ? `<strong class="text-emerald">${race.officialArrival}</strong>` : '<span class="badge badge-gold">Non Saisi</span>'}</td>
+            <td>
+                <button class="btn btn-gold btn-sm" onclick="promptOfficialArrival(${race.id})">
+                    <i class="fa-solid fa-square-check"></i> Saisir Arrivée Officielle
+                </button>
+            </td>
+        </tr>
+    `
+        )
+        .join('');
+}
+
+function promptOfficialArrival(raceId) {
+    const race = appState.races.find((r) => r.id === raceId);
+    if (!race) return;
+
+    const arrival = prompt(`Entrez l'arrivée officielle pour ${race.num} - ${race.prix} (ex: 5 - 12 - 3 - 8 - 1) :`, race.officialArrival || '');
+
+    if (arrival !== null) {
+        race.officialArrival = arrival.trim();
+        race.statut = 'FINISHED';
+        saveState();
+        renderAdminResultsTable();
+        showToast(`Arrivée officielle enregistrée pour ${race.num}`, 'success');
+    }
+}
+
+function renderAdminUsersTable() {
+    const tbody = document.getElementById('admin-users-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = appState.users
+        .map(
+            (u) => `
+        <tr>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td><span class="badge ${u.role === 'ADMIN' ? 'badge-gold' : 'badge-info'}">${u.role}</span></td>
+            <td><span class="badge ${u.status === 'ACTIVE' ? 'badge-emerald' : 'badge-danger'}">${u.status}</span></td>
+            <td>
+                <button class="btn btn-outline btn-sm" onclick="toggleUserStatus(${u.id})">
+                    ${u.status === 'ACTIVE' ? 'Suspendre' : 'Réactiver'}
+                </button>
+            </td>
+        </tr>
+    `
+        )
+        .join('');
+}
+
+function toggleUserStatus(userId) {
+    const user = appState.users.find((u) => u.id === userId);
+    if (!user) return;
+
+    user.status = user.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
     saveState();
-    closeRequestDetailsModal();
-    renderStaffDashboard();
-    showToast(`Statut du dossier ${req.code_suivi} mis à jour avec succès.`, 'success');
+    renderAdminUsersTable();
+    showToast(`Statut de ${user.name} mis à jour.`, 'info');
 }
 
-// --- DOCUMENT PREVIEW MODAL WITH QR CODE ---
-function openDocumentPreview(reqId) {
-    const req = appState.requests.find((r) => r.id === reqId);
-    if (!req) return;
-
-    const student = appState.students.find((s) => s.id === req.etudiant_id) || { nom: 'Étudiant', prenoms: '', matricule: '21004892' };
-    const typeActe = appState.typeActes.find((t) => t.id === req.type_acte_id) || { libelle: 'Acte Académique' };
-
-    const modalContent = document.getElementById('modal-request-details-content');
-
-    modalContent.innerHTML = `
-        <div class="modal-header">
-            <h2><i class="fa-solid fa-shield-halved"></i> Document Numérique Sécurisé</h2>
-            <p>Verification d'authenticité et signature électronique</p>
-        </div>
-
-        <div class="document-preview-card">
-            <div class="doc-header">
-                <div class="doc-logo">
-                    <i class="fa-solid fa-graduation-cap"></i> UNIVERSITÉ DE PARAKOU
-                </div>
-                <div style="font-size:0.8rem; text-align:right; color:#64748b;">
-                    République du Bénin<br>
-                    Direction des Affaires Académiques
-                </div>
-            </div>
-
-            <div class="doc-body">
-                <div class="doc-title">${typeActe.libelle.toUpperCase()}</div>
-
-                <p style="text-align:justify; font-size:0.95rem; line-height:1.8;">
-                    Le Doyen de la Faculté atteste par la présente que l'étudiant(e) <strong>${student.prenoms} ${student.nom}</strong>,
-                    immatriculé(e) sous le numéro de matricule <strong>${student.matricule}</strong>, inscrit(e) au titre de l'année académique
-                    <strong>${req.annee_academique}</strong>, est régulier dans sa scolarité et que les pièces présentées sont conformes aux registres officiels.
-                </p>
-            </div>
-
-            <div class="qr-signature-box">
-                <div class="qr-code-placeholder">
-                    <div>
-                        <i class="fa-solid fa-qrcode" style="font-size:2.5rem; color:#1e293b;"></i><br>
-                        <code>${req.code_suivi}</code>
-                    </div>
-                </div>
-
-                <div style="text-align:right;">
-                    <span style="font-size:0.8rem; color:#64748b;">Fait à Parakou, le ${req.updated_at.substring(0, 10)}</span><br>
-                    <strong style="color:#1e293b;">Pour le Doyen, Le Chef Service Scolarité</strong><br>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=${encodeURIComponent('https://e-scolarite.bj/verify/' + req.code_suivi)}" alt="QR Code" style="margin-top:5px; border:1px solid #cbd5e1; padding:2px;">
-                </div>
-            </div>
-        </div>
-
-        <div class="modal-footer" style="margin-top:1.5rem;">
-            <button class="btn btn-outline" onclick="closeRequestDetailsModal()">Fermer</button>
-            <button class="btn btn-primary" onclick="window.print()">
-                <i class="fa-solid fa-print"></i> Imprimer / Télécharger le PDF
-            </button>
-        </div>
-    `;
-
-    document.getElementById('modal-request-details').classList.remove('hidden');
+function renderAdminSettingsForm() {
+    document.getElementById('set-whatsapp').value = appState.settings.whatsappNumber;
+    document.getElementById('set-banner').value = appState.settings.announcementBanner;
 }
 
-// --- UTILITY HELPERS ---
-function getStatusBadgeHTML(code) {
-    const map = {
-        PENDING: { label: 'En attente', class: 'status-PENDING', icon: 'fa-hourglass-start' },
-        PROCESSING: { label: 'En traitement', class: 'status-PROCESSING', icon: 'fa-gears' },
-        VALIDATED: { label: 'Validé & Signé', class: 'status-VALIDATED', icon: 'fa-signature' },
-        READY: { label: 'Prêt / Disponible', class: 'status-READY', icon: 'fa-circle-check' },
-        REJECTED: { label: 'Rejeté', class: 'status-REJECTED', icon: 'fa-circle-xmark' }
-    };
-
-    const status = map[code] || { label: code, class: 'status-PENDING', icon: 'fa-circle-info' };
-    return `<span class="status-badge ${status.class}"><i class="fa-solid ${status.icon}"></i> ${status.label}</span>`;
+function handleSaveSettings(e) {
+    e.preventDefault();
+    appState.settings.whatsappNumber = document.getElementById('set-whatsapp').value.trim();
+    appState.settings.announcementBanner = document.getElementById('set-banner').value.trim();
+    saveState();
+    showToast('Paramètres de la plateforme enregistrés !', 'success');
+    renderHomePage();
 }
 
+// --- WHATSAPP FLOATING BUTTON LOGIC ---
+function triggerWhatsAppRedirect() {
+    const num = appState.settings.whatsappNumber.replace(/[^0-9+]/g, '');
+    const msg = encodeURIComponent("Bonjour TurfElite, je souhaite obtenir des renseignements sur les pronostics du jour.");
+    window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+}
+
+// --- RACE DETAILS MODAL ---
+function openRaceDetailsModal(raceId) {
+    const race = appState.races.find((r) => r.id === raceId);
+    if (!race) return;
+
+    const modal = document.getElementById('modal-race-details');
+    const content = document.getElementById('race-details-modal-content');
+
+    content.innerHTML = createCouponTicketHTML(race);
+    modal.classList.remove('hidden');
+}
+
+function closeRaceDetailsModal() {
+    document.getElementById('modal-race-details').classList.add('hidden');
+}
+
+// --- FAQ ACCORDION TOGGLE ---
+function toggleFaq(header) {
+    const item = header.parentElement;
+    item.classList.toggle('active');
+}
+
+// --- TOAST NOTIFICATION HELPERS ---
 function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     if (!container) return;
@@ -803,19 +1068,9 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
-function toggleFaq(element) {
-    const item = element.parentElement;
-    item.classList.toggle('active');
-}
-
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    initDynamicBackground();
+    initBackgroundCanvas();
     updateNavState();
-
-    // Default trigger public stats count
-    const totalElem = document.getElementById('stat-total-demandes');
-    if (totalElem) {
-        totalElem.innerText = `${1420 + appState.requests.length}+`;
-    }
+    renderHomePage();
 });

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>e-Scolarité | Plateforme de Gestion & Délivrance d'Actes Académiques</title>
+    <title>TurfElite | Pronostics Hippiques Premium & Analyses PMU Officielles</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -12,422 +12,520 @@
 </head>
 <body>
 
-    <!-- Dynamic Animated Background Canvas -->
+    <!-- Dynamic Animated Particles Background Canvas -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Navigation Header -->
+    <!-- Global Responsible Gaming Legal Disclaimer Bar -->
+    <div class="legal-disclaimer-bar">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span><strong>SITE D'INFORMATION & PRONOSTICS :</strong> Aucun pari réel ou dépôt d'argent. Jouer comporte des risques : endettement, isolement. Appelez le <strong>09 74 75 13 13</strong>.</span>
+    </div>
+
+    <!-- Navigation Header Bar -->
     <header class="navbar">
         <div class="nav-container">
-            <a href="#" class="logo" onclick="switchView('public-portal')">
-                <i class="fa-solid fa-graduation-cap logo-icon"></i>
-                <span>e-Scolarité<span class="logo-dot">.bj</span></span>
+            <a href="#" class="logo" onclick="switchView('home')">
+                <div class="logo-icon-wrap">
+                    <i class="fa-solid fa-horse-head"></i>
+                </div>
+                <span>Turf<span class="gold-gradient-text">Elite</span><span class="logo-badge">PRO</span></span>
             </a>
-            
+
+            <button class="mobile-toggle" onclick="toggleMobileNav()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
             <nav class="nav-menu" id="nav-menu">
-                <a href="#accueil" class="nav-link active" onclick="switchView('public-portal')">Accueil</a>
-                <a href="#suivi-rapide" class="nav-link" onclick="switchView('public-portal')">Suivi Rapide</a>
-                <a href="#faq" class="nav-link" onclick="switchView('public-portal')">Aide & FAQ</a>
+                <a href="#accueil" class="nav-link active" onclick="switchView('home')"><i class="fa-solid fa-house"></i> Accueil</a>
+                <a href="#pronostics" class="nav-link" onclick="switchView('predictions')"><i class="fa-solid fa-ticket"></i> Pronostics VIP</a>
+                <a href="#resultats" class="nav-link" onclick="switchView('results')"><i class="fa-solid fa-trophy"></i> Résultats Officiels</a>
+                <a href="#medias" class="nav-link" onclick="switchView('media')"><i class="fa-solid fa-photo-film"></i> Replays & Analyses</a>
+                <a href="#assistance" class="nav-link" onclick="switchView('faq')"><i class="fa-solid fa-headset"></i> Assistance FAQ</a>
+                <a href="#admin" id="nav-admin-link" class="nav-link text-gold hidden" onclick="switchView('admin-dashboard')"><i class="fa-solid fa-user-gear"></i> Back-Office Admin</a>
             </nav>
 
             <div class="nav-actions">
-                <button class="btn btn-outline" id="btn-portal-student" onclick="showAuthModal('student')">
-                    <i class="fa-solid fa-user-graduate"></i> Espace Étudiant
-                </button>
-                <button class="btn btn-primary" id="btn-portal-staff" onclick="showAuthModal('staff')">
-                    <i class="fa-solid fa-user-shield"></i> Espace Staff
-                </button>
-                <button class="btn btn-danger hidden" id="btn-logout" onclick="logout()">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
-                </button>
+                <div id="nav-guest-actions">
+                    <button class="btn btn-outline-gold btn-sm" onclick="showAuthModal('login')">
+                        <i class="fa-solid fa-right-to-bracket"></i> Connexion
+                    </button>
+                    <button class="btn btn-gold btn-sm" onclick="showAuthModal('register')">
+                        <i class="fa-solid fa-user-plus"></i> Rejoining VIP
+                    </button>
+                </div>
+
+                <div id="nav-user-actions" class="hidden">
+                    <div class="user-pill" onclick="switchView('member-dashboard')">
+                        <div class="user-avatar" id="nav-user-avatar">A</div>
+                        <span id="nav-user-name" style="font-size:0.88rem; font-weight:700;">Membre</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:0.75rem; color:var(--text-muted);"></i>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="logout()" title="Déconnexion">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- MAIN CONTAINER FOR VIEWS -->
+    <!-- Announcement Ticker Banner -->
+    <div style="background:rgba(245,158,11,0.1); border-bottom:1px solid rgba(245,158,11,0.2); padding:0.5rem 1rem; font-size:0.88rem; text-align:center;">
+        <span class="gold-gradient-text" style="font-weight:800;" id="announcement-banner-text">🏆 QUINTÉ+ VINCENNES : Notre Tuyau VIP est disponible ! Consultez la synthèse du jour.</span>
+    </div>
+
+    <!-- MAIN VIEWS WRAPPER -->
     <main class="main-wrapper">
 
-        <!-- ==================== 1. PUBLIC PORTAL VIEW ==================== -->
-        <section id="view-public-portal" class="page-view active">
-            <!-- Hero Section -->
-            <div class="hero">
+        <!-- ==================== 1. HOME VIEW ==================== -->
+        <section id="view-home" class="page-view active">
+            <!-- Hero Banner -->
+            <div class="hero-banner">
                 <div class="hero-content">
-                    <span class="badge badge-hero"><i class="fa-solid fa-bolt"></i> Service Académique Dématérialisé</span>
-                    <h1 class="hero-title">Obtenez vos actes académiques en quelques clics, <span class="highlight">sans vous déplacer</span>.</h1>
+                    <span class="badge badge-gold"><i class="fa-solid fa-crown"></i> Plateforme d'Information & Analyses PMU N°1</span>
+                    <h1 class="hero-title">L'Expertise Hippique de Haute Précision pour vos <span class="gold-gradient-text">Pronostics Quinté+</span>.</h1>
                     <p class="hero-description">
-                        Demandez vos certificats de scolarité, relevés de notes et attestations en ligne. Suivez le traitement en temps réel grâce à votre code unique et téléchargez vos documents certifiés avec QR code.
+                        Accédez quotidiennement aux meilleures sélections, Tuyaux VIP, Tokards et synthèses élaborés par nos pronostiqueurs professionnels. Suivez les arrivées officielles en temps réel sans spéculation.
                     </p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-lg btn-primary" onclick="showAuthModal('student')">
-                            <i class="fa-solid fa-paper-plane"></i> Déposer une demande
+                    <div class="hero-actions">
+                        <button class="btn btn-gold btn-lg" onclick="switchView('predictions')">
+                            <i class="fa-solid fa-ticket"></i> Consulter le Quinté+ du Jour
                         </button>
-                        <a href="#suivi-rapide" class="btn btn-lg btn-glass">
-                            <i class="fa-solid fa-magnifying-glass"></i> Suivre mon dossier
-                        </a>
+                        <button class="btn btn-emerald btn-lg" onclick="showVipRequestModal()">
+                            <i class="fa-brands fa-whatsapp"></i> Demander un Accès VIP (WhatsApp)
+                        </button>
                     </div>
                 </div>
 
-                <div class="hero-stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-blue"><i class="fa-solid fa-file-signature"></i></div>
-                        <div class="stat-info">
-                            <h3 class="stat-value" id="stat-total-demandes">1,420+</h3>
-                            <p class="stat-label">Demandes Traitées</p>
+                <div class="hero-stats-row">
+                    <div class="hero-stat-card">
+                        <div class="stat-icon-wrap stat-icon-gold"><i class="fa-solid fa-trophy"></i></div>
+                        <div>
+                            <div class="stat-number gold-gradient-text">88.4%</div>
+                            <div class="stat-text">Taux de Réussite Tiercé</div>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon icon-green"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                        <div class="stat-info">
-                            <h3 class="stat-value">48h</h3>
-                            <p class="stat-label">Délai Moyen</p>
+                    <div class="hero-stat-card">
+                        <div class="stat-icon-wrap stat-icon-emerald"><i class="fa-solid fa-horse-head"></i></div>
+                        <div>
+                            <div class="stat-number emerald-gradient-text">100%</div>
+                            <div class="stat-text">Résultats Officiels Vérifiés</div>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon icon-purple"><i class="fa-solid fa-shield-halved"></i></div>
-                        <div class="stat-info">
-                            <h3 class="stat-value">100%</h3>
-                            <p class="stat-label">Sécurisé par QR Code</p>
+                    <div class="hero-stat-card">
+                        <div class="stat-icon-wrap stat-icon-gold"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <div class="stat-number text-gold">45,000+</div>
+                            <div class="stat-text">Passionnés Abonnés</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Anonymous Tracking Section -->
-            <div id="suivi-rapide" class="section tracking-section">
-                <div class="card tracking-card glass-panel">
-                    <div class="section-header text-center">
-                        <h2><i class="fa-solid fa-barcode"></i> Suivi Anonyme & Rapide de Dossier</h2>
-                        <p>Entrez votre code de suivi unique (ex: PARAKOU-2026-1001) pour consulter l'avancement immédiat sans connexion.</p>
-                    </div>
-
-                    <div class="tracking-input-group">
-                        <div class="input-with-icon">
-                            <i class="fa-solid fa-ticket input-icon"></i>
-                            <input type="text" id="public-tracking-input" placeholder="Ex: PARAKOU-2026-1001" value="PARAKOU-2026-1001">
-                        </div>
-                        <button class="btn btn-primary" onclick="trackPublicRequest()">
-                            <i class="fa-solid fa-magnifying-glass"></i> Rechercher
-                        </button>
-                    </div>
-
-                    <!-- Tracking Result Display -->
-                    <div id="public-tracking-result" class="tracking-result-container hidden">
-                        <!-- Dynamic Result Content Populated via JS -->
-                    </div>
+            <!-- Upcoming Races Grid Section -->
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-hourglass-start text-gold"></i> Courses à Venir & Compte à Rebours Live</h2>
+                    <p>Accès direct aux pronostics pour les départs imminents des réunions PMU.</p>
                 </div>
             </div>
 
-            <!-- FAQ & Help Section -->
-            <div id="faq" class="section faq-section">
-                <div class="section-header text-center">
-                    <h2><i class="fa-circle-question fa-solid"></i> Foire aux Questions & Assistance</h2>
-                    <p>Tout ce que vous devez savoir sur la demande et le retrait de vos pièces académiques.</p>
+            <div class="races-grid" id="home-upcoming-races">
+                <!-- Populated dynamically via script.js -->
+            </div>
+
+            <!-- Featured Quinté+ Prediction Ticket Coupon -->
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-star text-gold"></i> Pronostic Vedette du Jour (Ticket VIP)</h2>
+                    <p>Synthèse complète, favori, outsider, tokard et combinaisons prêtes à jouer.</p>
                 </div>
+            </div>
 
-                <div class="faq-grid">
-                    <div class="faq-accordion">
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="toggleFaq(this)">
-                                <span><i class="fa-solid fa-file-shield"></i> Comment vérifier l'authenticité d'un document téléversé ?</span>
-                                <i class="fa-solid fa-chevron-down faq-icon"></i>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Chaque document produit est pourvu d'un QR code de sécurité infalsifiable. Tout tiers autorisé (employeur, ambassade, université) peut le scanner pour vérifier l'authenticité directe du relevé ou du certificat sur notre serveur sécurisé.</p>
-                            </div>
-                        </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="toggleFaq(this)">
-                                <span><i class="fa-solid fa-hourglass-half"></i> Quel est le délai de délivrance des actes ?</span>
-                                <i class="fa-solid fa-chevron-down faq-icon"></i>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Le délai moyen est de 24 à 48 heures ouvrées pour les certificats de scolarité et de 3 à 5 jours ouvrés pour les relevés de notes et attestations de diplômes nécessitant une vérification des PV d'examens.</p>
-                            </div>
-                        </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="toggleFaq(this)">
-                                <span><i class="fa-solid fa-key"></i> Que faire si j'ai perdu mon code de suivi ?</span>
-                                <i class="fa-solid fa-chevron-down faq-icon"></i>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Connectez-vous simplement à votre <strong>Espace Étudiant</strong> avec votre numéro de matricule. Tous vos dossiers soumis ainsi que vos codes y sont répertoriés en permanence.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- WhatsApp / Community Widget -->
-                    <div class="whatsapp-card glass-panel">
-                        <div class="wa-icon"><i class="fa-brands fa-whatsapp"></i></div>
-                        <h3>Assistance Directe Scolarité</h3>
-                        <p>Besoin d'aide immédiate pour régulariser votre dossier ? Rejoignez le canal d'orientation communautaire.</p>
-                        <a href="https://wa.me/22900000000?text=Bonjour,%20j'ai%20une%20question%20concernant%20ma%20demande%20d'acte" target="_blank" class="btn btn-whatsapp">
-                            <i class="fa-brands fa-whatsapp"></i> Discuter sur WhatsApp
-                        </a>
-                    </div>
-                </div>
+            <div id="home-featured-ticket">
+                <!-- Populated dynamically via script.js -->
             </div>
         </section>
 
-        <!-- ==================== 2. STUDENT PORTAL VIEW ==================== -->
-        <section id="view-student-portal" class="page-view">
-            <div class="portal-header">
-                <div>
-                    <h2><i class="fa-solid fa-user-graduate"></i> Tableau de bord Étudiant</h2>
-                    <p>Bienvenue, <strong id="student-display-name">Étudiant</strong> (<span id="student-display-matricule">...</span>)</p>
-                </div>
-                <button class="btn btn-primary" onclick="openNewRequestModal()">
-                    <i class="fa-solid fa-plus-circle"></i> Nouvelle Demande
-                </button>
-            </div>
-
-            <div class="stats-overview">
-                <div class="mini-stat-card">
-                    <span class="mini-title">Total Demandes</span>
-                    <span class="mini-value" id="st-stat-total">0</span>
-                </div>
-                <div class="mini-stat-card warning">
-                    <span class="mini-title">En Cours</span>
-                    <span class="mini-value" id="st-stat-pending">0</span>
-                </div>
-                <div class="mini-stat-card success">
-                    <span class="mini-title">Prêts / Validés</span>
-                    <span class="mini-value" id="st-stat-ready">0</span>
+        <!-- ==================== 2. PREDICTIONS PAGE ==================== -->
+        <section id="view-predictions" class="page-view">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-ticket text-gold"></i> Tous les Pronostics & Coupons du Jour</h2>
+                    <p>Retrouvez l'ensemble des courses analysées par nos spécialistes pour Tiercé, Quarté, Quinté+ et Multi.</p>
                 </div>
             </div>
 
-            <!-- Student Demandes Table -->
-            <div class="card glass-panel">
-                <div class="table-header">
-                    <h3>Historique de mes demandes</h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Code de Suivi</th>
-                                <th>Type d'Acte</th>
-                                <th>Année Académique</th>
-                                <th>Date Dépôt</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="student-requests-tbody">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
+            <div id="predictions-list-container">
+                <!-- Populated dynamically via script.js -->
             </div>
         </section>
 
-        <!-- ==================== 3. STAFF / ADMIN PORTAL VIEW ==================== -->
-        <section id="view-staff-portal" class="page-view">
-            <div class="portal-header">
-                <div>
-                    <h2><i class="fa-solid fa-user-gear"></i> Espace Gestion Scolarité & Décanat</h2>
-                    <p>Gestionnaire : <strong id="staff-display-name">Agent Scolarité</strong> | Rôle : <span class="badge badge-info" id="staff-display-role">AGENT</span></p>
+        <!-- ==================== 3. OFFICIAL RESULTS PAGE ==================== -->
+        <section id="view-results" class="page-view">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-trophy text-gold"></i> Arrivées & Résultats Officiels PMU</h2>
+                    <p>Vérifiez les ordres d'arrivée validés de manière certifiée. Aucun résultat n'est généré artificiellement.</p>
                 </div>
-                <div class="role-selector-toggle">
-                    <label>Rôle actif :</label>
-                    <select id="staff-role-switcher" onchange="switchStaffRole(this.value)" class="form-control-inline">
-                        <option value="AGENT">Agent de Scolarité (Traitant)</option>
-                        <option value="DECANAT">Administration / Décanat (Validateur/Signataire)</option>
+            </div>
+
+            <div class="results-filter-bar">
+                <div class="form-group" style="margin-bottom:0; flex:1; min-width:200px;">
+                    <label style="font-size:0.78rem;">Filtrer par Hippodrome :</label>
+                    <select id="results-hippodrome-filter" class="form-control" onchange="renderResultsPage()">
+                        <option value="ALL">Tous les hippodromes</option>
+                        <option value="Vincennes">Vincennes</option>
+                        <option value="Longchamp">Longchamp</option>
+                        <option value="Auteuil">Auteuil</option>
+                        <option value="Deauville">Deauville</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0; flex:1; min-width:200px;">
+                    <label style="font-size:0.78rem;">Filtrer par Discipline :</label>
+                    <select id="results-discipline-filter" class="form-control" onchange="renderResultsPage()">
+                        <option value="ALL">Toutes les disciplines</option>
+                        <option value="Attelé">Attelé</option>
+                        <option value="Galop">Galop</option>
+                        <option value="Haies">Haies / Obstacle</option>
                     </select>
                 </div>
             </div>
 
-            <!-- KPI Cards for Staff -->
-            <div class="admin-kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-blue"><i class="fa-solid fa-folder-open"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-total">0</span>
-                        <span class="kpi-label">Demandes Totales</span>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-yellow"><i class="fa-solid fa-hourglass-start"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-pending">0</span>
-                        <span class="kpi-label">En Attente / Traitement</span>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-green"><i class="fa-solid fa-circle-check"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-validated">0</span>
-                        <span class="kpi-label">Validées & Signées</span>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-red"><i class="fa-solid fa-circle-xmark"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-rejected">0</span>
-                        <span class="kpi-label">Rejetées</span>
-                    </div>
+            <div class="results-table-container">
+                <table class="official-table">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Prix & Programme</th>
+                            <th>Hippodrome</th>
+                            <th>Discipline</th>
+                            <th>Ordre d'Arrivée Officiel</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-table-tbody">
+                        <!-- Populated dynamically via script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== 4. MEDIA & REPLAYS PAGE ==================== -->
+        <section id="view-media" class="page-view">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-photo-film text-gold"></i> Médiathèque, Replays & Analyses Vidéo</h2>
+                    <p>Revivez les grands prix hippiques et découvrez les coulisses des entraînements de légende.</p>
                 </div>
             </div>
 
-            <!-- Filter and Request List -->
-            <div class="card glass-panel">
-                <div class="table-actions-bar">
-                    <div class="search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="staff-search-input" placeholder="Rechercher matricule, code, nom..." oninput="renderStaffTable()">
+            <div class="media-grid" id="media-gallery-grid">
+                <!-- Populated dynamically via script.js -->
+            </div>
+        </section>
+
+        <!-- ==================== 5. FAQ & ASSISTANCE PAGE ==================== -->
+        <section id="view-faq" class="page-view">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-headset text-gold"></i> Centre d'Assistance & Foire aux Questions</h2>
+                    <p>Découvrez le fonctionnement de la plateforme TurfElite et le cadre légal du jeu responsable.</p>
+                </div>
+            </div>
+
+            <div class="faq-accordion">
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <span><i class="fa-solid fa-shield-halved text-gold"></i> Est-il possible de parier directement de l'argent sur TurfElite ?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
                     </div>
-                    <div class="filter-box">
-                        <select id="staff-status-filter" onchange="renderStaffTable()">
-                            <option value="ALL">Tous les statuts</option>
-                            <option value="PENDING">En attente (PENDING)</option>
-                            <option value="PROCESSING">En cours d'examen (PROCESSING)</option>
-                            <option value="VALIDATED">Validé / Signé (VALIDATED)</option>
-                            <option value="READY">Prêt pour retrait (READY)</option>
-                            <option value="REJECTED">Rejeté (REJECTED)</option>
-                        </select>
+                    <div class="faq-body">
+                        <p>Non, absolument pas. TurfElite est exclusivement une plateforme média et d'information hippique. Aucun système de pari, de dépôt ou de retrait n'est disponible. Nos pronostics sont fournis à titre d'analyse pure.</p>
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="data-table">
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <span><i class="fa-solid fa-clock-rotate-left text-gold"></i> À quelle heure sont publiés les pronostics du Quinté+ ?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-body">
+                        <p>Les pronostics et tickets synthétiques sont généralement publiés au plus tard la veille à 20h00, puis mis à jour en direct 1 heure avant le départ pour intégrer les éventuels non-partants et la météo de la piste.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <span><i class="fa-solid fa-phone text-gold"></i> Comment contacter l'assistance hippique par WhatsApp ?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-body">
+                        <p>Utilisez le bouton vert WhatsApp flottant disponible en bas à droite de votre écran ou cliquez sur "Demander un Accès VIP" pour être mis en relation directe avec notre conseiller TurfElite.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 6. MEMBER DASHBOARD VIEW ==================== -->
+        <section id="view-member-dashboard" class="page-view">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-user-circle text-gold"></i> Espace Personnel Membre</h2>
+                    <p>Bienvenue sur votre espace réservé, <strong id="dash-user-name" class="text-gold">Membre VIP</strong>.</p>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="sidebar-menu">
+                    <div class="menu-item active"><i class="fa-solid fa-bookmark text-gold"></i> Mes Pronostics Favoris</div>
+                    <div class="menu-item" onclick="showToast('Fonctionnalité d\'alertes push active !', 'info')"><i class="fa-solid fa-bell text-emerald"></i> Notifications VIP</div>
+                    <div class="menu-item" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Se Déconnecter</div>
+                </div>
+
+                <div>
+                    <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem;" class="gold-gradient-text">Mes Courses & Pronostics Favoris</h3>
+                    <div class="races-grid" id="member-bookmarks-list">
+                        <!-- Populated dynamically via script.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== 7. ADMIN DASHBOARD VIEW (BACK-OFFICE) ==================== -->
+        <section id="view-admin-dashboard" class="page-view">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-screwdriver-wrench text-gold"></i> Back-Office Administration TurfElite</h2>
+                    <p>Gestion intégrale de la plateforme, des pronostics, résultats et paramètres.</p>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" onclick="switchAdminTab('races')"><i class="fa-solid fa-horse"></i> Gestion Pronostics</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('results')"><i class="fa-solid fa-trophy"></i> Saisie Résultats</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('users')"><i class="fa-solid fa-users"></i> Membres</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('settings')"><i class="fa-solid fa-sliders"></i> Paramètres WhatsApp & Banner</button>
+            </div>
+
+            <!-- Tab 1: Races & Predictions -->
+            <div id="admin-tab-races" class="admin-tab-content">
+                <div class="results-table-container">
+                    <table class="official-table">
                         <thead>
                             <tr>
-                                <th>Code Suivi</th>
-                                <th>Étudiant</th>
-                                <th>Filière</th>
-                                <th>Acte Demandé</th>
-                                <th>Date</th>
+                                <th>N°</th>
+                                <th>Prix</th>
+                                <th>Hippodrome / Discipline</th>
+                                <th>Départ</th>
                                 <th>Statut</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="staff-requests-tbody">
-                            <!-- Populated dynamically -->
+                        <tbody id="admin-races-tbody">
+                            <!-- Populated dynamically via script.js -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Results Saisie -->
+            <div id="admin-tab-results" class="admin-tab-content hidden">
+                <div class="results-table-container">
+                    <table class="official-table">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Prix</th>
+                                <th>Arrivée Officielle</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-results-tbody">
+                            <!-- Populated dynamically via script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 3: Users -->
+            <div id="admin-tab-users" class="admin-tab-content hidden">
+                <div class="results-table-container">
+                    <table class="official-table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Rôle</th>
+                                <th>Statut</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-tbody">
+                            <!-- Populated dynamically via script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 4: Settings -->
+            <div id="admin-tab-settings" class="admin-tab-content hidden">
+                <div class="glass-panel" style="max-width:600px;">
+                    <form onsubmit="handleSaveSettings(event)">
+                        <div class="form-group">
+                            <label>Numéro WhatsApp d'Assistance Client :</label>
+                            <input type="text" id="set-whatsapp" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bannière d'Annonce Supérieure :</label>
+                            <textarea id="set-banner" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Enregistrer les Paramètres</button>
+                    </form>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- ==================== MODALS ==================== -->
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="#" class="whatsapp-float-btn" onclick="triggerWhatsAppRedirect()" title="Assistance WhatsApp 24/7">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span class="whatsapp-status-badge">En ligne - 5 min</span>
+    </a>
 
-    <!-- Authentication Modal -->
+    <!-- MODALS -->
+
+    <!-- Auth Modal -->
     <div id="modal-auth" class="modal-overlay hidden">
-        <div class="modal-card glass-panel">
+        <div class="modal-card">
             <button class="modal-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
 
-            <!-- Student Auth -->
-            <div id="auth-student-form-container">
-                <div class="modal-header">
-                    <h2><i class="fa-solid fa-user-graduate"></i> Connexion Étudiant</h2>
-                    <p>Accédez à vos demandes avec votre matricule universitaire</p>
-                </div>
-                <form id="student-login-form" onsubmit="handleStudentLogin(event)">
+            <!-- Login Wrap -->
+            <div id="auth-login-form-wrap">
+                <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text">Espace Connexion VIP</h3>
+                <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Accédez à vos pronostics sauvegardés et alertes.</p>
+
+                <button class="btn btn-outline btn-block" style="margin-bottom:1rem;" onclick="handleGoogleOAuthLogin()">
+                    <i class="fa-brands fa-google text-gold"></i> Connexion Rapide via Google (1-Clic)
+                </button>
+
+                <form onsubmit="handleLoginSubmit(event)">
                     <div class="form-group">
-                        <label for="st-login-matricule">Numéro de Matricule</label>
-                        <input type="text" id="st-login-matricule" class="form-control" placeholder="Ex: 21004892" required>
+                        <label>Email Membre :</label>
+                        <input type="email" id="login-email" class="form-control" value="member@turfelite.fr" required>
                     </div>
                     <div class="form-group">
-                        <label for="st-login-password">Mot de passe</label>
-                        <input type="password" id="st-login-password" class="form-control" placeholder="••••••••" required>
+                        <label>Mot de passe :</label>
+                        <input type="password" id="login-password" class="form-control" value="password123" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Se Connecter</button>
-                    <div class="auth-demo-hint">
-                        <i class="fa-solid fa-lightbulb"></i> Compte Démo : Matricule: <strong>21004892</strong> / Pass: <strong>123456</strong>
+                    <button type="submit" class="btn btn-gold btn-block">Se Connecter</button>
+                    <p style="font-size:0.8rem; text-align:center; margin-top:1rem;" class="text-muted">
+                        Pas de compte ? <a href="#" class="text-gold" onclick="showAuthModal('register')">Inscrivez-vous gratuitement</a>
+                    </p>
+                    <div style="background:rgba(245,158,11,0.1); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.78rem; margin-top:1rem;">
+                        <strong>Démo rapide :</strong> Member: <code>member@turfelite.fr</code> / Pass: <code>password123</code><br>
+                        Admin Back-Office: <code>admin@turfelite.fr</code> / Pass: <code>admin123</code>
                     </div>
                 </form>
             </div>
 
-            <!-- Staff Auth -->
-            <div id="auth-staff-form-container" class="hidden">
-                <div class="modal-header">
-                    <h2><i class="fa-solid fa-user-shield"></i> Connexion Personnel / Admin</h2>
-                    <p>Authentification sécurisée Agent de Scolarité & Décanat</p>
-                </div>
-                <form id="staff-login-form" onsubmit="handleStaffLogin(event)">
+            <!-- Register Wrap -->
+            <div id="auth-register-form-wrap" class="hidden">
+                <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text">Inscription TurfElite</h3>
+                <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Rejoignez la première communauté hippique premium.</p>
+
+                <form onsubmit="handleRegisterSubmit(event)">
                     <div class="form-group">
-                        <label for="staff-login-email">Email Professionnel</label>
-                        <input type="email" id="staff-login-email" class="form-control" placeholder="scolarite@univ-parakou.bj" required>
+                        <label>Nom complet :</label>
+                        <input type="text" id="reg-name" class="form-control" placeholder="Ex: Thomas Dupuis" required>
                     </div>
                     <div class="form-group">
-                        <label for="staff-login-password">Mot de passe</label>
-                        <input type="password" id="staff-login-password" class="form-control" placeholder="••••••••" required>
+                        <label>Email :</label>
+                        <input type="email" id="reg-email" class="form-control" placeholder="thomas@example.com" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Accéder au Backoffice</button>
-                    <div class="auth-demo-hint">
-                        <i class="fa-solid fa-lightbulb"></i> Démo : <strong>scolarite@univ.bj</strong> (Agent) ou <strong>decanat@univ.bj</strong> (Décanat) / Pass: <strong>admin123</strong>
+                    <div class="form-group">
+                        <label>Mot de passe :</label>
+                        <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
                     </div>
+                    <button type="submit" class="btn btn-emerald btn-block">Créer Mon Compte VIP</button>
+                    <p style="font-size:0.8rem; text-align:center; margin-top:1rem;" class="text-muted">
+                        Déjà membre ? <a href="#" class="text-gold" onclick="showAuthModal('login')">Connectez-vous</a>
+                    </p>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- New Request Wizard Modal -->
-    <div id="modal-new-request" class="modal-overlay hidden">
-        <div class="modal-card modal-lg glass-panel">
-            <button class="modal-close" onclick="closeNewRequestModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-header">
-                <h2><i class="fa-solid fa-file-circle-plus"></i> Formulaire de Nouvelle Demande d'Acte</h2>
-                <p>Complétez les informations requises et téléversez vos pièces justificatives.</p>
-            </div>
+    <!-- VIP Code Input Modal -->
+    <div id="modal-vip-code" class="modal-overlay hidden">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeVipCodeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text"><i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP</h3>
+            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Saisissez votre code confidentiel pour déverrouiller immédiatement tous les numéros de combinaison.</p>
 
-            <form id="form-new-request" onsubmit="handleNewRequestSubmit(event)">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="req-type-acte">Type d'Acte Académique *</label>
-                        <select id="req-type-acte" class="form-control" required onchange="updateRequestFormDetails()">
-                            <option value="">-- Sélectionnez un type d'acte --</option>
-                            <option value="1">Certificat de Scolarité (Frais: 1,000 FCFA)</option>
-                            <option value="2">Relevé de Notes Officiel (Frais: 2,000 FCFA)</option>
-                            <option value="3">Attestation de Succès / Diplôme (Frais: 5,000 FCFA)</option>
-                            <option value="4">Duplicata de Carte d'Étudiant (Frais: 1,500 FCFA)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="req-annee-academique">Année Académique *</label>
-                        <select id="req-annee-academique" class="form-control" required>
-                            <option value="2025-2026">2025-2026</option>
-                            <option value="2024-2025">2024-2025</option>
-                            <option value="2023-2024">2023-2024</option>
-                            <option value="2022-2023">2022-2023</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="req-motif">Motif / Justification de la demande</label>
-                        <textarea id="req-motif" class="form-control" rows="2" placeholder="Ex: Inscription au Master, Dossier de Bourse, Emploi..."></textarea>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Pièces Justificatives (Quittance d'inscription, Anciens relevés, CNI) *</label>
-                        <div class="file-dropzone" onclick="document.getElementById('req-file-input').click()">
-                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
-                            <p>Cliquez ou glissez vos fichiers PDF / Images ici</p>
-                            <span class="file-types-hint">Formats acceptés : PDF, PNG, JPG (Max 5Mo)</span>
-                            <input type="file" id="req-file-input" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileSelect(event)" style="display:none">
-                        </div>
-                        <div id="file-list-preview" class="file-preview-list"></div>
-                    </div>
+            <form onsubmit="handleVipCodeSubmit(event)">
+                <div class="form-group">
+                    <label>Code VIP Confidential :</label>
+                    <input type="text" id="input-vip-code" class="form-control" placeholder="Ex: TURFEVIP2026" required style="text-transform:uppercase; font-weight:800; letter-spacing:1px;">
                 </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline" onclick="closeNewRequestModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Soumettre la Demande</button>
+                <button type="submit" class="btn btn-gold btn-block"><i class="fa-solid fa-unlock"></i> Valider et Déverrouiller</button>
+                <div style="margin-top:1rem; text-align:center; font-size:0.82rem;" class="text-muted">
+                    Code de démo gratuit : <code>TURFEVIP2026</code> ou <code>123456</code>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Request Details & Staff Processing Modal -->
-    <div id="modal-request-details" class="modal-overlay hidden">
-        <div class="modal-card modal-lg glass-panel">
-            <button class="modal-close" onclick="closeRequestDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+    <!-- VIP Request WhatsApp Form Modal -->
+    <div id="modal-vip-request" class="modal-overlay hidden">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeVipRequestModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:0.5rem;" class="emerald-gradient-text"><i class="fa-brands fa-whatsapp"></i> Formulaire de Demande d'Accès VIP</h3>
+            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.25rem;">Remplissez vos coordonnées pour recevoir votre code VIP personnalisé directement sur WhatsApp.</p>
 
-            <div id="modal-request-details-content">
-                <!-- Content generated dynamically in script.js -->
+            <form onsubmit="handleVipRequestSubmit(event)">
+                <div class="form-group">
+                    <label>Nom complet * :</label>
+                    <input type="text" id="vip-req-name" class="form-control" placeholder="Ex: Marc Laurent" required>
+                </div>
+                <div class="form-group">
+                    <label>Adresse Email * :</label>
+                    <input type="email" id="vip-req-email" class="form-control" placeholder="marc@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Numéro de Téléphone (WhatsApp) * :</label>
+                    <input type="tel" id="vip-req-phone" class="form-control" placeholder="+33 6 00 00 00 00" required>
+                </div>
+                <div class="form-group">
+                    <label>Formule VIP souhaitée :</label>
+                    <select id="vip-req-formula" class="form-control">
+                        <option value="Accès Découverte (1 Jour)">Accès Découverte (1 Jour)</option>
+                        <option value="Abonnement VIP Mensuel">Abonnement VIP Mensuel</option>
+                        <option value="Formule Quinté+ Express">Formule Quinté+ Express</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-emerald btn-block"><i class="fa-brands fa-whatsapp"></i> Envoyer et Rediriger vers WhatsApp</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Race Details / Ticket Modal -->
+    <div id="modal-race-details" class="modal-overlay hidden">
+        <div class="modal-card modal-lg">
+            <button class="modal-close" onclick="closeRaceDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="race-details-modal-content">
+                <!-- Content populated via script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Viewer Modal -->
+    <div id="modal-media-viewer" class="modal-overlay hidden">
+        <div class="modal-card modal-lg">
+            <button class="modal-close" onclick="closeMediaModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="media-viewer-content">
+                <!-- Content populated via script.js -->
             </div>
         </div>
     </div>
