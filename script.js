@@ -15,8 +15,9 @@ const DEFAULT_STATE = {
     ],
     vipCodes: ['TURFEVIP2026', 'QUINTE88', 'TURFELITE100'],
     settings: {
-        whatsappNumber: '+33612345678',
+        whatsappNumber: '+22646553556',
         whatsappStatus: 'En ligne - Réponse en 5 min',
+        contactEmail: 'contact@turfelite.fr',
         siteName: 'TurfElite',
         announcementBanner: '🏆 QUINTÉ+ VINCENNES : Notre Tuyau VIP est disponible ! Consultez la synthèse du jour.',
         allowPushNotifications: true
@@ -531,7 +532,7 @@ function handleVipCodeSubmit(e) {
     e.preventDefault();
     const code = document.getElementById('input-vip-code').value.trim().toUpperCase();
 
-    if (appState.vipCodes.includes(code) || code === 'TURFEVIP2026' || code === '123456') {
+    if (appState.vipCodes.includes(code)) {
         appState.hasVipSessionAccess = true;
         saveState();
         closeVipCodeModal();
@@ -541,7 +542,7 @@ function handleVipCodeSubmit(e) {
         }
         showToast('Code VIP validé ! Les combinaisons sont déverrouillées.', 'success');
     } else {
-        showToast('Code VIP invalide. Réessayez ou demandez un accès via WhatsApp.', 'error');
+        showToast('Code VIP invalide. Veuillez contacter l\'administrateur sur WhatsApp pour obtenir votre code.', 'error');
     }
 }
 
@@ -734,7 +735,7 @@ function handleLoginSubmit(e) {
             switchView('member-dashboard');
         }
     } else {
-        showToast('Identifiants incorrects. Essayez member@turfelite.fr / password123', 'error');
+        showToast('Identifiants ou mot de passe incorrects.', 'error');
     }
 }
 
@@ -886,6 +887,7 @@ function switchAdminTab(tabName) {
 
     if (tabName === 'races') renderAdminRacesTable();
     if (tabName === 'results') renderAdminResultsTable();
+    if (tabName === 'vip-codes') renderAdminVipCodesTable();
     if (tabName === 'users') renderAdminUsersTable();
     if (tabName === 'settings') renderAdminSettingsForm();
 }
@@ -932,6 +934,60 @@ function deleteRace(raceId) {
         saveState();
         renderAdminRacesTable();
         showToast('Course supprimée avec succès.', 'info');
+    }
+}
+
+function renderAdminVipCodesTable() {
+    const tbody = document.getElementById('admin-vip-codes-tbody');
+    if (!tbody) return;
+
+    if (appState.vipCodes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">Aucun code VIP configuré.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = appState.vipCodes
+        .map(
+            (code) => `
+        <tr>
+            <td><strong class="text-gold" style="font-size:1.1rem; letter-spacing:1px;">${code}</strong></td>
+            <td><span class="badge badge-emerald"><i class="fa-solid fa-check-circle"></i> ACTIF</span></td>
+            <td>
+                <button class="btn btn-danger btn-sm" onclick="deleteVipCode('${code}')">
+                    <i class="fa-solid fa-trash"></i> Supprimer
+                </button>
+            </td>
+        </tr>
+    `
+        )
+        .join('');
+}
+
+function handleCreateVipCode(e) {
+    e.preventDefault();
+    const input = document.getElementById('admin-new-vip-code');
+    const newCode = input.value.trim().toUpperCase();
+
+    if (!newCode) return;
+
+    if (appState.vipCodes.includes(newCode)) {
+        showToast('Ce code VIP existe déjà.', 'error');
+        return;
+    }
+
+    appState.vipCodes.push(newCode);
+    saveState();
+    input.value = '';
+    renderAdminVipCodesTable();
+    showToast(`Code VIP "${newCode}" créé et publié avec succès !`, 'success');
+}
+
+function deleteVipCode(code) {
+    if (confirm(`Voulez-vous supprimer le code VIP "${code}" ?`)) {
+        appState.vipCodes = appState.vipCodes.filter((c) => c !== code);
+        saveState();
+        renderAdminVipCodesTable();
+        showToast(`Code VIP "${code}" supprimé.`, 'info');
     }
 }
 
@@ -1017,6 +1073,28 @@ function handleSaveSettings(e) {
     saveState();
     showToast('Paramètres de la plateforme enregistrés !', 'success');
     renderHomePage();
+}
+
+function handleContactEmailSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('contact-name').value.trim();
+    const email = document.getElementById('contact-email').value.trim();
+    const subject = document.getElementById('contact-subject').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+
+    const targetEmail = appState.settings.contactEmail || 'contact@turfelite.fr';
+
+    // Construct mailto URI
+    const mailtoUrl = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+
+    window.location.href = mailtoUrl;
+
+    showToast('Votre message a été transmis à votre client de messagerie !', 'success');
+
+    document.getElementById('contact-name').value = '';
+    document.getElementById('contact-email').value = '';
+    document.getElementById('contact-subject').value = '';
+    document.getElementById('contact-message').value = '';
 }
 
 // --- WHATSAPP FLOATING BUTTON LOGIC ---

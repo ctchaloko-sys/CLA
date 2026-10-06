@@ -234,7 +234,7 @@
                 </div>
             </div>
 
-            <div class="faq-accordion">
+            <div class="faq-accordion" style="margin-bottom:3rem;">
                 <div class="faq-item">
                     <div class="faq-header" onclick="toggleFaq(this)">
                         <span><i class="fa-solid fa-shield-halved text-gold"></i> Est-il possible de parier directement de l'argent sur TurfElite ?</span>
@@ -261,9 +261,37 @@
                         <i class="fa-solid fa-chevron-down faq-icon"></i>
                     </div>
                     <div class="faq-body">
-                        <p>Utilisez le bouton vert WhatsApp flottant disponible en bas à droite de votre écran ou cliquez sur "Demander un Accès VIP" pour être mis en relation directe avec notre conseiller TurfElite.</p>
+                        <p>Utilisez le bouton vert WhatsApp flottant disponible en bas à droite de votre écran ou enregistrez notre numéro direct <strong>+22646553556</strong> pour être mis en relation immédiate.</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Email Contact Form -->
+            <div class="glass-panel" style="max-width:850px; margin:0 auto;">
+                <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text"><i class="fa-solid fa-envelope"></i> Nous Contacter par Email</h3>
+                <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Vous avez une question, une demande ou une préoccupation ? Envoyez-nous un message directement à notre email officiel : <strong class="text-gold" id="contact-email-display">contact@turfelite.fr</strong></p>
+
+                <form onsubmit="handleContactEmailSubmit(event)">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                        <div class="form-group">
+                            <label>Votre Nom complet * :</label>
+                            <input type="text" id="contact-name" class="form-control" placeholder="Ex: Jean Dupont" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Votre Adresse Email * :</label>
+                            <input type="email" id="contact-email" class="form-control" placeholder="jean@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Sujet de votre demande * :</label>
+                        <input type="text" id="contact-subject" class="form-control" placeholder="Ex: Demande de renseignement sur l'abonnement VIP" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Votre Message / Préoccupation * :</label>
+                        <textarea id="contact-message" class="form-control" rows="4" placeholder="Saisissez ici les détails de votre message..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gold btn-block"><i class="fa-solid fa-paper-plane"></i> Envoyer Mon Message</button>
+                </form>
             </div>
         </section>
 
@@ -304,8 +332,9 @@
             <div class="admin-tabs">
                 <button class="admin-tab-btn active" onclick="switchAdminTab('races')"><i class="fa-solid fa-horse"></i> Gestion Pronostics</button>
                 <button class="admin-tab-btn" onclick="switchAdminTab('results')"><i class="fa-solid fa-trophy"></i> Saisie Résultats</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('vip-codes')"><i class="fa-solid fa-key"></i> Gestion Codes VIP</button>
                 <button class="admin-tab-btn" onclick="switchAdminTab('users')"><i class="fa-solid fa-users"></i> Membres</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('settings')"><i class="fa-solid fa-sliders"></i> Paramètres WhatsApp & Banner</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('settings')"><i class="fa-solid fa-sliders"></i> Paramètres WhatsApp & Contact</button>
             </div>
 
             <!-- Tab 1: Races & Predictions -->
@@ -342,6 +371,35 @@
                             </tr>
                         </thead>
                         <tbody id="admin-results-tbody">
+                            <!-- Populated dynamically via script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: VIP Codes Management -->
+            <div id="admin-tab-vip-codes" class="admin-tab-content hidden">
+                <div class="glass-panel" style="margin-bottom:1.5rem;">
+                    <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1rem;" class="gold-gradient-text"><i class="fa-solid fa-plus-circle"></i> Générer / Publier un Nouveau Code VIP</h3>
+                    <form onsubmit="handleCreateVipCode(event)" style="display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap;">
+                        <div class="form-group" style="margin-bottom:0; flex:1; min-width:220px;">
+                            <label>Nouveau Code VIP :</label>
+                            <input type="text" id="admin-new-vip-code" class="form-control" placeholder="Ex: EQUI2026" required style="text-transform:uppercase;">
+                        </div>
+                        <button type="submit" class="btn btn-gold"><i class="fa-solid fa-plus"></i> Ajouter Code VIP</button>
+                    </form>
+                </div>
+
+                <div class="results-table-container">
+                    <table class="official-table">
+                        <thead>
+                            <tr>
+                                <th>Code VIP Actif</th>
+                                <th>Statut</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-vip-codes-tbody">
                             <!-- Populated dynamically via script.js -->
                         </tbody>
                     </table>
@@ -388,10 +446,49 @@
 
     </main>
 
+    <!-- SITE FOOTER WITH SOCIAL LINKS -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <a href="#" class="logo" onclick="switchView('home')" style="margin-bottom:0.75rem;">
+                    <div class="logo-icon-wrap"><i class="fa-solid fa-horse-head"></i></div>
+                    <span>Turf<span class="gold-gradient-text">Elite</span><span class="logo-badge">PRO</span></span>
+                </a>
+                <p class="text-muted" style="font-size:0.85rem; line-height:1.6;">
+                    Plateforme haut de gamme d'information, d'analyse et de pronostics hippiques (PMU).
+                </p>
+            </div>
+
+            <div class="footer-col text-center">
+                <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:1rem;" class="gold-gradient-text">SUIVEZ-NOUS SUR LES RÉSEAUX SOCIAUX</h4>
+                <div class="footer-social-links">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-btn social-facebook" title="Rejoignez notre page Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-btn social-instagram" title="Suivez-nous sur Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="#" onclick="triggerWhatsAppRedirect(); return false;" class="social-btn social-whatsapp" title="Contactez-nous sur WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-col text-right">
+                <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:0.5rem;" class="text-gold">CONTACT & ASSISTANCE</h4>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.3rem;">WhatsApp : <strong>+22646553556</strong></p>
+                <p style="font-size:0.85rem; color:var(--text-muted);">Email : <strong id="footer-contact-email">contact@turfelite.fr</strong></p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>&copy; 2026 TurfElite. Tous droits réservés. Jouer comporte des risques : <strong>09 74 75 13 13</strong>.</span>
+        </div>
+    </footer>
+
     <!-- FLOATING WHATSAPP BUTTON -->
     <a href="#" class="whatsapp-float-btn" onclick="triggerWhatsAppRedirect()" title="Assistance WhatsApp 24/7">
         <i class="fa-brands fa-whatsapp"></i>
-        <span class="whatsapp-status-badge">En ligne - 5 min</span>
     </a>
 
     <!-- MODALS -->
@@ -413,20 +510,16 @@
                 <form onsubmit="handleLoginSubmit(event)">
                     <div class="form-group">
                         <label>Email Membre :</label>
-                        <input type="email" id="login-email" class="form-control" value="member@turfelite.fr" required>
+                        <input type="email" id="login-email" class="form-control" placeholder="votre.email@domaine.com" required>
                     </div>
                     <div class="form-group">
                         <label>Mot de passe :</label>
-                        <input type="password" id="login-password" class="form-control" value="password123" required>
+                        <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
                     </div>
                     <button type="submit" class="btn btn-gold btn-block">Se Connecter</button>
                     <p style="font-size:0.8rem; text-align:center; margin-top:1rem;" class="text-muted">
                         Pas de compte ? <a href="#" class="text-gold" onclick="showAuthModal('register')">Inscrivez-vous gratuitement</a>
                     </p>
-                    <div style="background:rgba(245,158,11,0.1); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.78rem; margin-top:1rem;">
-                        <strong>Démo rapide :</strong> Member: <code>member@turfelite.fr</code> / Pass: <code>password123</code><br>
-                        Admin Back-Office: <code>admin@turfelite.fr</code> / Pass: <code>admin123</code>
-                    </div>
                 </form>
             </div>
 
@@ -462,16 +555,16 @@
         <div class="modal-card">
             <button class="modal-close" onclick="closeVipCodeModal()"><i class="fa-solid fa-xmark"></i></button>
             <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text"><i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP</h3>
-            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Saisissez votre code confidentiel pour déverrouiller immédiatement tous les numéros de combinaison.</p>
+            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Saisissez votre code confidentiel unique transmis par l'administrateur pour déverrouiller tous les pronostics.</p>
 
             <form onsubmit="handleVipCodeSubmit(event)">
                 <div class="form-group">
-                    <label>Code VIP Confidential :</label>
-                    <input type="text" id="input-vip-code" class="form-control" placeholder="Ex: TURFEVIP2026" required style="text-transform:uppercase; font-weight:800; letter-spacing:1px;">
+                    <label>Code VIP Confidentiel :</label>
+                    <input type="text" id="input-vip-code" class="form-control" placeholder="Entrez votre code VIP ici..." required style="text-transform:uppercase; font-weight:800; letter-spacing:1px;">
                 </div>
                 <button type="submit" class="btn btn-gold btn-block"><i class="fa-solid fa-unlock"></i> Valider et Déverrouiller</button>
-                <div style="margin-top:1rem; text-align:center; font-size:0.82rem;" class="text-muted">
-                    Code de démo gratuit : <code>TURFEVIP2026</code> ou <code>123456</code>
+                <div style="margin-top:1.25rem; text-align:center; font-size:0.85rem;" class="text-muted">
+                    Vous n'avez pas de code ? <a href="#" class="text-emerald" style="font-weight:700;" onclick="closeVipCodeModal(); showVipRequestModal();">Demandez-le sur WhatsApp (+22646553556)</a>
                 </div>
             </form>
         </div>
@@ -479,33 +572,61 @@
 
     <!-- VIP Request WhatsApp Form Modal -->
     <div id="modal-vip-request" class="modal-overlay hidden">
-        <div class="modal-card">
+        <div class="modal-card modal-lg">
             <button class="modal-close" onclick="closeVipRequestModal()"><i class="fa-solid fa-xmark"></i></button>
-            <h3 style="font-size:1.3rem; font-weight:800; margin-bottom:0.5rem;" class="emerald-gradient-text"><i class="fa-brands fa-whatsapp"></i> Formulaire de Demande d'Accès VIP</h3>
-            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.25rem;">Remplissez vos coordonnées pour recevoir votre code VIP personnalisé directement sur WhatsApp.</p>
+            <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;" class="emerald-gradient-text"><i class="fa-brands fa-whatsapp"></i> Formules d'Abonnement VIP & Demande de Code</h3>
+            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Choisissez votre tarif et envoyez votre demande sur WhatsApp (+22646553556) pour obtenir votre code d'accès.</p>
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                <div class="glass-panel text-center" style="border-color:var(--glass-border); padding:1rem;">
+                    <span class="badge badge-gold" style="margin-bottom:0.4rem;">JOURNALIER</span>
+                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">2 000 FCFA</h4>
+                    <p style="font-size:0.75rem;" class="text-muted">Pass 24 Horaires complet</p>
+                </div>
+                <div class="glass-panel text-center" style="border-color:var(--emerald-bright); padding:1rem;">
+                    <span class="badge badge-emerald" style="margin-bottom:0.4rem;">HEBDOMADAIRE</span>
+                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="emerald-gradient-text">10 000 FCFA</h4>
+                    <p style="font-size:0.75rem;" class="text-muted">Abonnement 7 jours</p>
+                </div>
+                <div class="glass-panel text-center" style="border-color:var(--gold-bright); padding:1rem;">
+                    <span class="badge badge-gold" style="margin-bottom:0.4rem;">MENSUEL</span>
+                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">30 000 FCFA</h4>
+                    <p style="font-size:0.75rem;" class="text-muted">Abonnement 30 jours</p>
+                </div>
+                <div class="glass-panel text-center" style="border-color:var(--emerald-bright); padding:1rem;">
+                    <span class="badge badge-emerald" style="margin-bottom:0.4rem;">ANNUEL</span>
+                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="emerald-gradient-text">250 000 FCFA</h4>
+                    <p style="font-size:0.75rem;" class="text-muted">Accès Illimité 365j</p>
+                </div>
+            </div>
 
             <form onsubmit="handleVipRequestSubmit(event)">
-                <div class="form-group">
-                    <label>Nom complet * :</label>
-                    <input type="text" id="vip-req-name" class="form-control" placeholder="Ex: Marc Laurent" required>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label>Nom complet * :</label>
+                        <input type="text" id="vip-req-name" class="form-control" placeholder="Ex: Marc Laurent" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse Email * :</label>
+                        <input type="email" id="vip-req-email" class="form-control" placeholder="marc@example.com" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Adresse Email * :</label>
-                    <input type="email" id="vip-req-email" class="form-control" placeholder="marc@example.com" required>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label>Numéro WhatsApp * :</label>
+                        <input type="tel" id="vip-req-phone" class="form-control" placeholder="+226 XX XX XX XX" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Formule d'abonnement * :</label>
+                        <select id="vip-req-formula" class="form-control" required>
+                            <option value="Abonnement Journalier (2 000 FCFA / 24h)">Abonnement Journalier (2 000 FCFA)</option>
+                            <option value="Abonnement Par Semaine (10 000 FCFA / 7j)">Abonnement Par Semaine (10 000 FCFA)</option>
+                            <option value="Abonnement Mensuel (30 000 FCFA / 30j)" selected>Abonnement Mensuel (30 000 FCFA)</option>
+                            <option value="Abonnement Annuel (250 000 FCFA / 1 An)">Abonnement Annuel (250 000 FCFA)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Numéro de Téléphone (WhatsApp) * :</label>
-                    <input type="tel" id="vip-req-phone" class="form-control" placeholder="+33 6 00 00 00 00" required>
-                </div>
-                <div class="form-group">
-                    <label>Formule VIP souhaitée :</label>
-                    <select id="vip-req-formula" class="form-control">
-                        <option value="Accès Découverte (1 Jour)">Accès Découverte (1 Jour)</option>
-                        <option value="Abonnement VIP Mensuel">Abonnement VIP Mensuel</option>
-                        <option value="Formule Quinté+ Express">Formule Quinté+ Express</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-emerald btn-block"><i class="fa-brands fa-whatsapp"></i> Envoyer et Rediriger vers WhatsApp</button>
+                <button type="submit" class="btn btn-emerald btn-block btn-lg"><i class="fa-brands fa-whatsapp"></i> Envoyer la demande sur WhatsApp (+22646553556)</button>
             </form>
         </div>
     </div>
