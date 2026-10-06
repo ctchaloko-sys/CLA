@@ -18,12 +18,18 @@
     <!-- Navigation Header Bar -->
     <header class="navbar">
         <div class="nav-container">
-            <a href="#" class="logo" onclick="switchView('home')">
-                <div class="logo-icon-wrap">
-                    <i class="fa-solid fa-horse-head"></i>
-                </div>
-                <span>Turf<span class="gold-gradient-text">Elite</span><span class="logo-badge">PRO</span></span>
-            </a>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <!-- Theme Mode Toggle Button (Top Left) -->
+                <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleThemeMode()" title="Changer le Mode (Sombre / Clair)">
+                    <i class="fa-solid fa-moon"></i> <span class="theme-mode-text">Mode Sombre</span>
+                </button>
+                <a href="#" class="logo" onclick="switchView('home')">
+                    <div class="logo-icon-wrap">
+                        <i class="fa-solid fa-horse-head"></i>
+                    </div>
+                    <span>Turf<span class="gold-gradient-text">Elite</span><span class="logo-badge">PRO</span></span>
+                </a>
+            </div>
 
             <button class="mobile-toggle" onclick="toggleMobileNav()">
                 <i class="fa-solid fa-bars"></i>
@@ -124,6 +130,37 @@
 
             <div class="races-grid" id="home-upcoming-races">
                 <!-- Populated dynamically via script.js -->
+            </div>
+
+            <!-- SectionPourquoi Nous ? (Why Choose Us) -->
+            <div class="section-container" style="margin-bottom: 3rem;">
+                <div class="section-title text-center">
+                    <span class="section-badge">NOTRE EXPERTISE</span>
+                    <h2>Pourquoi Choisir TurfElite-PMU ?</h2>
+                    <p>Une plateforme moderne d'analyse hippique à la pointe de la technologie.</p>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.5rem; margin-top:2rem;">
+                    <div class="glass-panel text-center" style="padding:1.5rem;">
+                        <i class="fa-solid fa-brain text-gold" style="font-size:2.5rem; margin-bottom:1rem;"></i>
+                        <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem;" class="gold-gradient-text">ANALYSE COMBINÉE IA</h3>
+                        <p class="text-muted" style="font-size:0.88rem;">Nos algorithmes croisent l'historique des jockeys, la météo et la musique des chevaux pour des prédictions ultra-précises.</p>
+                    </div>
+                    <div class="glass-panel text-center" style="padding:1.5rem;">
+                        <i class="fa-solid fa-user-shield text-emerald" style="font-size:2.5rem; margin-bottom:1rem;"></i>
+                        <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem;" class="emerald-gradient-text">ACCÈS SÉCURISÉ & PRIVÉ</h3>
+                        <p class="text-muted" style="font-size:0.88rem;">Pronostics Quinté+, Quarté et Tiercé réservés aux membres VIP via codes d'accès personnalisés.</p>
+                    </div>
+                    <div class="glass-panel text-center" style="padding:1.5rem;">
+                        <i class="fa-solid fa-mobile-screen-button text-gold" style="font-size:2.5rem; margin-bottom:1rem;"></i>
+                        <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem;" class="gold-gradient-text">100% MOBILE & ERGONOMIQUE</h3>
+                        <p class="text-muted" style="font-size:0.88rem;">Interface fluide, réactive et optimisée pour smartphone, utilisable partout et à tout moment.</p>
+                    </div>
+                    <div class="glass-panel text-center" style="padding:1.5rem;">
+                        <i class="fa-solid fa-bolt text-emerald" style="font-size:2.5rem; margin-bottom:1rem;"></i>
+                        <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem;" class="emerald-gradient-text">ÈRE NUMÉRIQUE & RAPIDITÉ</h3>
+                        <p class="text-muted" style="font-size:0.88rem;">Mises à jour instantanées des départs, cotes et résultats officiels en temps réel sans latence.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- AI Software Banner Announcement -->
@@ -315,6 +352,16 @@
 
                 <div class="faq-item">
                     <div class="faq-header" onclick="toggleFaq(this)">
+                        <span><i class="fa-solid fa-key text-gold"></i> Comment déverrouiller l'accès VIP aux numéros du Quinté+ ?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-body">
+                        <p>Après votre inscription ou connexion, souscrivez à l'un de nos abonnements (Hebdomadaire, Mensuel ou Annuel) via WhatsApp pour recevoir votre Code VIP personnel ou être activé directement.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
                         <span><i class="fa-solid fa-clock-rotate-left text-gold"></i> À quelle heure sont publiés les pronostics du Quinté+ ?</span>
                         <i class="fa-solid fa-chevron-down faq-icon"></i>
                     </div>
@@ -329,7 +376,7 @@
                         <i class="fa-solid fa-chevron-down faq-icon"></i>
                     </div>
                     <div class="faq-body">
-                        <p>Utilisez le bouton vert WhatsApp flottant disponible en bas à droite de votre écran pour être mis en relation immédiate avec nos conseillers VIP.</p>
+                        <p>Utilisez le bouton vert WhatsApp flottant disponible en bas à droite de votre écran pour être mis en relation immédiate avec nos conseillers VIP (+226 46 55 35 56).</p>
                     </div>
                 </div>
             </div>
@@ -687,7 +734,7 @@
             <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;" class="emerald-gradient-text"><i class="fa-brands fa-whatsapp"></i> Formules d'Abonnement VIP & Demande d'Accès</h3>
             <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Choisissez votre formule et transmettez votre demande pour recevoir vos codes d'accès privilégiés.</p>
 
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
                 <div class="glass-panel text-center" style="border-color:var(--emerald-bright); padding:1.25rem;">
                     <span class="badge badge-emerald" style="margin-bottom:0.4rem;">HEBDOMADAIRE</span>
                     <h4 style="font-size:1.3rem; font-weight:800; margin:0.3rem 0;" class="emerald-gradient-text">25 000 FCFA</h4>
@@ -697,6 +744,11 @@
                     <span class="badge badge-gold" style="margin-bottom:0.4rem;">MENSUEL</span>
                     <h4 style="font-size:1.3rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">95 000 FCFA</h4>
                     <p style="font-size:0.78rem;" class="text-muted">Accès complet 30 jours + Tuyaux IA</p>
+                </div>
+                <div class="glass-panel text-center" style="border-color:var(--gold-bright); padding:1.25rem; background: rgba(217, 119, 6, 0.1);">
+                    <span class="badge badge-gold" style="margin-bottom:0.4rem; background:var(--gold-gradient); color:#000;">ANNUEL VIP</span>
+                    <h4 style="font-size:1.3rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">250 000 FCFA</h4>
+                    <p style="font-size:0.78rem;" class="text-muted">Accès Illimité 1 An + Canal WhatsApp Prioritaire</p>
                 </div>
             </div>
 
@@ -721,6 +773,7 @@
                         <select id="vip-req-formula" class="form-control" required>
                             <option value="Abonnement Hebdomadaire (25 000 FCFA / 7j)">Abonnement Hebdomadaire (25 000 FCFA)</option>
                             <option value="Abonnement Mensuel (95 000 FCFA / 30j)" selected>Abonnement Mensuel (95 000 FCFA)</option>
+                            <option value="Abonnement Annuel VIP (250 000 FCFA / 1 an)">Abonnement Annuel VIP (250 000 FCFA)</option>
                         </select>
                     </div>
                 </div>
@@ -745,6 +798,23 @@
             <button class="modal-close" onclick="closeMediaModal()"><i class="fa-solid fa-xmark"></i></button>
             <div id="media-viewer-content">
                 <!-- Content populated via script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" class="cookie-banner hidden">
+        <div class="cookie-content">
+            <i class="fa-solid fa-cookie-bite text-gold" style="font-size:1.8rem;"></i>
+            <div style="flex:1;">
+                <h4 style="margin:0 0 0.3rem 0; font-size:1rem;" class="gold-gradient-text">Gestion des Cookies & Confidentialité</h4>
+                <p style="margin:0; font-size:0.85rem; color:var(--text-muted);">
+                    Nous utilisons des cookies essentiels pour assurer le bon fonctionnement de l'interface, mémoriser vos préférences de thème et personnaliser votre expérience sur TurfElite.
+                </p>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn btn-outline btn-sm" onclick="handleCookieChoice(false)">Refuser</button>
+                <button class="btn btn-gold btn-sm" onclick="handleCookieChoice(true)">Accepter</button>
             </div>
         </div>
     </div>

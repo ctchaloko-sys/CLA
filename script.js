@@ -257,8 +257,8 @@ function switchView(viewId) {
 
     // Enforce account creation / login before accessing VIP space ('predictions')
     if (viewId === 'predictions' && !appState.currentUser) {
-        showToast('Veuillez créer un compte ou vous connecter pour accéder à l\'espace Pronostics VIP.', 'info');
-        showAuthModal('register');
+        showToast('Connexion requise : Veuillez vous connecter ou créer un compte pour accéder à l\'espace Pronostics VIP.', 'error');
+        showAuthModal('login');
         return;
     }
 
@@ -484,11 +484,11 @@ function createCouponTicketHTML(race) {
                 <p style="font-size:0.9rem; color:var(--text-muted);">${race.analyse}</p>
             </div>
 
-            <!-- MANDATORY LEGAL WARNING ON COUPON -->
+            <!-- INFORMATIONAL LEGAL BADGE ON COUPON -->
             <div class="coupon-legal-warning">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+                <i class="fa-solid fa-circle-info"></i>
                 <div>
-                    <strong>Avertissement Légal :</strong> Pronostics fournis à titre uniquement indicatif et informatif. Jouer comporte des risques : endettement, isolement, dépendance. Pour être aidé, appelez le <strong>09 74 75 13 13</strong> (appel non surtaxé).
+                    <strong>Information :</strong> Pronostics fournis à titre uniquement indicatif et informatif.
                 </div>
             </div>
         </div>
@@ -1216,8 +1216,63 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
+// --- THEME MODE TOGGLE ---
+function toggleThemeMode() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('turfelite_theme', newTheme);
+
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) {
+        if (newTheme === 'light') {
+            btn.innerHTML = `<i class="fa-solid fa-sun"></i> <span class="theme-mode-text">Mode Clair</span>`;
+        } else {
+            btn.innerHTML = `<i class="fa-solid fa-moon"></i> <span class="theme-mode-text">Mode Sombre</span>`;
+        }
+    }
+}
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('turfelite_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) {
+        if (savedTheme === 'light') {
+            btn.innerHTML = `<i class="fa-solid fa-sun"></i> <span class="theme-mode-text">Mode Clair</span>`;
+        } else {
+            btn.innerHTML = `<i class="fa-solid fa-moon"></i> <span class="theme-mode-text">Mode Sombre</span>`;
+        }
+    }
+}
+
+// --- COOKIE CONSENT MANAGEMENT ---
+function checkCookieConsent() {
+    const consent = localStorage.getItem('turfelite_cookie_consent');
+    if (!consent) {
+        setTimeout(() => {
+            const banner = document.getElementById('cookie-banner');
+            if (banner) banner.classList.remove('hidden');
+        }, 1200);
+    }
+}
+
+function handleCookieChoice(accepted) {
+    localStorage.setItem('turfelite_cookie_consent', accepted ? 'ACCEPTED' : 'REFUSED');
+    const banner = document.getElementById('cookie-banner');
+    if (banner) banner.classList.add('hidden');
+
+    if (accepted) {
+        showToast('Préférences de cookies enregistrées (Acceptés).', 'success');
+    } else {
+        showToast('Cookies non-essentiels refusés.', 'info');
+    }
+}
+
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    checkCookieConsent();
     initBackgroundCanvas();
     updateNavState();
     renderHomePage();

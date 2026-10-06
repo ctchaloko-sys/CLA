@@ -4,7 +4,7 @@
    ========================================================================== */
 
 :root {
-    /* Color Palette */
+    /* Color Palette (Default Dark) */
     --bg-dark: #070c14;
     --bg-dark-secondary: #0f172a;
     --bg-card: rgba(15, 23, 42, 0.82);
@@ -45,6 +45,18 @@
     --radius-lg: 20px;
     --radius-full: 9999px;
     --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light Theme Variables Overrides */
+[data-theme="light"] {
+    --bg-dark: #f1f5f9;
+    --bg-dark-secondary: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.92);
+    --bg-card-hover: rgba(241, 245, 249, 0.98);
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-dim: #64748b;
+    --glass-border-subtle: rgba(0, 0, 0, 0.12);
 }
 
 /* Reset & Base */
@@ -143,6 +155,27 @@ body {
 .glass-panel-emerald {
     border-color: rgba(16, 185, 129, 0.35);
     box-shadow: 0 8px 32px rgba(5, 150, 105, 0.2);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--gold-bright);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-full);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: var(--transition);
+}
+
+.theme-toggle-btn:hover {
+    background: var(--gold-glow);
+    color: #fff;
 }
 
 /* Header & Navbar */
@@ -1197,6 +1230,35 @@ body {
 }
 
 /* Toasts */
+/* --- COOKIE CONSENT BANNER --- */
+.cookie-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    z-index: 9999;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--gold-bright);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    transition: var(--transition);
+}
+
+.cookie-banner.hidden {
+    display: none;
+}
+
+.cookie-content {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
 #toast-container {
     position: fixed;
     bottom: 25px;
