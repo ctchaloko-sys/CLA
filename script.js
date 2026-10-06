@@ -570,10 +570,15 @@ function closeVipRequestModal() {
 
 function handleVipRequestSubmit(e) {
     e.preventDefault();
-    const name = document.getElementById('vip-req-name').value.trim();
-    const email = document.getElementById('vip-req-email').value.trim();
-    const phone = document.getElementById('vip-req-phone').value.trim();
-    const formula = document.getElementById('vip-req-formula').value;
+    const nameInput = document.getElementById('vip-req-name') || document.getElementById('inline-vip-req-name');
+    const emailInput = document.getElementById('vip-req-email') || document.getElementById('inline-vip-req-email');
+    const phoneInput = document.getElementById('vip-req-phone') || document.getElementById('inline-vip-req-phone');
+    const formulaInput = document.getElementById('vip-req-formula') || document.getElementById('inline-vip-req-formula');
+
+    const name = nameInput ? nameInput.value.trim() : 'Membre VIP';
+    const email = emailInput ? emailInput.value.trim() : 'client@turfelite.fr';
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+    const formula = formulaInput ? formulaInput.value : 'Abonnement Mensuel (95 000 FCFA)';
 
     // Auto grant session access for seamless UX
     appState.hasVipSessionAccess = true;
@@ -615,30 +620,67 @@ function renderPredictionsPage() {
             ${appState.races.map((race) => createCouponTicketHTML(race)).join('')}
         `;
     } else {
-        // PRE-SUBSCRIPTION / GUEST VIEW - SHOW 1 FREE SAMPLE & SUBSCRIPTION FORM CTA
+        // PRE-SUBSCRIPTION / GUEST VIEW - SHOW INLINE FORM & 1 SAMPLE ANALYSIS
         const sampleRace = appState.races.find((r) => r.id === 3) || appState.races[0];
 
         container.innerHTML = `
-            <div class="glass-panel text-center" style="margin-bottom: 2rem; padding: 2rem; border-color: var(--gold-bright);">
-                <h3 class="gold-gradient-text" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">
-                    <i class="fa-solid fa-crown"></i> ABONNEMENT PRONOSTICS VIP & ANALYSES EXCLUSIVES
+            <div class="glass-panel" style="margin-bottom: 2.5rem; padding: 2rem; border-color: var(--emerald-bright);">
+                <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;" class="emerald-gradient-text">
+                    <i class="fa-brands fa-whatsapp"></i> Formules d'Abonnement VIP & Demande d'Accès
                 </h3>
-                <p class="text-muted" style="font-size: 0.92rem; margin-bottom: 1.25rem;">
-                    Souscrivez dès maintenant pour recevoir l'intégralité des combinaisons Quinté+, Quarté, Tiercé et tuyaux 100% fiables directement sur WhatsApp.
-                </p>
-                <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-                    <button class="btn btn-emerald btn-lg" onclick="showVipRequestModal()">
-                        <i class="fa-brands fa-whatsapp"></i> Souscrire via Formulaire WhatsApp
-                    </button>
-                    <button class="btn btn-outline-gold btn-lg" onclick="showVipCodeModal()">
-                        <i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP
-                    </button>
+                <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Choisissez votre formule et transmettez votre demande pour recevoir vos codes d'accès privilégiés.</p>
+
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div class="glass-panel text-center" style="border-color:var(--emerald-bright); padding:1rem;">
+                        <span class="badge badge-emerald" style="margin-bottom:0.4rem;">HEBDOMADAIRE</span>
+                        <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="emerald-gradient-text">25 000 FCFA</h4>
+                        <p style="font-size:0.78rem;" class="text-muted">Accès aux pronostics VIP 7 jours</p>
+                    </div>
+                    <div class="glass-panel text-center" style="border-color:var(--gold-bright); padding:1rem;">
+                        <span class="badge badge-gold" style="margin-bottom:0.4rem;">MENSUEL</span>
+                        <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">95 000 FCFA</h4>
+                        <p style="font-size:0.78rem;" class="text-muted">Accès complet 30 jours + Tuyaux IA</p>
+                    </div>
+                    <div class="glass-panel text-center" style="border-color:var(--gold-bright); padding:1rem; background: rgba(217, 119, 6, 0.1);">
+                        <span class="badge badge-gold" style="margin-bottom:0.4rem; background:var(--gold-gradient); color:#000;">ANNUEL VIP</span>
+                        <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">250 000 FCFA</h4>
+                        <p style="font-size:0.78rem;" class="text-muted">Accès Illimité 1 An + Canal Prioritaire</p>
+                    </div>
                 </div>
+
+                <form onsubmit="handleVipRequestSubmit(event)">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1rem;">
+                        <div class="form-group">
+                            <label>Nom complet * :</label>
+                            <input type="text" id="inline-vip-req-name" class="form-control" placeholder="Ex: Marc Laurent" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email * :</label>
+                            <input type="email" id="inline-vip-req-email" class="form-control" placeholder="marc@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Numéro WhatsApp * :</label>
+                            <input type="tel" id="inline-vip-req-phone" class="form-control" placeholder="+226 XX XX XX XX" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Formule d'abonnement * :</label>
+                            <select id="inline-vip-req-formula" class="form-control" required>
+                                <option value="Abonnement Hebdomadaire (25 000 FCFA / 7j)">Abonnement Hebdomadaire (25 000 FCFA)</option>
+                                <option value="Abonnement Mensuel (95 000 FCFA / 30j)" selected>Abonnement Mensuel (95 000 FCFA)</option>
+                                <option value="Abonnement Annuel VIP (250 000 FCFA / 1 an)">Abonnement Annuel VIP (250 000 FCFA)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                        <button type="submit" class="btn btn-emerald btn-lg" style="flex:1;"><i class="fa-brands fa-whatsapp"></i> Envoyer la demande sur WhatsApp</button>
+                        <button type="button" class="btn btn-outline-gold btn-lg" onclick="showVipCodeModal()"><i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP</button>
+                    </div>
+                </form>
             </div>
 
-            <div style="margin-bottom: 2rem;">
-                <h4 style="font-size: 1.1rem; margin-bottom: 1rem;" class="emerald-gradient-text">
-                    <i class="fa-solid fa-eye"></i> EXEMPLE D'ANALYSE ET TICKET DE DÉMONSTRATION (1 SEULE ANALYSE DISPONIBLE EN ACCÈS LIBRE)
+            <div style="margin-bottom: 2.5rem;">
+                <h4 style="font-size: 1.15rem; margin-bottom: 1rem;" class="emerald-gradient-text">
+                    <i class="fa-solid fa-eye"></i> EXEMPLE D'ANALYSE GRATUITE (1 SEULE ANALYSE DISPONIBLE EN ACCÈS LIBRE)
                 </h4>
                 ${createCouponTicketHTML(sampleRace)}
             </div>
@@ -648,16 +690,11 @@ function renderPredictionsPage() {
                     <i class="fa-solid fa-lock"></i> ABONNEMENT VIP POUR DES PRONOSTICS 100% FIABLE
                 </h3>
                 <p class="text-muted" style="font-size: 0.92rem; margin-bottom: 1.5rem;">
-                    Pour accéder à l'ensemble des courses du jour, recevoir les tuyaux de dernière minute et consulter toutes les combinaisons gagnantes, rejoignez le Club VIP TurfElite.
+                    Pour voir plus et accéder à l'ensemble des courses du jour ainsi qu'aux tuyaux 100% FIABLE, souscrivez à l'abonnement VIP ci-dessus.
                 </p>
-                <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-                    <button class="btn btn-gold btn-lg" onclick="showVipRequestModal()">
-                        <i class="fa-solid fa-star"></i> S'Abonner au VIP (25 000 - 250 000 FCFA)
-                    </button>
-                    <button class="btn btn-outline-gold btn-lg" onclick="showVipCodeModal()">
-                        <i class="fa-solid fa-key"></i> Entrer un Code d'Accès VIP
-                    </button>
-                </div>
+                <button class="btn btn-gold btn-lg" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <i class="fa-solid fa-arrow-up"></i> S'Abonner au VIP pour des pronostics 100% FIABLE
+                </button>
             </div>
         `;
     }
