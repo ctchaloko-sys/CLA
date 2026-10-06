@@ -61,7 +61,7 @@ html {
 
 body {
     background: linear-gradient(180deg, rgba(7, 12, 20, 0.88) 0%, rgba(2, 44, 34, 0.92) 50%, rgba(7, 12, 20, 0.95) 100%),
-                url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1920&q=80') center/cover fixed no-repeat;
+                url('hero-banner.jpg') center/cover fixed no-repeat;
     color: var(--text-main);
     min-height: 100vh;
     overflow-x: hidden;
@@ -253,6 +253,65 @@ body {
     font-size: 0.85rem;
 }
 
+/* Stylish Nav Auth Buttons */
+.btn-login-stylish {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--gold-main);
+    color: var(--gold-bright);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+.btn-login-stylish:hover {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fff;
+    border-color: var(--gold-bright);
+}
+
+.btn-signup-stylish {
+    background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold-dark) 100%);
+    color: #050b14;
+    border: none;
+    box-shadow: 0 4px 14px var(--gold-glow);
+}
+.btn-signup-stylish:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+}
+
+.user-pill-stylish {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid var(--gold-main);
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.user-avatar-gold {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #000;
+    font-size: 0.8rem;
+}
+
+.btn-logout-stylish {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+}
+.btn-logout-stylish:hover {
+    background: rgba(239, 68, 68, 0.8);
+    color: #fff;
+}
+
 /* Buttons System */
 .btn {
     display: inline-flex;
@@ -435,7 +494,7 @@ body {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(2, 44, 34, 0.88), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    background: linear-gradient(135deg, rgba(2, 44, 34, 0.88), rgba(15, 23, 42, 0.95)), url('hero-banner.jpg') center/cover no-repeat;
     border: 1px solid var(--glass-border);
     padding: 3.5rem 2.5rem;
     margin-bottom: 3rem;

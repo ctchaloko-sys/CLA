@@ -255,6 +255,13 @@ function switchView(viewId) {
         view.classList.remove('active');
     });
 
+    // Enforce account creation / login before accessing VIP space ('predictions')
+    if (viewId === 'predictions' && !appState.currentUser) {
+        showToast('Veuillez créer un compte ou vous connecter pour accéder à l\'espace Pronostics VIP.', 'info');
+        showAuthModal('register');
+        return;
+    }
+
     const targetView = document.getElementById(`view-${viewId}`);
     if (targetView) {
         targetView.classList.add('active');
@@ -292,6 +299,11 @@ function switchView(viewId) {
 function toggleMobileNav() {
     const navMenu = document.getElementById('nav-menu');
     if (navMenu) navMenu.classList.toggle('open');
+}
+
+function handleHeroQuinteClick() {
+    switchView('predictions');
+    showToast("Consulter les pronostics fiables avec nos analyses combinées avec l'IA qui donne 100% de score.", "info");
 }
 
 // --- HOME PAGE RENDERER ---
@@ -729,6 +741,12 @@ function handleLoginSubmit(e) {
         closeAuthModal();
         updateNavState();
         showToast(`Bienvenue, ${user.name} !`, 'success');
+
+        // Automatic subscription popup trigger upon login
+        setTimeout(() => {
+            showVipRequestModal();
+        }, 600);
+
         if (user.role === 'ADMIN') {
             switchView('admin-dashboard');
         } else {
@@ -890,6 +908,58 @@ function switchAdminTab(tabName) {
     if (tabName === 'vip-codes') renderAdminVipCodesTable();
     if (tabName === 'users') renderAdminUsersTable();
     if (tabName === 'settings') renderAdminSettingsForm();
+}
+
+function handleAdminPublishDailyRace(e) {
+    e.preventDefault();
+    const prix = document.getElementById('admin-daily-prix').value.trim();
+    const hippodrome = document.getElementById('admin-daily-hippodrome').value.trim();
+    const num = document.getElementById('admin-daily-num').value.trim();
+    const discipline = document.getElementById('admin-daily-discipline').value;
+    const favoriText = document.getElementById('admin-daily-favori').value.trim();
+    const quinteText = document.getElementById('admin-daily-quinte').value.trim();
+
+    const parts = favoriText.split('-');
+    const favNum = parseInt(parts[0]) || 4;
+    const favNom = parts[1] ? parts[1].trim() : favoriText;
+
+    const newRace = {
+        id: Date.now(),
+        num: num,
+        prix: prix,
+        hippodrome: hippodrome,
+        discipline: discipline,
+        distance: '2700m',
+        heureDepart: new Date(Date.now() + 3600000 * 2).toISOString(),
+        statut: 'UPCOMING',
+        allocation: '500 000 €',
+        partantsCount: 16,
+        favori: { num: favNum, nom: favNom, jockey: 'Pronostiqueur IA' },
+        outsider: { num: 12, nom: 'Inmarosa', jockey: 'L. Abrivard' },
+        tuyau: { num: 7, nom: 'Go On Boy', jockey: 'R. Derieux' },
+        tokard: { num: 15, nom: 'Hussard du Landret', jockey: 'B. Robin' },
+        combinations: {
+            tierce: quinteText.split('-').slice(0, 3).join(' - '),
+            quarte: quinteText.split('-').slice(0, 4).join(' - '),
+            quinte: quinteText,
+            couple: quinteText.split('-').slice(0, 2).join(' - '),
+            multi: quinteText
+        },
+        analyse: 'Pronostic généré par analyse combinée avec l\'IA TurfElite avec un score de fiabilité élevé.',
+        pronostiqueur: 'IA & Expert Turf',
+        officialArrival: null
+    };
+
+    appState.races.unshift(newRace);
+    saveState();
+    renderAdminRacesTable();
+    showToast(`Numéro de départ et pronostic VIP publiés pour ${prix} !`, 'success');
+
+    document.getElementById('admin-daily-prix').value = '';
+    document.getElementById('admin-daily-hippodrome').value = '';
+    document.getElementById('admin-daily-num').value = '';
+    document.getElementById('admin-daily-favori').value = '';
+    document.getElementById('admin-daily-quinte').value = '';
 }
 
 function renderAdminRacesTable() {

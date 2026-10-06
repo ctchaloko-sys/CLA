@@ -15,12 +15,6 @@
     <!-- Dynamic Animated Particles Background Canvas -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Global Responsible Gaming Legal Disclaimer Bar -->
-    <div class="legal-disclaimer-bar">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span><strong>SITE D'INFORMATION & PRONOSTICS :</strong> Aucun pari réel ou dépôt d'argent. Jouer comporte des risques : endettement, isolement. Appelez le <strong>09 74 75 13 13</strong>.</span>
-    </div>
-
     <!-- Navigation Header Bar -->
     <header class="navbar">
         <div class="nav-container">
@@ -45,23 +39,22 @@
             </nav>
 
             <div class="nav-actions">
-                <div id="nav-guest-actions">
-                    <button class="btn btn-outline-gold btn-sm" onclick="showAuthModal('login')">
+                <div id="nav-guest-actions" style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-login-stylish btn-sm" onclick="showAuthModal('login')">
                         <i class="fa-solid fa-right-to-bracket"></i> Connexion
                     </button>
-                    <button class="btn btn-gold btn-sm" onclick="showAuthModal('register')">
-                        <i class="fa-solid fa-user-plus"></i> Rejoining VIP
+                    <button class="btn btn-signup-stylish btn-sm" onclick="showAuthModal('register')">
+                        <i class="fa-solid fa-user-plus"></i> S'inscrire
                     </button>
                 </div>
 
-                <div id="nav-user-actions" class="hidden">
-                    <div class="user-pill" onclick="switchView('member-dashboard')">
-                        <div class="user-avatar" id="nav-user-avatar">A</div>
-                        <span id="nav-user-name" style="font-size:0.88rem; font-weight:700;">Membre</span>
-                        <i class="fa-solid fa-chevron-down" style="font-size:0.75rem; color:var(--text-muted);"></i>
+                <div id="nav-user-actions" class="hidden" style="display:flex; gap:0.5rem; align-items:center;">
+                    <div class="user-pill-stylish" onclick="switchView('member-dashboard')">
+                        <div class="user-avatar-gold" id="nav-user-avatar">A</div>
+                        <span id="nav-user-name" style="font-size:0.88rem; font-weight:800; color:var(--text-main);">Membre</span>
                     </div>
-                    <button class="btn btn-danger btn-sm" onclick="logout()" title="Déconnexion">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <button class="btn btn-logout-stylish btn-sm" onclick="logout()" title="Déconnexion">
+                        <i class="fa-solid fa-power-off"></i> Déconnexion
                     </button>
                 </div>
             </div>
@@ -87,8 +80,8 @@
                         Accédez quotidiennement aux meilleures sélections, Tuyaux VIP, Tokards et synthèses élaborés par nos pronostiqueurs professionnels. Suivez les arrivées officielles en temps réel sans spéculation.
                     </p>
                     <div class="hero-actions">
-                        <button class="btn btn-gold btn-lg" onclick="switchView('predictions')">
-                            <i class="fa-solid fa-ticket"></i> Consulter le Quinté+ du Jour
+                        <button class="btn btn-gold btn-lg" onclick="handleHeroQuinteClick()">
+                            <i class="fa-solid fa-ticket"></i> Quinté Quarté PMU et Trio
                         </button>
                         <button class="btn btn-emerald btn-lg" onclick="showVipRequestModal()">
                             <i class="fa-brands fa-whatsapp"></i> Demander un Accès VIP (WhatsApp)
@@ -133,6 +126,23 @@
                 <!-- Populated dynamically via script.js -->
             </div>
 
+            <!-- AI Software Banner Announcement -->
+            <div class="glass-panel glass-panel-gold" style="margin-bottom: 3rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(2, 44, 34, 0.95)); border: 1px solid var(--gold-bright);">
+                <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+                    <div style="width:70px; height:70px; border-radius:50%; background:rgba(245,158,11,0.2); border:1px solid var(--gold-bright); display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--gold-bright); flex-shrink:0;">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div style="flex:1; min-width:260px;">
+                        <span class="badge badge-gold" style="margin-bottom:0.4rem;"><i class="fa-solid fa-bolt"></i> ANALYSE PAR INTELLIGENCE ARTIFICIELLE</span>
+                        <h3 style="font-size:1.35rem; font-weight:800; margin-bottom:0.4rem;" class="gold-gradient-text">Logiciel & IA de Pronostics Hippiques 100% Fiable</h3>
+                        <p style="font-size:0.92rem; color:var(--text-muted); line-height:1.6;">
+                            Consulter les pronostics fiables avec nos analyses combinées avec l'IA qui donne 100% de score. Notre algorithme croise la météo, la forme des jockeys et les historiques de courses pour décrocher les gros jackpots PMU.
+                        </p>
+                    </div>
+                    <button class="btn btn-gold" onclick="showVipRequestModal()"><i class="fa-solid fa-crown"></i> Découvrir l'IA VIP</button>
+                </div>
+            </div>
+
             <!-- Featured Quinté+ Prediction Ticket Coupon -->
             <div class="section-header">
                 <div class="section-title-wrap">
@@ -143,6 +153,64 @@
 
             <div id="home-featured-ticket">
                 <!-- Populated dynamically via script.js -->
+            </div>
+
+            <!-- User Reviews / Testimonials Section -->
+            <div class="section-header" style="margin-top: 3rem;">
+                <div class="section-title-wrap">
+                    <h2><i class="fa-solid fa-comments text-gold"></i> Avis & Témoignages de nos Abonnés VIP</h2>
+                    <p>Découvrez ce que disent les gagnants TurfElite à travers le monde.</p>
+                </div>
+            </div>
+
+            <div class="races-grid" style="margin-bottom: 2rem;">
+                <div class="glass-panel" style="position:relative;">
+                    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div style="width:42px; height:42px; border-radius:50%; background:#d97706; color:#000; font-weight:800; display:flex; align-items:center; justify-content:center;">SD</div>
+                        <div>
+                            <h4 style="font-size:0.95rem; font-weight:800; margin:0;">Seydou D.</h4>
+                            <span style="font-size:0.75rem; color:var(--text-muted);"><i class="fa-solid fa-location-dot text-gold"></i> Dakar, Sénégal</span>
+                        </div>
+                    </div>
+                    <div style="color:var(--gold-bright); font-size:0.85rem; margin-bottom:0.5rem;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
+                        "Grâce aux combinaisons Quinté et Trio générées par l'IA de TurfElite, j'ai rentré le désordre 3 fois ce mois-ci. Les pronostics sont chirurgicaux !"
+                    </p>
+                </div>
+
+                <div class="glass-panel" style="position:relative;">
+                    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div style="width:42px; height:42px; border-radius:50%; background:#059669; color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center;">IK</div>
+                        <div>
+                            <h4 style="font-size:0.95rem; font-weight:800; margin:0;">Ibrahim K.</h4>
+                            <span style="font-size:0.75rem; color:var(--text-muted);"><i class="fa-solid fa-location-dot text-emerald"></i> Ouagadougou, Burkina Faso</span>
+                        </div>
+                    </div>
+                    <div style="color:var(--gold-bright); font-size:0.85rem; margin-bottom:0.5rem;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
+                        "Service client WhatsApp très réactif et rapide pour activer mon code VIP. Les analyses sur le départ du jour et les arrivées sont 100% exactes."
+                    </p>
+                </div>
+
+                <div class="glass-panel" style="position:relative;">
+                    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div style="width:42px; height:42px; border-radius:50%; background:#3b82f6; color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center;">AM</div>
+                        <div>
+                            <h4 style="font-size:0.95rem; font-weight:800; margin:0;">Amadou M.</h4>
+                            <span style="font-size:0.75rem; color:var(--text-muted);"><i class="fa-solid fa-location-dot text-gold"></i> Abidjan, Côte d'Ivoire</span>
+                        </div>
+                    </div>
+                    <div style="color:var(--gold-bright); font-size:0.85rem; margin-bottom:0.5rem;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
+                        "La meilleure plateforme hippique que j'ai utilisée. Le Quinté Quarté Trio et la sélection des tocards sont vraiment fiables."
+                    </p>
+                </div>
             </div>
         </section>
 
@@ -261,7 +329,7 @@
                         <i class="fa-solid fa-chevron-down faq-icon"></i>
                     </div>
                     <div class="faq-body">
-                        <p>Utilisez le bouton vert WhatsApp flottant disponible en bas à droite de votre écran ou enregistrez notre numéro direct <strong>+22646553556</strong> pour être mis en relation immédiate.</p>
+                        <p>Utilisez le bouton vert WhatsApp flottant disponible en bas à droite de votre écran pour être mis en relation immédiate avec nos conseillers VIP.</p>
                     </div>
                 </div>
             </div>
@@ -337,8 +405,51 @@
                 <button class="admin-tab-btn" onclick="switchAdminTab('settings')"><i class="fa-solid fa-sliders"></i> Paramètres WhatsApp & Contact</button>
             </div>
 
-            <!-- Tab 1: Races & Predictions -->
+            <!-- Tab 1: Races & Predictions & Daily Numbers Publishing -->
             <div id="admin-tab-races" class="admin-tab-content">
+                <div class="glass-panel" style="margin-bottom:1.5rem;">
+                    <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1rem;" class="gold-gradient-text">
+                        <i class="fa-solid fa-calendar-day"></i> Publier les Numéros de Départ du Jour & Favoris/VIP 100%
+                    </h3>
+                    <form onsubmit="handleAdminPublishDailyRace(event)">
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Prix / Intitulé Course * :</label>
+                                <input type="text" id="admin-daily-prix" class="form-control" placeholder="Ex: Prix d'Amérique" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Hippodrome * :</label>
+                                <input type="text" id="admin-daily-hippodrome" class="form-control" placeholder="Ex: Vincennes" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Numéro Départ (Ex: R1C4) * :</label>
+                                <input type="text" id="admin-daily-num" class="form-control" placeholder="R1C4" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Discipline * :</label>
+                                <select id="admin-daily-discipline" class="form-control">
+                                    <option value="Attelé">Attelé</option>
+                                    <option value="Galop">Galop</option>
+                                    <option value="Haies">Haies</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Favori Simple Public (Ex: 4 - Idao) * :</label>
+                                <input type="text" id="admin-daily-favori" class="form-control" placeholder="4 - Nom Cheval" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Pronostic VIP 100% Fiable (Quinté) * :</label>
+                                <input type="text" id="admin-daily-quinte" class="form-control" placeholder="4 - 7 - 12 - 15 - 9" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold"><i class="fa-solid fa-paper-plane"></i> Publier le Départ du Jour & Pronostics</button>
+                    </form>
+                </div>
+
                 <div class="results-table-container">
                     <table class="official-table">
                         <thead>
@@ -476,13 +587,12 @@
 
             <div class="footer-col text-right">
                 <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:0.5rem;" class="text-gold">CONTACT & ASSISTANCE</h4>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.3rem;">WhatsApp : <strong>+22646553556</strong></p>
                 <p style="font-size:0.85rem; color:var(--text-muted);">Email : <strong id="footer-contact-email">contact@turfelite.fr</strong></p>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <span>&copy; 2026 TurfElite. Tous droits réservés. Jouer comporte des risques : <strong>09 74 75 13 13</strong>.</span>
+            <span>2026 TurfElite. Tous droits réservés. Nous declinons tous responsabilite en cas de perte.</span>
         </div>
     </footer>
 
@@ -564,7 +674,7 @@
                 </div>
                 <button type="submit" class="btn btn-gold btn-block"><i class="fa-solid fa-unlock"></i> Valider et Déverrouiller</button>
                 <div style="margin-top:1.25rem; text-align:center; font-size:0.85rem;" class="text-muted">
-                    Vous n'avez pas de code ? <a href="#" class="text-emerald" style="font-weight:700;" onclick="closeVipCodeModal(); showVipRequestModal();">Demandez-le sur WhatsApp (+22646553556)</a>
+                    Vous n'avez pas de code ? <a href="#" class="text-emerald" style="font-weight:700;" onclick="closeVipCodeModal(); showVipRequestModal();">Demandez-le sur WhatsApp</a>
                 </div>
             </form>
         </div>
@@ -574,29 +684,19 @@
     <div id="modal-vip-request" class="modal-overlay hidden">
         <div class="modal-card modal-lg">
             <button class="modal-close" onclick="closeVipRequestModal()"><i class="fa-solid fa-xmark"></i></button>
-            <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;" class="emerald-gradient-text"><i class="fa-brands fa-whatsapp"></i> Formules d'Abonnement VIP & Demande de Code</h3>
-            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Choisissez votre tarif et envoyez votre demande sur WhatsApp (+22646553556) pour obtenir votre code d'accès.</p>
+            <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;" class="emerald-gradient-text"><i class="fa-brands fa-whatsapp"></i> Formules d'Abonnement VIP & Demande d'Accès</h3>
+            <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.5rem;">Choisissez votre formule et transmettez votre demande pour recevoir vos codes d'accès privilégiés.</p>
 
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
-                <div class="glass-panel text-center" style="border-color:var(--glass-border); padding:1rem;">
-                    <span class="badge badge-gold" style="margin-bottom:0.4rem;">JOURNALIER</span>
-                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">2 000 FCFA</h4>
-                    <p style="font-size:0.75rem;" class="text-muted">Pass 24 Horaires complet</p>
-                </div>
-                <div class="glass-panel text-center" style="border-color:var(--emerald-bright); padding:1rem;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                <div class="glass-panel text-center" style="border-color:var(--emerald-bright); padding:1.25rem;">
                     <span class="badge badge-emerald" style="margin-bottom:0.4rem;">HEBDOMADAIRE</span>
-                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="emerald-gradient-text">10 000 FCFA</h4>
-                    <p style="font-size:0.75rem;" class="text-muted">Abonnement 7 jours</p>
+                    <h4 style="font-size:1.3rem; font-weight:800; margin:0.3rem 0;" class="emerald-gradient-text">25 000 FCFA</h4>
+                    <p style="font-size:0.78rem;" class="text-muted">Accès aux pronostics VIP 7 jours</p>
                 </div>
-                <div class="glass-panel text-center" style="border-color:var(--gold-bright); padding:1rem;">
+                <div class="glass-panel text-center" style="border-color:var(--gold-bright); padding:1.25rem;">
                     <span class="badge badge-gold" style="margin-bottom:0.4rem;">MENSUEL</span>
-                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">30 000 FCFA</h4>
-                    <p style="font-size:0.75rem;" class="text-muted">Abonnement 30 jours</p>
-                </div>
-                <div class="glass-panel text-center" style="border-color:var(--emerald-bright); padding:1rem;">
-                    <span class="badge badge-emerald" style="margin-bottom:0.4rem;">ANNUEL</span>
-                    <h4 style="font-size:1.2rem; font-weight:800; margin:0.3rem 0;" class="emerald-gradient-text">250 000 FCFA</h4>
-                    <p style="font-size:0.75rem;" class="text-muted">Accès Illimité 365j</p>
+                    <h4 style="font-size:1.3rem; font-weight:800; margin:0.3rem 0;" class="gold-gradient-text">95 000 FCFA</h4>
+                    <p style="font-size:0.78rem;" class="text-muted">Accès complet 30 jours + Tuyaux IA</p>
                 </div>
             </div>
 
@@ -619,14 +719,12 @@
                     <div class="form-group">
                         <label>Formule d'abonnement * :</label>
                         <select id="vip-req-formula" class="form-control" required>
-                            <option value="Abonnement Journalier (2 000 FCFA / 24h)">Abonnement Journalier (2 000 FCFA)</option>
-                            <option value="Abonnement Par Semaine (10 000 FCFA / 7j)">Abonnement Par Semaine (10 000 FCFA)</option>
-                            <option value="Abonnement Mensuel (30 000 FCFA / 30j)" selected>Abonnement Mensuel (30 000 FCFA)</option>
-                            <option value="Abonnement Annuel (250 000 FCFA / 1 An)">Abonnement Annuel (250 000 FCFA)</option>
+                            <option value="Abonnement Hebdomadaire (25 000 FCFA / 7j)">Abonnement Hebdomadaire (25 000 FCFA)</option>
+                            <option value="Abonnement Mensuel (95 000 FCFA / 30j)" selected>Abonnement Mensuel (95 000 FCFA)</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-emerald btn-block btn-lg"><i class="fa-brands fa-whatsapp"></i> Envoyer la demande sur WhatsApp (+22646553556)</button>
+                <button type="submit" class="btn btn-emerald btn-block btn-lg"><i class="fa-brands fa-whatsapp"></i> Envoyer la demande sur WhatsApp</button>
             </form>
         </div>
     </div>
