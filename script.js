@@ -251,16 +251,16 @@ function isVipUnlocked() {
 
 // --- ROUTING & VIEW NAVIGATION ---
 function switchView(viewId) {
-    document.querySelectorAll('.page-view').forEach((view) => {
-        view.classList.remove('active');
-    });
-
-    // Enforce account creation / login before accessing VIP space ('predictions')
-    if (viewId === 'predictions' && !appState.currentUser) {
-        showToast('Connexion requise : Veuillez vous connecter ou créer un compte pour accéder à l\'espace Pronostics VIP.', 'error');
+    // Mandatory authentication gate for all platform sections
+    if (!appState.currentUser && viewId !== 'home') {
+        showToast('Connexion requise : Veuillez vous connecter ou créer un compte pour accéder à cet espace.', 'error');
         showAuthModal('login');
         return;
     }
+
+    document.querySelectorAll('.page-view').forEach((view) => {
+        view.classList.remove('active');
+    });
 
     const targetView = document.getElementById(`view-${viewId}`);
     if (targetView) {
@@ -302,8 +302,13 @@ function toggleMobileNav() {
 }
 
 function handleHeroQuinteClick() {
+    if (!appState.currentUser) {
+        showToast("Veuillez vous connecter pour voir les 3-4 favoris gratuits (30% de fiabilité).", "info");
+        showAuthModal('login');
+        return;
+    }
     switchView('predictions');
-    showToast("Consulter les pronostics fiables avec nos analyses combinées avec l'IA qui donne 100% de score.", "info");
+    showToast("3 à 4 favoris gratuits affichés (30% de fiabilité). Pour 100% de fiabilité, abonnez-vous au VIP !", "info");
 }
 
 // --- HOME PAGE RENDERER ---
@@ -415,19 +420,16 @@ function createCouponTicketHTML(race) {
                     <div class="vip-lock-icon">
                         <i class="fa-solid fa-lock"></i>
                     </div>
-                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text">ACCÈS RESTREINT AUX COMBINAISONS (TIERCÉ, QUINTÉ+, MULTI)</h4>
+                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text">ACCÈS RESTREINT VIP (3-4 FAVORIS GRATUITS = 30% DE FIABILITÉ)</h4>
                     <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.25rem;">
-                        Les numéros officiels de combinaison sont réservés aux membres VIP. Veuillez déverrouiller l'accès :
+                        Pour déverrouiller le Quinté+ 100% FIABLE, souscrivez à un abonnement VIP et transmettez votre demande sur WhatsApp.
                     </p>
                     <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-                        <button class="btn btn-gold btn-sm" onclick="showAuthModal('login')">
-                            <i class="fa-solid fa-right-to-bracket"></i> Se Connecter
+                        <button class="btn btn-emerald btn-sm" onclick="showVipRequestModal()">
+                            <i class="fa-brands fa-whatsapp"></i> Souscrire un Abonnement VIP (WhatsApp)
                         </button>
                         <button class="btn btn-outline-gold btn-sm" onclick="showVipCodeModal()">
                             <i class="fa-solid fa-key"></i> Entrer un Code VIP
-                        </button>
-                        <button class="btn btn-emerald btn-sm" onclick="showVipRequestModal()">
-                            <i class="fa-brands fa-whatsapp"></i> Demander Accès VIP
                         </button>
                     </div>
                 </div>
@@ -755,24 +757,6 @@ function handleLoginSubmit(e) {
     } else {
         showToast('Identifiants ou mot de passe incorrects.', 'error');
     }
-}
-
-function handleGoogleOAuthLogin() {
-    // Simulated 1-click Google OAuth 2.0
-    appState.currentUser = {
-        id: 99,
-        name: 'Membre Google OAuth',
-        email: 'oauth.google@turfelite.fr',
-        role: 'MEMBER',
-        hasVipAccess: true,
-        avatar: 'G',
-        bookmarks: []
-    };
-    saveState();
-    closeAuthModal();
-    updateNavState();
-    showToast('Connexion reussie via Google OAuth !', 'success');
-    switchView('member-dashboard');
 }
 
 function handleRegisterSubmit(e) {
