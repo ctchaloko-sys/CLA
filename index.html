@@ -99,8 +99,8 @@
                     <div class="hero-stat-card">
                         <div class="stat-icon-wrap stat-icon-gold"><i class="fa-solid fa-trophy"></i></div>
                         <div>
-                            <div class="stat-number gold-gradient-text">88.4%</div>
-                            <div class="stat-text">Taux de Réussite Tiercé</div>
+                            <div class="stat-number gold-gradient-text">+10k</div>
+                            <div class="stat-text">Membres Passionnés</div>
                         </div>
                     </div>
                     <div class="hero-stat-card">
@@ -126,6 +126,14 @@
                     <h2><i class="fa-solid fa-hourglass-start text-gold"></i> Courses à Venir & Compte à Rebours Live</h2>
                     <p>Accès direct aux pronostics pour les départs imminents des réunions PMU.</p>
                 </div>
+            </div>
+
+            <!-- Discipline Buttons Filter (Quinté, Quarté, PMU, Trio) -->
+            <div style="display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:2rem;">
+                <button class="btn btn-gold" onclick="handleDisciplineButtonClick('Quinté')"><i class="fa-solid fa-trophy"></i> Quinté</button>
+                <button class="btn btn-outline-gold" onclick="handleDisciplineButtonClick('Quarté')"><i class="fa-solid fa-award"></i> Quarté</button>
+                <button class="btn btn-emerald" onclick="handleDisciplineButtonClick('PMU')"><i class="fa-solid fa-horse"></i> PMU</button>
+                <button class="btn btn-outline" onclick="handleDisciplineButtonClick('Trio')"><i class="fa-solid fa-list-ol"></i> Trio</button>
             </div>
 
             <div class="races-grid" id="home-upcoming-races">
@@ -171,9 +179,9 @@
                     </div>
                     <div style="flex:1; min-width:260px;">
                         <span class="badge badge-gold" style="margin-bottom:0.4rem;"><i class="fa-solid fa-bolt"></i> ANALYSE PAR INTELLIGENCE ARTIFICIELLE</span>
-                        <h3 style="font-size:1.35rem; font-weight:800; margin-bottom:0.4rem;" class="gold-gradient-text">Logiciel & IA de Pronostics Hippiques 100% Fiable</h3>
+                        <h3 style="font-size:1.35rem; font-weight:800; margin-bottom:0.4rem;" class="gold-gradient-text">Logiciel & IA de Pronostics Hippiques Avancés</h3>
                         <p style="font-size:0.92rem; color:var(--text-muted); line-height:1.6;">
-                            Consulter les pronostics fiables avec nos analyses combinées avec l'IA qui donne 100% de score. Notre algorithme croise la météo, la forme des jockeys et les historiques de courses pour décrocher les gros jackpots PMU.
+                            Consultez nos analyses combinées avec des outils d'intelligence artificielle. Notre algorithme croise la météo, la forme des jockeys et l'historique des courses pour un accompagnement premium.
                         </p>
                     </div>
                     <button class="btn btn-gold" onclick="showVipRequestModal()"><i class="fa-solid fa-crown"></i> Découvrir l'IA VIP</button>
@@ -229,7 +237,7 @@
                         <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                     </div>
                     <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
-                        "Service client WhatsApp très réactif et rapide pour activer mon code VIP. Les analyses sur le départ du jour et les arrivées sont 100% exactes."
+                        "Service client WhatsApp très réactif et rapide pour activer mon code VIP. Les analyses sur le départ du jour et les arrivées sont très détaillées."
                     </p>
                 </div>
 
@@ -456,7 +464,7 @@
             <div id="admin-tab-races" class="admin-tab-content">
                 <div class="glass-panel" style="margin-bottom:1.5rem;">
                     <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1rem;" class="gold-gradient-text">
-                        <i class="fa-solid fa-calendar-day"></i> Publier les Numéros de Départ du Jour & Favoris/VIP 100%
+                        <i class="fa-solid fa-calendar-day"></i> Publier les Numéros de Départ du Jour & Favoris VIP
                     </h3>
                     <form onsubmit="handleAdminPublishDailyRace(event)">
                         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
@@ -488,7 +496,7 @@
                                 <input type="text" id="admin-daily-favori" class="form-control" placeholder="4 - Nom Cheval" required>
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <label>Pronostic VIP 100% Fiable (Quinté) * :</label>
+                                <label>Pronostic VIP Optimisé (Quinté) * :</label>
                                 <input type="text" id="admin-daily-quinte" class="form-control" placeholder="4 - 7 - 12 - 15 - 9" required>
                             </div>
                         </div>
@@ -814,6 +822,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Fixed Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-bar">
+        <a href="#accueil" class="mobile-bottom-item active" onclick="switchView('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Accueil</span>
+        </a>
+        <a href="#pronostics" class="mobile-bottom-item" onclick="switchView('predictions')">
+            <i class="fa-solid fa-ticket"></i>
+            <span>Pronostics</span>
+        </a>
+        <a href="#code" class="mobile-bottom-item" onclick="showVipCodeModal()">
+            <i class="fa-solid fa-key"></i>
+            <span>Accès</span>
+        </a>
+        <a href="#vip" class="mobile-bottom-item text-gold" onclick="showVipRequestModal()">
+            <i class="fa-solid fa-crown"></i>
+            <span>VIP</span>
+        </a>
+        <a href="#compte" class="mobile-bottom-item" onclick="appState.currentUser ? switchView('member-dashboard') : showAuthModal('login')">
+            <i class="fa-solid fa-user"></i>
+            <span>Compte</span>
+        </a>
+    </nav>
 
     <!-- Toast Notification Container -->
     <div id="toast-container"></div>

@@ -251,8 +251,15 @@ function isVipUnlocked() {
 
 // --- ROUTING & VIEW NAVIGATION ---
 function switchView(viewId) {
-    // Mandatory authentication gate for all platform sections
-    if (!appState.currentUser && viewId !== 'home') {
+    // Hash routing /admin support & Mandatory authentication gate for all platform sections
+    if (viewId === 'admin' || viewId === 'admin-dashboard') {
+        viewId = 'admin-dashboard';
+        if (!appState.currentUser || appState.currentUser.role !== 'ADMIN') {
+            showToast('Accès restreint aux administrateurs.', 'error');
+            showAuthModal('login');
+            return;
+        }
+    } else if (!appState.currentUser && viewId !== 'home') {
         showToast('Connexion requise : Veuillez vous connecter ou créer un compte pour accéder à cet espace.', 'error');
         showAuthModal('login');
         return;
@@ -301,14 +308,18 @@ function toggleMobileNav() {
     if (navMenu) navMenu.classList.toggle('open');
 }
 
-function handleHeroQuinteClick() {
+function handleDisciplineButtonClick(discipline) {
     if (!appState.currentUser) {
-        showToast("Veuillez vous connecter pour voir les 3-4 favoris gratuits (30% de fiabilité).", "info");
+        showToast(`Connectez-vous ou créez un compte pour consulter les favoris gratuits ${discipline}.`, "info");
         showAuthModal('login');
         return;
     }
     switchView('predictions');
-    showToast("3 à 4 favoris gratuits affichés (30% de fiabilité). Pour 100% de fiabilité, abonnez-vous au VIP !", "info");
+    showToast(`3 à 4 favoris gratuits indiqués pour ${discipline}. Pour le pronostic VIP complet, abonnez-vous !`, "info");
+}
+
+function handleHeroQuinteClick() {
+    handleDisciplineButtonClick('Quinté');
 }
 
 // --- HOME PAGE RENDERER ---
@@ -420,9 +431,9 @@ function createCouponTicketHTML(race) {
                     <div class="vip-lock-icon">
                         <i class="fa-solid fa-lock"></i>
                     </div>
-                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text">ACCÈS RESTREINT VIP (3-4 FAVORIS GRATUITS = 30% DE FIABILITÉ)</h4>
+                    <h4 style="font-size:1.15rem; font-weight:800; margin-bottom:0.5rem;" class="gold-gradient-text">ACCÈS RESTREINT VIP (3-4 FAVORIS GRATUITS)</h4>
                     <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.25rem;">
-                        Pour déverrouiller le Quinté+ 100% FIABLE, souscrivez à un abonnement VIP et transmettez votre demande sur WhatsApp.
+                        Pour déverrouiller le Quinté+ VIP complet, souscrivez à un abonnement VIP et transmettez votre demande sur WhatsApp.
                     </p>
                     <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
                         <button class="btn btn-emerald btn-sm" onclick="showVipRequestModal()">
@@ -606,12 +617,12 @@ function renderPredictionsPage() {
     const unlocked = isVipUnlocked();
 
     if (unlocked) {
-        // FULL VIP ACCESS GRANTED - SHOW ALL 100% FIABLE PREDICTIONS
+        // FULL VIP ACCESS GRANTED - SHOW ALL PREDICTIONS
         container.innerHTML = `
             <div class="glass-panel text-center" style="margin-bottom: 2rem; padding: 1.5rem; border-color: var(--emerald-bright); background: linear-gradient(135deg, rgba(2, 44, 34, 0.95), rgba(15, 23, 42, 0.95));">
                 <span class="badge badge-emerald" style="margin-bottom:0.5rem;"><i class="fa-solid fa-shield-check"></i> ESPACE PRONOSTICS VIP DÉVERROUILLÉ</span>
                 <h3 class="gold-gradient-text" style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">
-                    PRONOSTICS 100% FIABLE DU JOUR & ANALYSES D'EXPERTS
+                    PRONOSTICS OPTIMISÉS DU JOUR & ANALYSES D'EXPERTS
                 </h3>
                 <p class="text-muted" style="font-size: 0.92rem;">
                     Bienvenue dans votre espace privilégié. Voici l'intégralité des combinaisons optimisées par nos analystes hippiques.
@@ -687,13 +698,13 @@ function renderPredictionsPage() {
 
             <div class="glass-panel text-center" style="padding: 2rem; background: linear-gradient(135deg, rgba(2, 44, 34, 0.95), rgba(15, 23, 42, 0.95)); border: 2px solid var(--gold-bright);">
                 <h3 class="gold-gradient-text" style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.75rem;">
-                    <i class="fa-solid fa-lock"></i> ABONNEMENT VIP POUR DES PRONOSTICS 100% FIABLE
+                    <i class="fa-solid fa-lock"></i> ABONNEMENT VIP POUR DES PRONOSTICS OPTIMISÉS
                 </h3>
                 <p class="text-muted" style="font-size: 0.92rem; margin-bottom: 1.5rem;">
-                    Pour voir plus et accéder à l'ensemble des courses du jour ainsi qu'aux tuyaux 100% FIABLE, souscrivez à l'abonnement VIP ci-dessus.
+                    Pour voir plus et accéder à l'ensemble des courses du jour ainsi qu'aux tuyaux d'experts, souscrivez à l'abonnement VIP ci-dessus.
                 </p>
                 <button class="btn btn-gold btn-lg" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                    <i class="fa-solid fa-arrow-up"></i> S'Abonner au VIP pour des pronostics 100% FIABLE
+                    <i class="fa-solid fa-arrow-up"></i> S'Abonner au VIP pour des pronostics d'experts
                 </button>
             </div>
         `;
