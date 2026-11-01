@@ -1138,314 +1138,190 @@ function renderSkills() {
 }
 
 // =============================================================================
-// 10. LIVE LAB CYBERSÉCURITÉ DÉFENSIF (4 SCÉNARIOS)
+// 10. DÉFILEMENT RAPIDE DE CODE & ARRIÈRE-PLAN MATRIX CODE STREAM
 // =============================================================================
-let currentTerminalTab = 'password';
-let isTerminalPlaying = true;
-let terminalTimer = null;
+let isStreamPaused = false;
+let streamSpeedMultiplier = 2; // 1x, 2x, 4x
+let totalStreamedLines = 0;
+let streamIntervalId = null;
 
-const terminalScripts = {
-    password: {
-        code: [
-            "// Scénario A : Analyseur Défensif de Force de Mot de Passe",
-            "function evaluatePasswordSecurity(password) {",
-            "    let score = 0;",
-            "    if (password.length >= 12) score += 25;",
-            "    if (/[A-Z]/.test(password)) score += 25;",
-            "    if (/[0-9]/.test(password)) score += 25;",
-            "    if (/[^A-Za-z0-9]/.test(password)) score += 25;",
-            "    return { score, isRobust: score >= 75 };",
-            "}"
-        ],
-        interactiveHTML: `
-            <div class="space-y-3">
-                <label class="block text-xs font-semibold text-slate-300">Testez la robustesse d'une chaîne (traitement 100% local, rien n'est stocké) :</label>
-                <div class="relative">
-                    <input type="password" id="sim-pwd-input" oninput="runPasswordAssessment(this.value)" placeholder="Tapez un mot de passe d'exemple..." class="w-full px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 font-mono text-xs text-white focus:outline-none focus:border-cyan-400">
-                    <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-eye" id="sim-pwd-eye"></i></button>
-                </div>
-                <div class="space-y-1">
-                    <div class="flex justify-between text-xs font-mono">
-                        <span id="pwd-score-label">Score : 0%</span>
-                        <span id="pwd-strength-text" class="text-rose-400 font-bold">Faible</span>
-                    </div>
-                    <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                        <div id="pwd-score-bar" class="bg-rose-500 h-2 transition-all duration-300" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div id="pwd-tips" class="text-[11px] text-slate-400 space-y-1 font-mono">
-                    • Conseils : minimum 12 caractères, majuscules, minuscules, chiffres et symboles.
-                </div>
-            </div>
-        `
-    },
-    sha256: {
-        code: [
-            "// Scénario B : Hachage Cryptographique SHA-256 via Web Crypto API",
-            "async function computeSha256(text) {",
-            "    const msgUint8 = new TextEncoder().encode(text);",
-            "    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);",
-            "    const hashArray = Array.from(new Uint8Array(hashBuffer));",
-            "    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');",
-            "}",
-            "// Démontre l'effet avalanche : 1 bit changé = empreinte entièrement mutée."
-        ],
-        interactiveHTML: `
-            <div class="space-y-3">
-                <label class="block text-xs font-semibold text-slate-300">Calculateur d'empreinte SHA-256 instantané :</label>
-                <input type="text" id="sim-sha-input" oninput="runSha256Demo(this.value)" value="Clarius" placeholder="Saisissez un message..." class="w-full px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 font-mono text-xs text-white focus:outline-none focus:border-cyan-400">
-                <div class="p-3 rounded-lg bg-black/60 border border-white/10 font-mono text-xs">
-                    <div class="text-slate-400 text-[10px]">DIGEST SHA-256 :</div>
-                    <div id="sha256-output" class="text-cyan-300 break-all select-all font-bold mt-1">Calcul en cours...</div>
-                </div>
-                <div class="text-[11px] text-slate-400 font-mono">
-                    <span class="text-purple-400">&bull; Effet avalanche :</span> Changez une seule lettre pour observer une transformation totale du hash.
-                </div>
-            </div>
-        `
-    },
-    bruteforce: {
-        code: [
-            "// Scénario C : Détection de tentative Brute-Force (Règles SIEM)",
-            "const THRESHOLD = 5; // tentatives par minute",
-            "function inspectLoginEvent(ip, status) {",
-            "    if (status === 'FAILURE') {",
-            "        tracker[ip] = (tracker[ip] || 0) + 1;",
-            "        if (tracker[ip] >= THRESHOLD) triggerSecurityAlert(ip);",
-            "    }",
-            "}"
-        ],
-        interactiveHTML: `
-            <div class="space-y-3 font-mono text-xs">
-                <div class="flex items-center justify-between">
-                    <span class="text-slate-300 font-semibold">Simulateur d'ingestion de logs serveur :</span>
-                    <button onclick="injectSimulatedLog()" class="px-2.5 py-1 rounded bg-rose-500/20 border border-rose-500/40 text-rose-300 hover:bg-rose-500/30 transition-colors">
-                        <i class="fa-solid fa-plus-circle mr-1"></i>Simuler Échec Connexion
-                    </button>
-                </div>
-                <div id="siem-logs-window" class="p-3 rounded-lg bg-black/70 border border-white/10 h-32 overflow-y-auto space-y-1 text-[11px]">
-                    <div class="text-slate-400">[SYSTEM] SIEM Engine Initialized. Monitoring port 443 / auth logs.</div>
-                </div>
-            </div>
-        `
-    },
-    caesar: {
-        code: [
-            "// Scénario D : Démonstrateur Pédagogique de Chiffrement de César",
-            "function caesarCipher(str, shift = 3) {",
-            "    return str.split('').map(char => {",
-            "        const code = char.charCodeAt(0);",
-            "        if (code >= 65 && code <= 90) return String.fromCharCode((code - 65 + shift) % 26 + 65);",
-            "        if (code >= 97 && code <= 122) return String.fromCharCode((code - 97 + shift) % 26 + 97);",
-            "        return char;",
-            "    }).join('');",
-            "}"
-        ],
-        interactiveHTML: `
-            <div class="space-y-3 font-mono text-xs">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-300 mb-1">Message clair :</label>
-                        <input type="text" id="sim-caesar-input" oninput="runCaesarDemo()" value="CYBER DEFENSE 2026" class="w-full px-3 py-2 rounded-lg bg-black/40 border border-cyan-500/30 text-white focus:outline-none">
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-[11px] text-slate-300 mb-1">
-                            <span>Décalage (Shift) :</span>
-                            <span id="caesar-shift-val" class="text-cyan-400 font-bold">3</span>
-                        </div>
-                        <input type="range" id="sim-caesar-shift" min="1" max="25" value="3" oninput="runCaesarDemo()" class="w-full accent-cyan-400">
-                    </div>
-                </div>
-                <div class="p-3 rounded-lg bg-black/60 border border-white/10">
-                    <span class="text-slate-400 text-[10px]">RÉSULTAT DU CHIFFREMENT :</span>
-                    <div id="caesar-output" class="text-emerald-400 font-bold text-sm tracking-wider mt-1">...</div>
-                </div>
-            </div>
-        `
+// Banque de lignes de code défensif, audit, hachage et signatures IDS/SIEM
+const cybersecurityCodeBank = [
+    '<span class="token-comment">// --- [CET-SIEM-CORE] Initializing Real-Time Ingress Monitor ---</span>',
+    '<span class="token-keyword">const</span> socket = <span class="token-keyword">new</span> <span class="token-function">SecureWebSocket</span>(<span class="token-string">"wss://defense.uac.bj/telemetry"</span>);',
+    '<span class="token-keyword">await</span> crypto.subtle.<span class="token-function">generateKey</span>({ name: <span class="token-string">"ECDSA"</span>, namedCurve: <span class="token-string">"P-384"</span> }, <span class="token-keyword">true</span>, [<span class="token-string">"sign"</span>, <span class="token-string">"verify"</span>]);',
+    '<span class="token-function">inspectPacketHeader</span>(packet) =&gt; { protocol: <span class="token-string">"TLSv1.3"</span>, cipher: <span class="token-string">"AES-256-GCM"</span>, status: <span class="token-success">VALID</span> };',
+    '<span class="token-keyword">if</span> (ipReputationScore(packet.src) &lt; <span class="token-number">30</span>) { <span class="token-function">quarantineEndpoint</span>(packet.src, <span class="token-number">1800</span>); }',
+    '<span class="token-comment">/* SHA-256 Hash Verification of System Integrity */</span>',
+    '<span class="token-keyword">const</span> digest = <span class="token-keyword">await</span> crypto.subtle.<span class="token-function">digest</span>(<span class="token-string">"SHA-256"</span>, <span class="token-keyword">new</span> TextEncoder().<span class="token-function">encode</span>(payload));',
+    '<span class="token-function">console.log</span>(<span class="token-string">`[INTEGRITY_CHECK] Checksum verified: 0x${toHex(digest)}`</span>);',
+    '<span class="token-keyword">const</span> rateLimiter = <span class="token-keyword">new</span> <span class="token-function">TokenBucket</span>({ capacity: <span class="token-number">100</span>, refillRate: <span class="token-number">10</span> });',
+    '<span class="token-keyword">const</span> honeypotTracker = <span class="token-keyword">new</span> <span class="token-function">Map</span>(); honeypotTracker.<span class="token-function">set</span>(<span class="token-string">"port-22"</span>, <span class="token-number">0</span>);',
+    '<span class="token-alert">[SURICATA-IDS] Signature match: ET POLICY Suspicious Outbound ICMP traffic [ID:2018934]</span>',
+    '<span class="token-success">[RULE-APPLIED] iptables -A INPUT -s 192.168.1.189 -j DROP (Automated Defense)</span>',
+    '<span class="token-keyword">function</span> <span class="token-function">enforceZeroTrust</span>(session) { <span class="token-keyword">return</span> session.mfaVerified &amp;&amp; session.tokenValid; }',
+    '<span class="token-keyword">const</span> hmacSignature = crypto.<span class="token-function">createHmac</span>(<span class="token-string">"sha512"</span>, secretKey).<span class="token-function">update</span>(auditLog).<span class="token-function">digest</span>(<span class="token-string">"hex"</span>);',
+    '<span class="token-keyword">const</span> entropy = <span class="token-function">calculateShannonEntropy</span>(randomBuffer); <span class="token-comment">// Entropy = 7.994 bits/byte</span>',
+    '<span class="token-success">[SIEM_AUDIT] Anomaly detector: 0 unauthenticated access attempts detected across nodes.</span>',
+    '<span class="token-comment">// Defensive Cryptography: Rotating Ephemeral Session Keys</span>',
+    '<span class="token-keyword">const</span> diffieHellman = crypto.<span class="token-function">createDiffieHellman</span>(<span class="token-number">2048</span>); diffieHellman.<span class="token-function">generateKeys</span>();',
+    '<span class="token-function">verifyCertificateChain</span>({ ca: <span class="token-string">"RootCA-Benin-PKI"</span>, validityDaysRemaining: <span class="token-number">365</span> });',
+    '<span class="token-keyword">export</span> <span class="token-keyword">default</span> <span class="token-keyword">class</span> <span class="token-function">DefensePipeline</span> <span class="token-keyword">extends</span> ThreatAnalyzer { <span class="token-function">run</span>() { <span class="token-keyword">return</span> <span class="token-keyword">true</span>; } }',
+    '<span class="token-comment">// Auditing Database Query Sanitation &amp; Prepared Statements</span>',
+    '<span class="token-keyword">const</span> query = db.<span class="token-function">prepare</span>(<span class="token-string">"SELECT id, role FROM users WHERE matricule = ? AND active = 1"</span>);',
+    '<span class="token-function">applyContentSecurityPolicy</span>({ defaultSrc: [<span class="token-string">"\'self\'"</span>], scriptSrc: [<span class="token-string">"\'strict-dynamic\'"</span>] });',
+    '<span class="token-alert">[FIREWALL] SYN Flood mitigation enabled. Syncookies activated on interface eth0.</span>',
+    '<span class="token-success">[BACKUP_VERIFIED] Immutable snapshot written to encrypted cold storage: 4096 MB.</span>'
+];
+
+let streamBankIndex = 0;
+
+function initFastCodeStream() {
+    const streamContainer = document.getElementById('fast-code-stream');
+    if (!streamContainer) return;
+
+    // Préparez un premier lot de lignes visibles
+    streamContainer.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+        appendStreamLine();
     }
-};
 
-function switchTerminalScenario(scenario) {
-    currentTerminalTab = scenario;
-    ['password', 'sha256', 'bruteforce', 'caesar'].forEach(tab => {
-        const btn = document.getElementById(`tab-term-${tab}`);
-        if (btn) {
-            if (tab === scenario) {
-                btn.className = "term-tab px-3 py-2 rounded-t-lg bg-white/10 text-cyan-400 font-bold border-b-2 border-cyan-400 flex items-center gap-1.5";
-            } else {
-                btn.className = "term-tab px-3 py-2 rounded-t-lg text-slate-400 hover:text-white flex items-center gap-1.5";
-            }
+    startStreamLoop();
+    initMatrixCodeBackground();
+}
+
+function startStreamLoop() {
+    if (streamIntervalId) clearInterval(streamIntervalId);
+
+    // Vitesse de base : 1x = 100ms, 2x = 50ms, 4x = 25ms
+    const intervalMs = Math.max(15, Math.floor(100 / streamSpeedMultiplier));
+
+    streamIntervalId = setInterval(() => {
+        if (!isStreamPaused && isTabVisible) {
+            appendStreamLine();
         }
-    });
-
-    renderTerminalContent();
+    }, intervalMs);
 }
 
-function renderTerminalContent() {
-    const codeDisplay = document.getElementById('terminal-code-display');
-    const interactiveArea = document.getElementById('terminal-interactive-area');
-    const statusLeft = document.getElementById('term-status-left');
-    const data = terminalScripts[currentTerminalTab];
+function appendStreamLine() {
+    const container = document.getElementById('fast-code-stream');
+    const metrics = document.getElementById('term-stream-metrics');
+    if (!container) return;
 
-    if (!codeDisplay || !interactiveArea || !data) return;
+    totalStreamedLines++;
+    const lineContent = cybersecurityCodeBank[streamBankIndex % cybersecurityCodeBank.length];
+    streamBankIndex++;
 
-    // Code avec coloration syntaxique
-    codeDisplay.innerHTML = `<pre><code>${highlightCode(data.code.join('\n'))}</code></pre>`;
-    interactiveArea.innerHTML = data.interactiveHTML;
+    const lineEl = document.createElement('div');
+    lineEl.className = 'code-stream-line';
 
-    if (currentTerminalTab === 'password') {
-        runPasswordAssessment('');
-        if (statusLeft) statusLeft.textContent = "> Module Password Audit prêt.";
-    } else if (currentTerminalTab === 'sha256') {
-        const input = document.getElementById('sim-sha-input');
-        runSha256Demo(input ? input.value : 'Clarius');
-        if (statusLeft) statusLeft.textContent = "> Module SHA-256 Web Crypto activé.";
-    } else if (currentTerminalTab === 'caesar') {
-        runCaesarDemo();
-        if (statusLeft) statusLeft.textContent = "> Module César Cipher actif.";
-    } else if (currentTerminalTab === 'bruteforce') {
-        if (statusLeft) statusLeft.textContent = "> Module SIEM Alerting en écoute passive.";
+    // Numéro de ligne incrémental formaté
+    const lineNum = String(totalStreamedLines).padStart(4, '0');
+    lineEl.innerHTML = `<span class="text-slate-600 mr-2 select-none">${lineNum}</span> ${lineContent}`;
+
+    container.appendChild(lineEl);
+
+    // Conserver maximum 18 lignes dans le DOM pour fluidité optimale 60 FPS
+    while (container.children.length > 18) {
+        container.removeChild(container.firstChild);
     }
-}
 
-function highlightCode(rawCode) {
-    return rawCode
-        .replace(/(\/\/.+)/g, '<span class="token-comment">$1</span>')
-        .replace(/\b(async|function|return|const|let|if|else)\b/g, '<span class="token-keyword">$1</span>')
-        .replace(/\b(evaluatePasswordSecurity|computeSha256|inspectLoginEvent|triggerSecurityAlert|caesarCipher)\b/g, '<span class="token-function">$1</span>')
-        .replace(/('SHA-256'|'FAILURE')/g, '<span class="token-string">$1</span>')
-        .replace(/\b([0-9]+)\b/g, '<span class="token-number">$1</span>');
+    if (metrics) {
+        const rate = streamSpeedMultiplier * 20;
+        metrics.textContent = `Lines Streamed: ${totalStreamedLines} • Rate: ~${rate} lps`;
+    }
 }
 
 function toggleTerminalPlayPause() {
-    isTerminalPlaying = !isTerminalPlaying;
+    isStreamPaused = !isStreamPaused;
     const icon = document.getElementById('play-pause-icon');
     if (icon) {
-        icon.className = isTerminalPlaying ? "fa-solid fa-pause text-xs" : "fa-solid fa-play text-xs";
+        icon.className = isStreamPaused ? "fa-solid fa-play text-xs" : "fa-solid fa-pause text-xs";
     }
-    showToast(isTerminalPlaying ? "Terminal en lecture" : "Terminal en pause");
+    showToast(isStreamPaused ? "Défilement en pause" : "Défilement repris");
 }
 
-function restartTerminalScenario() {
-    renderTerminalContent();
-    showToast("Scénario réinitialisé");
+function clearAndRestartStream() {
+    const container = document.getElementById('fast-code-stream');
+    if (container) container.innerHTML = '';
+    totalStreamedLines = 0;
+    streamBankIndex = 0;
+    for (let i = 0; i < 8; i++) appendStreamLine();
+    showToast("Flux réinitialisé");
 }
 
-// Scénario A : Password Audit
-function runPasswordAssessment(pwd) {
-    const scoreBar = document.getElementById('pwd-score-bar');
-    const scoreLabel = document.getElementById('pwd-score-label');
-    const strengthText = document.getElementById('pwd-strength-text');
-    if (!scoreBar || !scoreLabel || !strengthText) return;
-
-    if (!pwd) {
-        scoreBar.style.width = '0%';
-        scoreBar.className = "h-2 bg-slate-700 transition-all duration-300";
-        scoreLabel.textContent = "Score : 0%";
-        strengthText.textContent = "Aucun";
-        strengthText.className = "text-slate-400 font-bold";
-        return;
-    }
-
-    let score = 0;
-    if (pwd.length >= 8) score += 20;
-    if (pwd.length >= 12) score += 20;
-    if (/[A-Z]/.test(pwd)) score += 20;
-    if (/[0-9]/.test(pwd)) score += 20;
-    if (/[^A-Za-z0-9]/.test(pwd)) score += 20;
-
-    scoreBar.style.width = `${score}%`;
-    scoreLabel.textContent = `Score : ${score}%`;
-
-    if (score <= 40) {
-        scoreBar.className = "h-2 bg-rose-500 transition-all duration-300";
-        strengthText.textContent = "Faible / Vulnérable";
-        strengthText.className = "text-rose-400 font-bold";
-    } else if (score <= 60) {
-        scoreBar.className = "h-2 bg-amber-500 transition-all duration-300";
-        strengthText.textContent = "Moyen";
-        strengthText.className = "text-amber-400 font-bold";
-    } else {
-        scoreBar.className = "h-2 bg-emerald-500 transition-all duration-300";
-        strengthText.textContent = "Robuste / Fort";
-        strengthText.className = "text-emerald-400 font-bold";
-    }
+function setStreamSpeed(speed) {
+    streamSpeedMultiplier = speed;
+    [1, 2, 4].forEach(s => {
+        const btn = document.getElementById(`speed-btn-${s}`);
+        if (btn) {
+            if (s === speed) {
+                btn.className = "px-1.5 py-0.5 rounded text-[11px] bg-cyan-500 text-white font-bold";
+            } else {
+                btn.className = "px-1.5 py-0.5 rounded text-[11px] hover:text-cyan-400";
+            }
+        }
+    });
+    startStreamLoop();
+    showToast(`Vitesse ajustée : ${speed}x`);
 }
 
-function togglePasswordVisibility() {
-    const input = document.getElementById('sim-pwd-input');
-    const eye = document.getElementById('sim-pwd-eye');
-    if (!input || !eye) return;
-    if (input.type === 'password') {
-        input.type = 'text';
-        eye.className = 'fa-solid fa-eye-slash';
-    } else {
-        input.type = 'password';
-        eye.className = 'fa-solid fa-eye';
-    }
-}
+// =============================================================================
+// ARRIÈRE-PLAN PLUIE DE CODE (MATRIX STREAM DÉDIÉ AU TERMINAL)
+// =============================================================================
+let matrixCanvas = null;
+let matrixCtx = null;
+let matrixDrops = [];
+let matrixAnimationId = null;
 
-// Scénario B : SHA-256 via Web Crypto
-async function runSha256Demo(text) {
-    const output = document.getElementById('sha256-output');
-    if (!output) return;
+function initMatrixCodeBackground() {
+    matrixCanvas = document.getElementById('terminal-matrix-canvas');
+    if (!matrixCanvas) return;
 
-    try {
-        const msgUint8 = new TextEncoder().encode(text || '');
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        output.textContent = hashHex;
-    } catch (e) {
-        output.textContent = "Support WebCrypto limité sur ce navigateur";
-    }
-}
+    matrixCtx = matrixCanvas.getContext('2d');
+    resizeMatrixCanvas();
+    window.addEventListener('resize', resizeMatrixCanvas);
 
-// Scénario C : Logs Brute-Force
-let simFailedAttempts = 0;
-function injectSimulatedLog() {
-    const logBox = document.getElementById('siem-logs-window');
-    if (!logBox) return;
+    const chars = "01010101 CET SECURE CLARIUS DEFENSE SHA256 KOBOTOOLBOX LINUX BASH UTF8 UAC PROJETS 01";
+    const fontSize = 12;
+    const columns = Math.floor(matrixCanvas.width / fontSize);
 
-    simFailedAttempts++;
-    const now = new Date().toTimeString().split(' ')[0];
-    const fakeIp = "192.168.1.105";
-
-    const entry = document.createElement('div');
-    if (simFailedAttempts < 5) {
-        entry.className = "text-amber-400";
-        entry.textContent = `[${now}] WARN: Authentication failure for user 'admin' from IP ${fakeIp} (Attempt ${simFailedAttempts}/5)`;
-    } else {
-        entry.className = "text-rose-400 font-bold bg-rose-950/40 p-1 rounded border border-rose-500/50";
-        entry.textContent = `[${now}] ALERT [BRUTE-FORCE DETECTED] Threshold exceeded! Auto-blocking IP ${fakeIp} for 3600s.`;
-        simFailedAttempts = 0;
+    matrixDrops = [];
+    for (let i = 0; i < columns; i++) {
+        matrixDrops[i] = Math.floor(Math.random() * -50);
     }
 
-    logBox.appendChild(entry);
-    logBox.scrollTop = logBox.scrollHeight;
+    function drawMatrixRain() {
+        if (!isTabVisible || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!matrixCtx || !matrixCanvas) return;
+
+        matrixCtx.fillStyle = "rgba(6, 9, 19, 0.08)";
+        matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+        matrixCtx.fillStyle = "#06b6d4"; // Cyan Matrix
+        matrixCtx.font = `${fontSize}px JetBrains Mono, monospace`;
+
+        for (let i = 0; i < matrixDrops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            matrixCtx.fillText(text, i * fontSize, matrixDrops[i] * fontSize);
+
+            if (matrixDrops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+                matrixDrops[i] = 0;
+            }
+            matrixDrops[i]++;
+        }
+
+        matrixAnimationId = requestAnimationFrame(drawMatrixRain);
+    }
+
+    drawMatrixRain();
 }
 
-// Scénario D : Chiffrement César
-function runCaesarDemo() {
-    const input = document.getElementById('sim-caesar-input');
-    const shiftInput = document.getElementById('sim-caesar-shift');
-    const shiftVal = document.getElementById('caesar-shift-val');
-    const output = document.getElementById('caesar-output');
-
-    if (!input || !shiftInput || !output) return;
-
-    const shift = parseInt(shiftInput.value, 10) || 3;
-    if (shiftVal) shiftVal.textContent = shift;
-
-    const raw = input.value || '';
-    const res = raw.split('').map(char => {
-        const code = char.charCodeAt(0);
-        if (code >= 65 && code <= 90) return String.fromCharCode((code - 65 + shift) % 26 + 65);
-        if (code >= 97 && code <= 122) return String.fromCharCode((code - 97 + shift) % 26 + 97);
-        return char;
-    }).join('');
-
-    output.textContent = res;
+function resizeMatrixCanvas() {
+    if (!matrixCanvas) return;
+    const rect = matrixCanvas.parentElement.getBoundingClientRect();
+    matrixCanvas.width = rect.width || 800;
+    matrixCanvas.height = rect.height || 420;
 }
 
 // =============================================================================
@@ -1660,7 +1536,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPhotoTilt();
     initCounters();
     initScrollReveal();
-    switchTerminalScenario('password');
+    initFastCodeStream();
 
     // Auto-skip intro après 1.2s max
     setTimeout(() => {

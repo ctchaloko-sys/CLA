@@ -139,11 +139,24 @@ body.hacker-mode .gradient-text {
     }
 }
 
-/* Terminal Mac styling */
-#terminal-code-display pre {
-    margin: 0;
-    white-space: pre-wrap;
-    word-break: break-all;
+/* Terminal Mac styling & Fast Code Stream */
+#fast-code-stream {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.code-stream-line {
+    opacity: 0.95;
+    animation: fadeInStream 0.15s ease-out;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+@keyframes fadeInStream {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 0.95; transform: translateY(0); }
 }
 
 .token-keyword { color: #f43f5e; font-weight: bold; }
@@ -152,6 +165,8 @@ body.hacker-mode .gradient-text {
 .token-comment { color: #64748b; font-style: italic; }
 .token-number { color: #fbbf24; }
 .token-operator { color: #c084fc; }
+.token-alert { color: #f87171; font-weight: bold; }
+.token-success { color: #4ade80; font-weight: bold; }
 
 /* Navigation Active Link Highlight */
 .nav-link.active-nav {
