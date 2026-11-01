@@ -1,440 +1,731 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>e-Scolarité | Plateforme de Gestion & Délivrance d'Actes Académiques</title>
+    <title>Clarius Emmanuel TCHALOKO | Linguiste, Spécialiste Projets & Cybersécurité</title>
+    <meta name="description" content="Portfolio professionnel de Clarius Emmanuel Tchaloko - Master 1 Linguistique Allemand (UAC), Licence Sociologie, Expert Suivi-Évaluation & Cybersécurité.">
+    <meta property="og:title" content="Clarius Emmanuel TCHALOKO | Portfolio Professionnel">
+    <meta property="og:description" content="Découvrez le profil pluridisciplinaire de Clarius Emmanuel Tchaloko : linguistique appliquée, gestion de projets de développement et cybersécurité défensive.">
+    <meta property="og:type" content="website">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#06b6d4',
+                            purple: '#8b5cf6',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            dark: '#0a0f1d',
+                            cardDark: 'rgba(15, 23, 42, 0.75)',
+                            cardLight: 'rgba(255, 255, 255, 0.85)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-[#070b14] text-slate-100 transition-colors duration-300 font-sans antialiased overflow-x-hidden selection:bg-cyan-500 selection:text-white">
 
-    <!-- Dynamic Animated Background Canvas -->
-    <canvas id="bg-canvas"></canvas>
+    <!-- Écran d'intro skippable (< 1.5s) -->
+    <div id="intro-screen" class="fixed inset-0 z-50 bg-[#070b14] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="relative flex flex-col items-center">
+            <div class="w-16 h-16 rounded-2xl border-2 border-cyan-400 border-t-transparent animate-spin mb-4"></div>
+            <div class="text-xl font-bold font-mono tracking-wider text-cyan-400">
+                &lt;CET_INITIALIZING /&gt;
+            </div>
+            <p class="text-xs text-slate-400 mt-2 font-mono">Clarius Emmanuel Tchaloko Portfolio</p>
+            <button id="skip-intro-btn" onclick="skipIntro()" class="mt-4 px-3 py-1 text-xs rounded bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-all border border-slate-700">
+                Passer [Skip] &rarr;
+            </button>
+        </div>
+    </div>
+
+    <!-- Canvas animé interactif en arrière-plan -->
+    <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
 
     <!-- Navigation Header -->
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo" onclick="switchView('public-portal')">
-                <i class="fa-solid fa-graduation-cap logo-icon"></i>
-                <span>e-Scolarité<span class="logo-dot">.bj</span></span>
+    <header class="fixed top-0 left-0 w-full z-40 backdrop-blur-md bg-[#0a0f1d]/80 border-b border-white/10 transition-all duration-300" id="main-navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo / Signature -->
+            <a href="#hero" class="flex items-center gap-3 group focus:outline-none" aria-label="Accueil Clarius Emmanuel Tchaloko">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-purple-600 to-emerald-400 p-[2px] transition-transform duration-300 group-hover:scale-105 shadow-lg shadow-cyan-500/20">
+                    <div class="w-full h-full bg-[#0a0f1d] rounded-[10px] flex items-center justify-center font-mono font-bold text-cyan-400 text-lg">
+                        CT
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold tracking-tight text-slate-100 text-base group-hover:text-cyan-400 transition-colors">Clarius E. Tchaloko</span>
+                    <span class="text-[11px] text-cyan-400/90 font-mono tracking-wider" data-i18n="nav.roleTag">Linguistique • Projets • Cybersécurité</span>
+                </div>
             </a>
-            
-            <nav class="nav-menu" id="nav-menu">
-                <a href="#accueil" class="nav-link active" onclick="switchView('public-portal')">Accueil</a>
-                <a href="#suivi-rapide" class="nav-link" onclick="switchView('public-portal')">Suivi Rapide</a>
-                <a href="#faq" class="nav-link" onclick="switchView('public-portal')">Aide & FAQ</a>
+
+            <!-- Menu Navigation Desktop -->
+            <nav class="hidden md:flex items-center gap-1 lg:gap-2 text-sm font-medium text-slate-300">
+                <a href="#hero" class="nav-link px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-all" data-i18n="nav.home">Accueil</a>
+                <a href="#about" class="nav-link px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-all" data-i18n="nav.about">À propos</a>
+                <a href="#cv-section" class="nav-link px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-all" data-i18n="nav.cv">Curriculum</a>
+                <a href="#certifications" class="nav-link px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-all" data-i18n="nav.certifs">Certificats</a>
+                <a href="#skills" class="nav-link px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-all" data-i18n="nav.skills">Compétences</a>
+                <a href="#cyber-terminal" class="nav-link px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-all text-purple-400 hover:text-purple-300" data-i18n="nav.terminal">Live Lab Cyber</a>
+                <a href="#contact" class="nav-link px-3 py-2 rounded-lg hover:text-cyan-400 hover:bg-white/5 transition-all" data-i18n="nav.contact">Contact</a>
             </nav>
 
-            <div class="nav-actions">
-                <button class="btn btn-outline" id="btn-portal-student" onclick="showAuthModal('student')">
-                    <i class="fa-solid fa-user-graduate"></i> Espace Étudiant
+            <!-- Actions Header : Langue, Thème, Command Palette, Mobile Toggle -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Palette Ctrl+K Button -->
+                <button onclick="toggleCommandPalette()" class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all" title="Ouvrir la palette de commandes (Ctrl+K)">
+                    <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
+                    <kbd class="font-mono text-[10px] bg-white/10 px-1 py-0.5 rounded">Ctrl+K</kbd>
                 </button>
-                <button class="btn btn-primary" id="btn-portal-staff" onclick="showAuthModal('staff')">
-                    <i class="fa-solid fa-user-shield"></i> Espace Staff
+
+                <!-- Sélecteur de Langue FR / EN / DE -->
+                <div class="relative inline-flex rounded-lg bg-white/5 border border-white/10 p-1 text-xs font-semibold" role="group" aria-label="Choix de la langue">
+                    <button type="button" onclick="changeLanguage('fr')" id="lang-btn-fr" class="lang-btn px-2 py-1 rounded transition-all bg-cyan-500 text-white font-bold" aria-pressed="true">FR</button>
+                    <button type="button" onclick="changeLanguage('en')" id="lang-btn-en" class="lang-btn px-2 py-1 rounded transition-all text-slate-400 hover:text-white" aria-pressed="false">EN</button>
+                    <button type="button" onclick="changeLanguage('de')" id="lang-btn-de" class="lang-btn px-2 py-1 rounded transition-all text-slate-400 hover:text-white" aria-pressed="false">DE</button>
+                </div>
+
+                <!-- Bouton Thème Sombre/Clair -->
+                <button type="button" onclick="toggleTheme()" id="theme-toggle-btn" class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-amber-400 hover:border-amber-400/40 transition-all focus:outline-none" aria-label="Changer de thème">
+                    <i class="fa-solid fa-moon text-base" id="theme-icon"></i>
                 </button>
-                <button class="btn btn-danger hidden" id="btn-logout" onclick="logout()">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Déconnexion
+
+                <!-- Menu Mobile Toggle -->
+                <button type="button" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-cyan-400 focus:outline-none" aria-label="Ouvrir le menu">
+                    <i class="fa-solid fa-bars text-lg" id="mobile-menu-icon"></i>
                 </button>
+            </div>
+        </div>
+
+        <!-- Menu Mobile Déroulant -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-6 bg-[#0a0f1d]/95 border-b border-white/10 backdrop-blur-xl">
+            <div class="flex flex-col gap-2">
+                <a href="#hero" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg text-slate-200 hover:text-cyan-400 hover:bg-white/5" data-i18n="nav.home">Accueil</a>
+                <a href="#about" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg text-slate-200 hover:text-cyan-400 hover:bg-white/5" data-i18n="nav.about">À propos</a>
+                <a href="#cv-section" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg text-slate-200 hover:text-cyan-400 hover:bg-white/5" data-i18n="nav.cv">Curriculum</a>
+                <a href="#certifications" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg text-slate-200 hover:text-cyan-400 hover:bg-white/5" data-i18n="nav.certifs">Certificats</a>
+                <a href="#skills" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg text-slate-200 hover:text-cyan-400 hover:bg-white/5" data-i18n="nav.skills">Compétences</a>
+                <a href="#cyber-terminal" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg text-purple-400 hover:bg-purple-500/10" data-i18n="nav.terminal">Live Lab Cyber</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg text-slate-200 hover:text-cyan-400 hover:bg-white/5" data-i18n="nav.contact">Contact</a>
             </div>
         </div>
     </header>
 
-    <!-- MAIN CONTAINER FOR VIEWS -->
-    <main class="main-wrapper">
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="relative z-10 pt-24 space-y-28">
 
-        <!-- ==================== 1. PUBLIC PORTAL VIEW ==================== -->
-        <section id="view-public-portal" class="page-view active">
-            <!-- Hero Section -->
-            <div class="hero">
-                <div class="hero-content">
-                    <span class="badge badge-hero"><i class="fa-solid fa-bolt"></i> Service Académique Dématérialisé</span>
-                    <h1 class="hero-title">Obtenez vos actes académiques en quelques clics, <span class="highlight">sans vous déplacer</span>.</h1>
-                    <p class="hero-description">
-                        Demandez vos certificats de scolarité, relevés de notes et attestations en ligne. Suivez le traitement en temps réel grâce à votre code unique et téléchargez vos documents certifiés avec QR code.
+        <!-- ==================== HERO SECTION ==================== -->
+        <section id="hero" class="min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">
+            <div class="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Colonne Textuelle -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left reveal">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span data-i18n="hero.badge">Étudiant en Master 1 • Université d'Abomey-Calavi (UAC)</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                        <span class="text-slate-100" data-i18n="hero.greeting">Bonjour, je suis</span><br>
+                        <span class="gradient-text bg-gradient-to-r from-cyan-400 via-purple-400 to-emerald-400">Clarius Emmanuel TCHALOKO</span>
+                    </h1>
+
+                    <!-- Typewriter dynamic effect -->
+                    <div class="text-xl sm:text-2xl font-mono text-slate-300 min-h-[48px] flex items-center justify-center lg:justify-start gap-1">
+                        <span class="text-cyan-400">&gt;</span>
+                        <span id="hero-typewriter" class="text-slate-100 font-semibold"></span>
+                        <span class="w-2.5 h-6 bg-cyan-400 inline-block animate-pulse"></span>
+                    </div>
+
+                    <p class="text-slate-400 text-base sm:text-lg max-w-2xl leading-relaxed" data-i18n="hero.description">
+                        Allier la précision linguistique à l'impact social du développement et à la rigueur de la cybersécurité. Spécialisé en linguistique allemande, sociologie de terrain, suivi-évaluation de projets et sensibilisation aux cyber-menaces.
                     </p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-lg btn-primary" onclick="showAuthModal('student')">
-                            <i class="fa-solid fa-paper-plane"></i> Déposer une demande
+
+                    <!-- Boutons CTA & Réseaux -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#about" class="px-6 py-3.5 rounded-xl font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5 ripple" data-i18n="hero.ctaDiscover">
+                            <i class="fa-solid fa-user-astronaut mr-2"></i>Découvrir mon profil
+                        </a>
+                        <button onclick="openCvModal()" class="px-6 py-3.5 rounded-xl font-semibold glass border border-white/20 text-slate-200 hover:text-white hover:border-cyan-400/60 transition-all transform hover:-translate-y-0.5 ripple" data-i18n="hero.ctaCv">
+                            <i class="fa-solid fa-file-pdf mr-2 text-rose-400"></i>Consulter le CV
                         </button>
-                        <a href="#suivi-rapide" class="btn btn-lg btn-glass">
-                            <i class="fa-solid fa-magnifying-glass"></i> Suivre mon dossier
+                        <a href="https://wa.me/2290157812140?text=Bonjour%20Clarius,%20j'ai%20d%C3%A9couvert%20votre%20portfolio%20et%20souhaite%20%C3%A9changer%20avec%20vous." target="_blank" rel="noopener noreferrer" class="px-4 py-3.5 rounded-xl glass border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-all flex items-center gap-2" title="WhatsApp Direct">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span class="text-sm font-semibold hidden sm:inline" data-i18n="hero.ctaChat">Échanger</span>
                         </a>
                     </div>
+
+                    <!-- Métriques Clés du Hero (animées) -->
+                    <div class="grid grid-cols-3 gap-4 pt-6 border-t border-white/10 max-w-lg mx-auto lg:mx-0">
+                        <div class="text-center lg:text-left">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-cyan-400 counter-stat" data-target="14">14</div>
+                            <div class="text-xs text-slate-400" data-i18n="hero.statCertifs">Certificats Obtenus</div>
+                        </div>
+                        <div class="text-center lg:text-left">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-purple-400 counter-stat" data-target="4">4</div>
+                            <div class="text-xs text-slate-400" data-i18n="hero.statLanguages">Langues Maîtrisées</div>
+                        </div>
+                        <div class="text-center lg:text-left">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 counter-stat" data-target="2">2</div>
+                            <div class="text-xs text-slate-400" data-i18n="hero.statDegrees">Cycles Universitaires</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="hero-stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-blue"><i class="fa-solid fa-file-signature"></i></div>
-                        <div class="stat-info">
-                            <h3 class="stat-value" id="stat-total-demandes">1,420+</h3>
-                            <p class="stat-label">Demandes Traitées</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon icon-green"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                        <div class="stat-info">
-                            <h3 class="stat-value">48h</h3>
-                            <p class="stat-label">Délai Moyen</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon icon-purple"><i class="fa-solid fa-shield-halved"></i></div>
-                        <div class="stat-info">
-                            <h3 class="stat-value">100%</h3>
-                            <p class="stat-label">Sécurisé par QR Code</p>
+                <!-- Colonne Visuelle : Carte Photo avec Halo & Tilt 3D -->
+                <div class="lg:col-span-5 flex justify-center reveal">
+                    <div id="hero-photo-wrapper" class="relative group cursor-pointer transition-transform duration-300">
+                        <!-- Halo animé en arrière-plan -->
+                        <div class="absolute -inset-2 bg-gradient-to-r from-cyan-500 via-purple-600 to-emerald-500 rounded-3xl blur-xl opacity-50 group-hover:opacity-80 transition duration-1000 group-hover:duration-300 animate-tilt"></div>
+
+                        <!-- Cadre Photo Principal -->
+                        <div class="relative w-72 sm:w-80 md:w-88 rounded-3xl p-2 bg-slate-900/90 border border-white/20 backdrop-blur-xl shadow-2xl overflow-hidden">
+                            <div class="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-800">
+                                <img src="assets/photo.jpg" alt="Photo de Clarius Emmanuel Tchaloko" loading="lazy" id="profile-photo-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-cyan-900/60 to-purple-900/60 text-cyan-300 font-mono text-3xl font-bold\'>CET<span class=\'text-xs text-slate-400 mt-2 font-sans\'>Clarius Emmanuel Tchaloko</span></div>';" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105">
+
+                                <!-- Badge Statut Sécurisé -->
+                                <div class="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs font-mono">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                        <span class="text-slate-200" data-i18n="hero.statusAvailable">Disponible & Engagé</span>
+                                    </div>
+                                    <span class="text-cyan-400 font-bold">2026</span>
+                                </div>
+                            </div>
+
+                            <!-- Bascule rapide Photo Réelle / Illustration Poster -->
+                            <div class="pt-3 px-2 flex items-center justify-between text-xs text-slate-400">
+                                <span class="font-mono text-[11px] text-cyan-400">&lt;Portrait_CET.jpg&gt;</span>
+                                <button onclick="togglePosterPhoto(event)" class="text-slate-400 hover:text-white transition-colors underline text-[11px]" title="Voir version poster / illustration" data-i18n="hero.togglePoster">
+                                    <i class="fa-solid fa-palette mr-1"></i>Version Poster
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Anonymous Tracking Section -->
-            <div id="suivi-rapide" class="section tracking-section">
-                <div class="card tracking-card glass-panel">
-                    <div class="section-header text-center">
-                        <h2><i class="fa-solid fa-barcode"></i> Suivi Anonyme & Rapide de Dossier</h2>
-                        <p>Entrez votre code de suivi unique (ex: PARAKOU-2026-1001) pour consulter l'avancement immédiat sans connexion.</p>
+        <!-- ==================== À PROPOS & DIPLÔMES ==================== -->
+        <section id="about" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-400" data-i18n="about.sectionTag">// À PROPOS & PARCOURS</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100" data-i18n="about.title">Un profil polyvalent et interdisciplinaire</h2>
+                <div class="h-1 w-20 bg-gradient-to-r from-cyan-400 to-purple-500 mx-auto rounded-full"></div>
+                <p class="text-slate-400 text-sm sm:text-base" data-i18n="about.subtitle">
+                    De la linguistique des langues germaniques aux enquêtes de terrain, jusqu'à la gouvernance numérique et la cybersécurité.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Carte Parcours Universitaire -->
+                <div class="glass glow-card p-8 rounded-2xl border border-white/10 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-100" data-i18n="about.academicTitle">Formation Universitaire</h3>
+                            <p class="text-xs text-slate-400" data-i18n="about.academicSub">Université d'Abomey-Calavi (Bénin)</p>
+                        </div>
                     </div>
 
-                    <div class="tracking-input-group">
-                        <div class="input-with-icon">
-                            <i class="fa-solid fa-ticket input-icon"></i>
-                            <input type="text" id="public-tracking-input" placeholder="Ex: PARAKOU-2026-1001" value="PARAKOU-2026-1001">
+                    <div class="space-y-4">
+                        <div class="border-l-2 border-purple-500/40 pl-4 space-y-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-slate-200 text-sm" data-i18n="about.degree1Title">Master 1 en Linguistique de l'Allemand</h4>
+                                <span class="text-xs font-mono text-purple-400">En cours (2025 - 2026)</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Université d'Abomey-Calavi (UAC) • Faculté des Lettres, Langues, Arts et Communication</p>
+                            <p class="text-xs text-slate-300" data-i18n="about.degree1Desc">Approche sociolinguistique, analyse du discours, morphosyntaxe et traduction professionnelle.</p>
                         </div>
-                        <button class="btn btn-primary" onclick="trackPublicRequest()">
-                            <i class="fa-solid fa-magnifying-glass"></i> Rechercher
+
+                        <div class="border-l-2 border-cyan-500/40 pl-4 space-y-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-slate-200 text-sm" data-i18n="about.degree2Title">Licence Professionnelle en Sociologie</h4>
+                                <span class="text-xs font-mono text-cyan-400">Diplômé</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Université d'Abomey-Calavi (UAC)</p>
+                            <p class="text-xs text-slate-300" data-i18n="about.degree2Desc">Sociologie du développement, méthodologies qualitatives/quantitatives, conduite d'enquêtes de terrain.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte Philosophie & Atouts Majeurs -->
+                <div class="glass glow-card p-8 rounded-2xl border border-white/10 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-compass-drafting"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-100" data-i18n="about.approachTitle">Approche & Philosophie</h3>
+                            <p class="text-xs text-slate-400" data-i18n="about.approachSub">Synergie terrain, rigueur & numérique</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+                        <p data-i18n="about.bioP1">
+                            Mon parcours atypique conjugue la <strong>maîtrise des langues vivantes</strong> (Allemand, Anglais, Français, Fon) à une solide expertise en <strong>gestion de projets communautaires</strong> et <strong>collecte de données mobiles</strong> (KoboToolbox).
+                        </p>
+                        <p data-i18n="about.bioP2">
+                            Passionné par la souveraineté numérique et la sécurité des systèmes d'information, je développe des compétences en <strong>cybersécurité défensive</strong> : analyse des risques, sensibilisation aux attaques par ingénierie sociale, chiffrement appliqué et hygiène informatique.
+                        </p>
+                    </div>
+
+                    <!-- Langues en résumé -->
+                    <div class="pt-2 border-t border-white/10 grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-2 rounded-lg bg-white/5 flex items-center justify-between">
+                            <span class="text-slate-300">Français</span>
+                            <span class="font-mono text-cyan-400 font-bold" data-i18n="lang.levelNative">Natif</span>
+                        </div>
+                        <div class="p-2 rounded-lg bg-white/5 flex items-center justify-between">
+                            <span class="text-slate-300">Allemand</span>
+                            <span class="font-mono text-purple-400 font-bold" data-i18n="lang.levelGerman">C1 / Académique</span>
+                        </div>
+                        <div class="p-2 rounded-lg bg-white/5 flex items-center justify-between">
+                            <span class="text-slate-300">Anglais</span>
+                            <span class="font-mono text-emerald-400 font-bold" data-i18n="lang.levelEnglish">B2 / Professionnel</span>
+                        </div>
+                        <div class="p-2 rounded-lg bg-white/5 flex items-center justify-between">
+                            <span class="text-slate-300">Fon</span>
+                            <span class="font-mono text-amber-400 font-bold" data-i18n="lang.levelFon">Langue maternelle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION CURRICULUM VITAE ==================== -->
+        <section id="cv-section" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="glass glow-card rounded-3xl p-8 sm:p-10 border border-white/15 relative overflow-hidden">
+                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+                    <div class="space-y-4 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-semibold">
+                            <i class="fa-solid fa-file-contract"></i>
+                            <span data-i18n="cv.tag">Document Officiel Actualisé</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-100" data-i18n="cv.title">Curriculum Vitae de Clarius Emmanuel Tchaloko</h2>
+                        <p class="text-slate-400 text-sm sm:text-base max-w-xl" data-i18n="cv.desc">
+                            Consultez directement le CV en ligne via la visionneuse interactive intégrée ou téléchargez le fichier au format PDF pour vos archives.
+                        </p>
+                        <div class="flex items-center gap-2 justify-center lg:justify-start text-xs text-slate-400">
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                            <span data-i18n="cv.versionInfo">Formats bilingues disponibles • Mise à jour 2026</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                        <button onclick="openCvModal()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center gap-2 transition-all ripple" data-i18n="cv.btnView">
+                            <i class="fa-solid fa-eye text-cyan-400"></i>
+                            <span>Voir le CV</span>
                         </button>
-                    </div>
-
-                    <!-- Tracking Result Display -->
-                    <div id="public-tracking-result" class="tracking-result-container hidden">
-                        <!-- Dynamic Result Content Populated via JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ & Help Section -->
-            <div id="faq" class="section faq-section">
-                <div class="section-header text-center">
-                    <h2><i class="fa-circle-question fa-solid"></i> Foire aux Questions & Assistance</h2>
-                    <p>Tout ce que vous devez savoir sur la demande et le retrait de vos pièces académiques.</p>
-                </div>
-
-                <div class="faq-grid">
-                    <div class="faq-accordion">
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="toggleFaq(this)">
-                                <span><i class="fa-solid fa-file-shield"></i> Comment vérifier l'authenticité d'un document téléversé ?</span>
-                                <i class="fa-solid fa-chevron-down faq-icon"></i>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Chaque document produit est pourvu d'un QR code de sécurité infalsifiable. Tout tiers autorisé (employeur, ambassade, université) peut le scanner pour vérifier l'authenticité directe du relevé ou du certificat sur notre serveur sécurisé.</p>
-                            </div>
-                        </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="toggleFaq(this)">
-                                <span><i class="fa-solid fa-hourglass-half"></i> Quel est le délai de délivrance des actes ?</span>
-                                <i class="fa-solid fa-chevron-down faq-icon"></i>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Le délai moyen est de 24 à 48 heures ouvrées pour les certificats de scolarité et de 3 à 5 jours ouvrés pour les relevés de notes et attestations de diplômes nécessitant une vérification des PV d'examens.</p>
-                            </div>
-                        </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="toggleFaq(this)">
-                                <span><i class="fa-solid fa-key"></i> Que faire si j'ai perdu mon code de suivi ?</span>
-                                <i class="fa-solid fa-chevron-down faq-icon"></i>
-                            </div>
-                            <div class="faq-answer">
-                                <p>Connectez-vous simplement à votre <strong>Espace Étudiant</strong> avec votre numéro de matricule. Tous vos dossiers soumis ainsi que vos codes y sont répertoriés en permanence.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- WhatsApp / Community Widget -->
-                    <div class="whatsapp-card glass-panel">
-                        <div class="wa-icon"><i class="fa-brands fa-whatsapp"></i></div>
-                        <h3>Assistance Directe Scolarité</h3>
-                        <p>Besoin d'aide immédiate pour régulariser votre dossier ? Rejoignez le canal d'orientation communautaire.</p>
-                        <a href="https://wa.me/22900000000?text=Bonjour,%20j'ai%20une%20question%20concernant%20ma%20demande%20d'acte" target="_blank" class="btn btn-whatsapp">
-                            <i class="fa-brands fa-whatsapp"></i> Discuter sur WhatsApp
+                        <a id="download-cv-btn" href="assets/cv/cv_fr.pdf" download="CV_Clarius_Emmanuel_Tchaloko.pdf" class="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25 transition-all ripple" data-i18n="cv.btnDownload">
+                            <i class="fa-solid fa-cloud-arrow-down"></i>
+                            <span>Télécharger le CV (PDF)</span>
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== 2. STUDENT PORTAL VIEW ==================== -->
-        <section id="view-student-portal" class="page-view">
-            <div class="portal-header">
+        <!-- ==================== GALERIE DES 14 CERTIFICATS ==================== -->
+        <section id="certifications" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-400" data-i18n="certifs.sectionTag">// ACADÉMIE & VALORISATION DES COMPÉTENCES</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100" data-i18n="certifs.title">Galerie des Certificats & Attestations</h2>
+                <div class="h-1 w-20 bg-gradient-to-r from-purple-500 to-emerald-400 mx-auto rounded-full"></div>
+                <p class="text-slate-400 text-sm sm:text-base" data-i18n="certifs.subtitle">
+                    14 attestations de formation validées auprès d'organismes de référence (Campus AFD, Coursera, MTN Academy, Innovista, KoboToolbox, CEBELAE).
+                </p>
+            </div>
+
+            <!-- Filtres par catégorie -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-10" id="cert-filter-container">
+                <button onclick="filterCertificates('all')" class="cert-filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-cyan-500 text-white transition-all shadow-md" data-category="all" data-i18n="certifs.filterAll">Tous (14)</button>
+                <button onclick="filterCertificates('projets')" class="cert-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition-all border border-white/10" data-category="projets" data-i18n="certifs.filterProjets">Gestion de Projets</button>
+                <button onclick="filterCertificates('terrain')" class="cert-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition-all border border-white/10" data-category="terrain" data-i18n="certifs.filterTerrain">Terrain & Données</button>
+                <button onclick="filterCertificates('numerique')" class="cert-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition-all border border-white/10" data-category="numerique" data-i18n="certifs.filterCyber">Numérique & Cybersécurité</button>
+                <button onclick="filterCertificates('communication')" class="cert-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 transition-all border border-white/10" data-category="communication" data-i18n="certifs.filterComm">Communication & Langues</button>
+            </div>
+
+            <!-- Grille des Certificats générée dynamiquement -->
+            <div id="certificates-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Les cartes sont injectées depuis script.js via le tableau certificatesData -->
+            </div>
+        </section>
+
+        <!-- ==================== COMPÉTENCES & BOUTONS WHATSAPP ==================== -->
+        <section id="skills" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-400" data-i18n="skills.sectionTag">// SAVOIR-FAIRE & CONTACT DIRECT</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100" data-i18n="skills.title">Compétences Opérationnelles</h2>
+                <div class="h-1 w-20 bg-gradient-to-r from-emerald-400 to-cyan-500 mx-auto rounded-full"></div>
+                <p class="text-slate-400 text-sm sm:text-base" data-i18n="skills.subtitle">
+                    Cliquez sur le bouton WhatsApp d'une compétence pour m'écrire directement avec un message contextualisé.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="skills-grid">
+                <!-- Cartes de compétences rendues via JS pour attacher les messages WhatsApp uniques -->
+            </div>
+        </section>
+
+        <!-- ==================== LIVE CODING CYBERSÉCURITÉ DÉFENSIF ==================== -->
+        <section id="cyber-terminal" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="text-center max-w-3xl mx-auto mb-10 space-y-3">
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-purple-400" data-i18n="cyber.sectionTag">// LABORATOIRE D'EXPÉRIMENTATION DÉFENSIVE</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100" data-i18n="cyber.title">Terminal Interactif Cybersécurité</h2>
+                <div class="h-1 w-20 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 mx-auto rounded-full"></div>
+                <p class="text-slate-400 text-sm sm:text-base" data-i18n="cyber.subtitle">
+                    Démonstrations pédagogiques 100% défensives et simulées en environnement local sécurisé.
+                </p>
+            </div>
+
+            <!-- Avertissement éthique obligatoire -->
+            <div class="mb-6 p-4 rounded-xl bg-purple-950/30 border border-purple-500/30 text-purple-300 text-xs sm:text-sm flex items-start gap-3">
+                <i class="fa-solid fa-shield-halved text-purple-400 text-lg mt-0.5"></i>
                 <div>
-                    <h2><i class="fa-solid fa-user-graduate"></i> Tableau de bord Étudiant</h2>
-                    <p>Bienvenue, <strong id="student-display-name">Étudiant</strong> (<span id="student-display-matricule">...</span>)</p>
-                </div>
-                <button class="btn btn-primary" onclick="openNewRequestModal()">
-                    <i class="fa-solid fa-plus-circle"></i> Nouvelle Demande
-                </button>
-            </div>
-
-            <div class="stats-overview">
-                <div class="mini-stat-card">
-                    <span class="mini-title">Total Demandes</span>
-                    <span class="mini-value" id="st-stat-total">0</span>
-                </div>
-                <div class="mini-stat-card warning">
-                    <span class="mini-title">En Cours</span>
-                    <span class="mini-value" id="st-stat-pending">0</span>
-                </div>
-                <div class="mini-stat-card success">
-                    <span class="mini-title">Prêts / Validés</span>
-                    <span class="mini-value" id="st-stat-ready">0</span>
+                    <strong data-i18n="cyber.disclaimerTitle">Avertissement éthique & pédagogique :</strong>
+                    <span data-i18n="cyber.disclaimerText">Toutes les fonctionnalités ci-dessous sont purement pédagogiques, défensives et exécutées localement dans votre navigateur. Aucun paquet réseau n'est injecté, aucune donnée n'est collectée.</span>
                 </div>
             </div>
 
-            <!-- Student Demandes Table -->
-            <div class="card glass-panel">
-                <div class="table-header">
-                    <h3>Historique de mes demandes</h3>
+            <!-- Terminal Stylisé Type macOS -->
+            <div class="rounded-2xl border border-white/15 bg-[#0b101e] shadow-2xl overflow-hidden font-mono text-sm">
+                <!-- Barre de titre du Terminal -->
+                <div class="bg-slate-900 px-4 py-3 border-b border-white/10 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                        <span class="ml-2 text-xs text-slate-400 font-mono">bash &mdash; clarius@defense-node:~$</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold tracking-wider">
+                            <i class="fa-solid fa-lock mr-1"></i>SECURE MODE : ON
+                        </span>
+                        <!-- Contrôles animation -->
+                        <div class="flex items-center gap-1">
+                            <button onclick="toggleTerminalPlayPause()" id="terminal-play-pause-btn" class="p-1 rounded text-slate-400 hover:text-white" title="Pause / Reprendre">
+                                <i class="fa-solid fa-pause text-xs" id="play-pause-icon"></i>
+                            </button>
+                            <button onclick="restartTerminalScenario()" class="p-1 rounded text-slate-400 hover:text-white" title="Relancer">
+                                <i class="fa-solid fa-rotate-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Code de Suivi</th>
-                                <th>Type d'Acte</th>
-                                <th>Année Académique</th>
-                                <th>Date Dépôt</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="student-requests-tbody">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
+
+                <!-- Onglets des 4 scénarios -->
+                <div class="bg-slate-950/60 border-b border-white/10 px-4 flex flex-wrap gap-2 pt-2 text-xs">
+                    <button onclick="switchTerminalScenario('password')" id="tab-term-password" class="term-tab px-3 py-2 rounded-t-lg bg-white/10 text-cyan-400 font-bold border-b-2 border-cyan-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-key text-[11px]"></i>
+                        <span data-i18n="cyber.tabPassword">Force Mot de Passe</span>
+                    </button>
+                    <button onclick="switchTerminalScenario('sha256')" id="tab-term-sha256" class="term-tab px-3 py-2 rounded-t-lg text-slate-400 hover:text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-fingerprint text-[11px]"></i>
+                        <span data-i18n="cyber.tabSha">Hachage SHA-256</span>
+                    </button>
+                    <button onclick="switchTerminalScenario('bruteforce')" id="tab-term-bruteforce" class="term-tab px-3 py-2 rounded-t-lg text-slate-400 hover:text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation text-[11px]"></i>
+                        <span data-i18n="cyber.tabLogs">Analyse de Logs SIEM</span>
+                    </button>
+                    <button onclick="switchTerminalScenario('caesar')" id="tab-term-caesar" class="term-tab px-3 py-2 rounded-t-lg text-slate-400 hover:text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-code text-[11px]"></i>
+                        <span data-i18n="cyber.tabCaesar">Chiffrement César</span>
+                    </button>
+                </div>
+
+                <!-- Corps du Terminal avec zone d'exécution dynamique -->
+                <div class="p-6 min-h-[360px] bg-[#070b14]/90 space-y-4">
+                    <!-- Zone de frappe de code en direct -->
+                    <div id="terminal-code-display" class="space-y-1 text-slate-300 text-xs sm:text-sm overflow-x-auto leading-relaxed">
+                        <!-- Rempli par le moteur JS de frappe en direct -->
+                    </div>
+
+                    <!-- Zone interactive spécifique au scénario -->
+                    <div id="terminal-interactive-area" class="mt-4 pt-4 border-t border-white/10">
+                        <!-- Contrôles interactifs injectés selon l'onglet actif -->
+                    </div>
+                </div>
+
+                <!-- Barre d'état basse du Terminal -->
+                <div class="bg-slate-900/90 px-4 py-2 border-t border-white/10 text-[11px] text-slate-400 flex items-center justify-between">
+                    <span id="term-status-left">&gt; Terminal prêt. Tapez ou sélectionnez un module pour interagir.</span>
+                    <span class="font-mono text-cyan-400">Node: v20.10.0 • WebCrypto: Enabled</span>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== 3. STAFF / ADMIN PORTAL VIEW ==================== -->
-        <section id="view-staff-portal" class="page-view">
-            <div class="portal-header">
-                <div>
-                    <h2><i class="fa-solid fa-user-gear"></i> Espace Gestion Scolarité & Décanat</h2>
-                    <p>Gestionnaire : <strong id="staff-display-name">Agent Scolarité</strong> | Rôle : <span class="badge badge-info" id="staff-display-role">AGENT</span></p>
-                </div>
-                <div class="role-selector-toggle">
-                    <label>Rôle actif :</label>
-                    <select id="staff-role-switcher" onchange="switchStaffRole(this.value)" class="form-control-inline">
-                        <option value="AGENT">Agent de Scolarité (Traitant)</option>
-                        <option value="DECANAT">Administration / Décanat (Validateur/Signataire)</option>
-                    </select>
-                </div>
+        <!-- ==================== FORMULAIRE DE CONTACT & RÉSEAUX ==================== -->
+        <section id="contact" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-400" data-i18n="contact.sectionTag">// TRAVAILLONS ENSEMBLE</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-100" data-i18n="contact.title">Prendre Contact</h2>
+                <div class="h-1 w-20 bg-gradient-to-r from-cyan-400 to-purple-500 mx-auto rounded-full"></div>
+                <p class="text-slate-400 text-sm sm:text-base" data-i18n="contact.subtitle">
+                    Une opportunité de projet, un besoin de formation ou un échange linguistique ? Écrivez-moi.
+                </p>
             </div>
 
-            <!-- KPI Cards for Staff -->
-            <div class="admin-kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-blue"><i class="fa-solid fa-folder-open"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-total">0</span>
-                        <span class="kpi-label">Demandes Totales</span>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-yellow"><i class="fa-solid fa-hourglass-start"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-pending">0</span>
-                        <span class="kpi-label">En Attente / Traitement</span>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-green"><i class="fa-solid fa-circle-check"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-validated">0</span>
-                        <span class="kpi-label">Validées & Signées</span>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon bg-red"><i class="fa-solid fa-circle-xmark"></i></div>
-                    <div class="kpi-data">
-                        <span class="kpi-value" id="staff-kpi-rejected">0</span>
-                        <span class="kpi-label">Rejetées</span>
-                    </div>
-                </div>
-            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Coordonnées et Liens directs -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="glass p-6 rounded-2xl border border-white/10 space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="contact.locationLabel">Localisation</h4>
+                                <p class="text-slate-100 font-semibold text-sm">Abomey-Calavi / Cotonou, Bénin</p>
+                            </div>
+                        </div>
 
-            <!-- Filter and Request List -->
-            <div class="card glass-panel">
-                <div class="table-actions-bar">
-                    <div class="search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="staff-search-input" placeholder="Rechercher matricule, code, nom..." oninput="renderStaffTable()">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="contact.emailLabel">Email Direct</h4>
+                                <a href="mailto:emmanuelclariustchaloko@gmail.com" class="text-slate-100 font-semibold text-sm hover:text-cyan-400 transition-colors">emmanuelclariustchaloko@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="contact.phoneLabel">WhatsApp Professionnel</h4>
+                                <a href="https://wa.me/2290157812140" target="_blank" rel="noopener noreferrer" class="text-slate-100 font-semibold text-sm hover:text-emerald-400 transition-colors">+229 01 57 81 21 40</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="filter-box">
-                        <select id="staff-status-filter" onchange="renderStaffTable()">
-                            <option value="ALL">Tous les statuts</option>
-                            <option value="PENDING">En attente (PENDING)</option>
-                            <option value="PROCESSING">En cours d'examen (PROCESSING)</option>
-                            <option value="VALIDATED">Validé / Signé (VALIDATED)</option>
-                            <option value="READY">Prêt pour retrait (READY)</option>
-                            <option value="REJECTED">Rejeté (REJECTED)</option>
-                        </select>
+
+                    <!-- Carte Réseaux & Engagements -->
+                    <div class="glass p-6 rounded-2xl border border-white/10 space-y-4">
+                        <h4 class="text-sm font-bold text-slate-100" data-i18n="contact.networkTitle">Engagements & Communauté</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed" data-i18n="contact.networkDesc">
+                            Membre actif de réseaux d'art oratoire, d'associations étudiantes de l'UAC et de cercles de partage en technologies civiques.
+                        </p>
+                        <div class="flex gap-3">
+                            <a href="https://wa.me/2290157812140" target="_blank" rel="noopener noreferrer" class="p-3 rounded-xl bg-white/5 hover:bg-emerald-500/20 text-emerald-400 border border-white/10 transition-all" aria-label="WhatsApp">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                            </a>
+                            <a href="mailto:emmanuelclariustchaloko@gmail.com" class="p-3 rounded-xl bg-white/5 hover:bg-cyan-500/20 text-cyan-400 border border-white/10 transition-all" aria-label="Email">
+                                <i class="fa-solid fa-paper-plane text-lg"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Code Suivi</th>
-                                <th>Étudiant</th>
-                                <th>Filière</th>
-                                <th>Acte Demandé</th>
-                                <th>Date</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="staff-requests-tbody">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
+                <!-- Formulaire interactif sécurisé (défensif, ne stocke aucune donnée sensible) -->
+                <div class="lg:col-span-7">
+                    <form onsubmit="handleContactSubmit(event)" class="glass p-8 rounded-2xl border border-white/10 space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="contact-name" class="block text-xs font-medium text-slate-300 mb-1" data-i18n="contact.formName">Nom complet *</label>
+                                <input type="text" id="contact-name" required placeholder="Votre nom" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                            </div>
+                            <div>
+                                <label for="contact-email" class="block text-xs font-medium text-slate-300 mb-1" data-i18n="contact.formEmail">Adresse Email *</label>
+                                <input type="email" id="contact-email" required placeholder="nom@exemple.com" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="contact-subject" class="block text-xs font-medium text-slate-300 mb-1" data-i18n="contact.formSubject">Objet du message *</label>
+                            <input type="text" id="contact-subject" required placeholder="Proposition de collaboration, mission..." class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:bg-white/10 transition-all">
+                        </div>
+
+                        <div>
+                            <label for="contact-message" class="block text-xs font-medium text-slate-300 mb-1" data-i18n="contact.formMessage">Votre Message *</label>
+                            <textarea id="contact-message" rows="4" required placeholder="Détaillez votre demande ou votre projet..." class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:bg-white/10 transition-all"></textarea>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <span class="text-[11px] text-slate-400 font-mono">
+                                <i class="fa-solid fa-lock text-emerald-400 mr-1"></i>Client-side validated
+                            </span>
+                            <button type="submit" class="px-6 py-3 rounded-xl font-bold bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white shadow-lg shadow-cyan-500/25 transition-all ripple" data-i18n="contact.btnSend">
+                                <i class="fa-solid fa-paper-plane mr-2"></i>Envoyer le message
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- ==================== MODALS ==================== -->
-
-    <!-- Authentication Modal -->
-    <div id="modal-auth" class="modal-overlay hidden">
-        <div class="modal-card glass-panel">
-            <button class="modal-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
-
-            <!-- Student Auth -->
-            <div id="auth-student-form-container">
-                <div class="modal-header">
-                    <h2><i class="fa-solid fa-user-graduate"></i> Connexion Étudiant</h2>
-                    <p>Accédez à vos demandes avec votre matricule universitaire</p>
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="mt-28 border-t border-white/10 bg-[#050811] py-12 relative z-10 text-slate-400 text-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-mono font-bold text-xs">
+                    CET
                 </div>
-                <form id="student-login-form" onsubmit="handleStudentLogin(event)">
-                    <div class="form-group">
-                        <label for="st-login-matricule">Numéro de Matricule</label>
-                        <input type="text" id="st-login-matricule" class="form-control" placeholder="Ex: 21004892" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="st-login-password">Mot de passe</label>
-                        <input type="password" id="st-login-password" class="form-control" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Se Connecter</button>
-                    <div class="auth-demo-hint">
-                        <i class="fa-solid fa-lightbulb"></i> Compte Démo : Matricule: <strong>21004892</strong> / Pass: <strong>123456</strong>
-                    </div>
-                </form>
+                <div>
+                    <p class="text-slate-200 font-bold">Clarius Emmanuel TCHALOKO</p>
+                    <p class="text-xs text-slate-400 font-mono">&copy; 2026 • Linguistique | Projets | Cybersécurité</p>
+                </div>
             </div>
 
-            <!-- Staff Auth -->
-            <div id="auth-staff-form-container" class="hidden">
-                <div class="modal-header">
-                    <h2><i class="fa-solid fa-user-shield"></i> Connexion Personnel / Admin</h2>
-                    <p>Authentification sécurisée Agent de Scolarité & Décanat</p>
+            <div class="flex items-center gap-6 text-xs font-medium">
+                <a href="#hero" class="hover:text-cyan-400 transition-colors" data-i18n="nav.home">Accueil</a>
+                <a href="#about" class="hover:text-cyan-400 transition-colors" data-i18n="nav.about">À propos</a>
+                <a href="#certifications" class="hover:text-cyan-400 transition-colors" data-i18n="nav.certifs">Certificats</a>
+                <a href="#cyber-terminal" class="hover:text-purple-400 transition-colors" data-i18n="nav.terminal">Lab Cyber</a>
+            </div>
+
+            <div class="text-xs font-mono text-slate-400">
+                <span>Designed with HTML5, Tailwind & Vanilla JS</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== BOUTON RETOUR EN HAUT ==================== -->
+    <button onclick="scrollToTop()" id="back-to-top-btn" class="fixed bottom-6 right-6 z-40 p-3 rounded-xl bg-cyan-500/80 hover:bg-cyan-400 text-white shadow-xl shadow-cyan-500/30 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 focus:outline-none" aria-label="Retour en haut de page">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- ==================== MODALE VISIONNEUSE CV ==================== -->
+    <div id="cv-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="cv-modal-title">
+        <div class="bg-slate-900 border border-white/20 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Header Modale -->
+            <div class="px-6 py-4 bg-slate-800/80 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-file-pdf text-rose-400 text-xl"></i>
+                    <div>
+                        <h3 id="cv-modal-title" class="font-bold text-slate-100 text-base" data-i18n="cv.modalTitle">Aperçu du Curriculum Vitae</h3>
+                        <p class="text-xs text-slate-400" id="cv-modal-lang-hint">Version : Français (par défaut)</p>
+                    </div>
                 </div>
-                <form id="staff-login-form" onsubmit="handleStaffLogin(event)">
-                    <div class="form-group">
-                        <label for="staff-login-email">Email Professionnel</label>
-                        <input type="email" id="staff-login-email" class="form-control" placeholder="scolarite@univ-parakou.bj" required>
+                <div class="flex items-center gap-2">
+                    <a id="modal-download-cv-btn" href="assets/cv/cv_fr.pdf" download="CV_Clarius_Emmanuel_Tchaloko.pdf" class="px-3 py-1.5 rounded-lg bg-cyan-500 text-white text-xs font-semibold hover:bg-cyan-400 transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-download"></i>
+                        <span data-i18n="cv.btnDownloadShort">Télécharger</span>
+                    </a>
+                    <button onclick="closeCvModal()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors" aria-label="Fermer la modale">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenu Visionneuse PDF -->
+            <div class="flex-1 bg-slate-950 p-4 overflow-y-auto flex items-center justify-center min-h-[420px]" id="cv-viewer-container">
+                <!-- Iframe ou message fallback si fichier non disponible -->
+                <div class="text-center p-8 max-w-md space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-file-lines"></i>
                     </div>
-                    <div class="form-group">
-                        <label for="staff-login-password">Mot de passe</label>
-                        <input type="password" id="staff-login-password" class="form-control" placeholder="••••••••" required>
+                    <h4 class="font-bold text-slate-200" data-i18n="cv.viewerFallbackTitle">Document CV Prêt à être Intégré</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed" data-i18n="cv.viewerFallbackDesc">
+                        Le fichier PDF officiel sera affiché directement dans cette liseuse interactive dès son versement dans le dossier assets/cv/.
+                    </p>
+                    <div class="p-3 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-cyan-300">
+                        assets/cv/cv_fr.pdf [Statut : Emplacement configuré]
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Accéder au Backoffice</button>
-                    <div class="auth-demo-hint">
-                        <i class="fa-solid fa-lightbulb"></i> Démo : <strong>scolarite@univ.bj</strong> (Agent) ou <strong>decanat@univ.bj</strong> (Décanat) / Pass: <strong>admin123</strong>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- New Request Wizard Modal -->
-    <div id="modal-new-request" class="modal-overlay hidden">
-        <div class="modal-card modal-lg glass-panel">
-            <button class="modal-close" onclick="closeNewRequestModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-header">
-                <h2><i class="fa-solid fa-file-circle-plus"></i> Formulaire de Nouvelle Demande d'Acte</h2>
-                <p>Complétez les informations requises et téléversez vos pièces justificatives.</p>
+    <!-- ==================== MODALE LIGHTBOX CERTIFICATS ==================== -->
+    <div id="cert-lightbox" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md hidden transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+        <div class="relative bg-slate-900 border border-white/20 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col">
+            <!-- Header Lightbox -->
+            <div class="px-6 py-4 bg-slate-800/90 border-b border-white/10 flex items-center justify-between">
+                <div>
+                    <span id="lightbox-badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">ORGANISME</span>
+                    <h3 id="lightbox-title" class="font-bold text-slate-100 text-lg mt-1">Titre du Certificat</h3>
+                    <p id="lightbox-date" class="text-xs text-slate-400 font-mono mt-0.5">Date • Réf</p>
+                </div>
+                <button onclick="closeCertLightbox()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors" aria-label="Fermer la lightbox">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
             </div>
 
-            <form id="form-new-request" onsubmit="handleNewRequestSubmit(event)">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="req-type-acte">Type d'Acte Académique *</label>
-                        <select id="req-type-acte" class="form-control" required onchange="updateRequestFormDetails()">
-                            <option value="">-- Sélectionnez un type d'acte --</option>
-                            <option value="1">Certificat de Scolarité (Frais: 1,000 FCFA)</option>
-                            <option value="2">Relevé de Notes Officiel (Frais: 2,000 FCFA)</option>
-                            <option value="3">Attestation de Succès / Diplôme (Frais: 5,000 FCFA)</option>
-                            <option value="4">Duplicata de Carte d'Étudiant (Frais: 1,500 FCFA)</option>
-                        </select>
+            <!-- Image / Aperçu du Certificat -->
+            <div class="relative min-h-[300px] max-h-[60vh] bg-slate-950 flex items-center justify-center p-4 overflow-hidden">
+                <img id="lightbox-img" src="" alt="Aperçu du certificat" class="max-h-[55vh] max-w-full rounded-lg object-contain hidden">
+                <div id="lightbox-placeholder" class="text-center p-8 space-y-3">
+                    <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-cyan-400 text-2xl">
+                        <i class="fa-solid fa-award"></i>
                     </div>
-
-                    <div class="form-group">
-                        <label for="req-annee-academique">Année Académique *</label>
-                        <select id="req-annee-academique" class="form-control" required>
-                            <option value="2025-2026">2025-2026</option>
-                            <option value="2024-2025">2024-2025</option>
-                            <option value="2023-2024">2023-2024</option>
-                            <option value="2022-2023">2022-2023</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="req-motif">Motif / Justification de la demande</label>
-                        <textarea id="req-motif" class="form-control" rows="2" placeholder="Ex: Inscription au Master, Dossier de Bourse, Emploi..."></textarea>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Pièces Justificatives (Quittance d'inscription, Anciens relevés, CNI) *</label>
-                        <div class="file-dropzone" onclick="document.getElementById('req-file-input').click()">
-                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
-                            <p>Cliquez ou glissez vos fichiers PDF / Images ici</p>
-                            <span class="file-types-hint">Formats acceptés : PDF, PNG, JPG (Max 5Mo)</span>
-                            <input type="file" id="req-file-input" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileSelect(event)" style="display:none">
-                        </div>
-                        <div id="file-list-preview" class="file-preview-list"></div>
-                    </div>
+                    <h4 class="font-bold text-slate-300" data-i18n="certifs.previewPending">Aperçu bientôt disponible</h4>
+                    <p class="text-xs text-slate-400 max-w-sm" data-i18n="certifs.previewPendingDesc">
+                        Le document numérisé est en cours d'archivage haute définition. L'authenticité peut être vérifiée auprès de l'institution émettrice.
+                    </p>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline" onclick="closeNewRequestModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Soumettre la Demande</button>
+                <!-- Navigation Flèches Clavier / Boutons -->
+                <button onclick="prevLightboxCert()" class="absolute left-3 p-3 rounded-full bg-slate-800/80 hover:bg-slate-700 text-white transition-all focus:outline-none" aria-label="Certificat précédent">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button onclick="nextLightboxCert()" class="absolute right-3 p-3 rounded-full bg-slate-800/80 hover:bg-slate-700 text-white transition-all focus:outline-none" aria-label="Certificat suivant">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Footer Lightbox avec lien de vérification si existant -->
+            <div class="px-6 py-4 bg-slate-800/80 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <span id="lightbox-counter" class="text-slate-400 font-mono">1 / 14</span>
+                <div class="flex items-center gap-3">
+                    <a id="lightbox-verify-btn" href="#" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-semibold transition-colors hidden">
+                        <i class="fa-solid fa-circle-check mr-1.5"></i><span data-i18n="certifs.btnVerify">Vérifier l'authenticité</span>
+                    </a>
+                    <button onclick="closeCertLightbox()" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 transition-colors" data-i18n="common.close">
+                        Fermer
+                    </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Request Details & Staff Processing Modal -->
-    <div id="modal-request-details" class="modal-overlay hidden">
-        <div class="modal-card modal-lg glass-panel">
-            <button class="modal-close" onclick="closeRequestDetailsModal()"><i class="fa-solid fa-xmark"></i></button>
-
-            <div id="modal-request-details-content">
-                <!-- Content generated dynamically in script.js -->
+    <!-- ==================== COMMAND PALETTE (CTRL+K) ==================== -->
+    <div id="command-palette" class="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-slate-950/80 backdrop-blur-md hidden transition-opacity duration-200" role="dialog" aria-modal="true">
+        <div class="bg-slate-900 border border-white/20 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-white/10 flex items-center gap-3">
+                <i class="fa-solid fa-magnifying-glass text-cyan-400"></i>
+                <input type="text" id="palette-search-input" oninput="filterPaletteCommands()" placeholder="Rechercher une section, une langue, une commande..." class="w-full bg-transparent text-slate-100 placeholder-slate-500 text-sm focus:outline-none">
+                <kbd class="font-mono text-xs bg-white/10 px-2 py-0.5 rounded text-slate-400">Échap</kbd>
+            </div>
+            <div id="palette-results" class="p-2 max-h-72 overflow-y-auto space-y-1 text-xs">
+                <!-- Généré dynamiquement dans script.js -->
+            </div>
+            <div class="px-4 py-2 bg-slate-950/80 border-t border-white/10 text-[11px] text-slate-400 flex justify-between">
+                <span>Navigation au clavier : &uarr; &darr; pour naviguer, Entrée pour valider</span>
+                <span class="font-mono text-cyan-400">Clarius Palette</span>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification Container -->
-    <div id="toast-container"></div>
+    <div id="toast-container" class="fixed bottom-6 left-6 z-50 flex flex-col gap-2"></div>
 
+    <!-- Script principal JavaScript Vanilla -->
     <script src="script.js"></script>
 </body>
 </html>
